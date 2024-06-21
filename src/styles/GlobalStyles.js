@@ -3,6 +3,10 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyles = createGlobalStyle`
 
 :root {
+
+    --brand-color: #C9C7F2;
+    --background-color: #3C3B48;
+
     --color-grey-0: #fff;
     --color-grey-50: #f9fafb;
     --color-grey-100: #f3f4f6;
@@ -19,6 +23,8 @@ const GlobalStyles = createGlobalStyle`
     --border-radius-sm: 5px;
     --border-radius-md: 7px;
     --border-radius-lg: 9px;
+
+    
 }
 
 *,
@@ -32,11 +38,12 @@ const GlobalStyles = createGlobalStyle`
 
 html {
   font-size: 62.5%;
+  background-color: var(--background-color);
 }
 
 body {
   font-family: "Poppins", sans-serif;
-  color: var(--color-grey-700);
+  color: var(--brand-color);
 
   transition: color 0.3s, background-color 0.3s;
   min-height: 100vh;

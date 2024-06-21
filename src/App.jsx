@@ -21,6 +21,7 @@ import DashboardPage from "./pages/DashboardPage";
 import CreateNewDraftPage from "./pages/CreateNewDraftPage";
 import JoinDraftPage from "./pages/JoinDraftPage";
 import DraftPage from "./pages/DraftPage";
+import LoginForm from "./components/LoginForm";
 
 // error page
 import ErrorFallback from "./ui/ErrorFallback";
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Homepage />,
+    errorElement: <ErrorFallback />,
+  },
+  {
+    path: "signup",
+    element: <SignupPage />,
     errorElement: <ErrorFallback />,
   },
 ]);
