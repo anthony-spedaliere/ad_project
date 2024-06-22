@@ -7,7 +7,7 @@ const StyledButton = styled.button`
   background-color: ${(props) => props.bgColor || "#35343F"};
   box-shadow: ${(props) =>
     props.dropShadow || "0px 4px 6px rgba(0, 0, 0, 0.1)"};
-  border-radius: ${(props) => props.borderRadius || "1rem"};
+  border-radius: ${(props) => props.borderRadius || "2rem"};
   border: none;
   color: ${(props) => props.textColor || "var(--brand-color)"};
   font-size: 2.6rem;

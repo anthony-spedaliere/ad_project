@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${(props) => props.$flexDirection || "column"};
   row-gap: 2rem;
   align-items: ${(props) => props.$alignItems || "none"};
   justify-content: ${(props) => props.$justifyContent || "none"};
@@ -12,6 +12,8 @@ const StyledContainer = styled.div`
   background-color: ${(props) => props.$bgColor || "var(--brand-color)"};
   border-radius: ${(props) => props.$borderRadius || "1rem"};
   padding: ${(props) => props.$customPadding || "1rem"};
+  margin: ${(props) => props.$margin || "none"};
+  color: ${(props) => props.$color || "inherit"};
 `;
 
 export default StyledContainer;

@@ -4,10 +4,10 @@ import {
   LogoImage,
   WebsiteName,
   NavLinks,
-  StyledLink,
+  StyledHeaderLink,
 } from "../styles/HeaderStyles";
 
-import logo from "../assets/images/great-white-shark.png";
+import logo from "../assets/images/Duck.png";
 
 function Header() {
   return (
@@ -17,8 +17,8 @@ function Header() {
         <WebsiteName>Draft Apex</WebsiteName>
       </LogoContainer>
       <NavLinks>
-        <StyledLink to="/about">About</StyledLink>
-        <StyledLink to="/signup">Sign Up</StyledLink>
+        <StyledHeaderLink to="/about">About</StyledHeaderLink>
+        <StyledHeaderLink to="/signup">Sign Up</StyledHeaderLink>
       </NavLinks>
     </HeaderContainer>
   );

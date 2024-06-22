@@ -19,7 +19,6 @@ export const LogoContainer = styled.div`
 export const LogoImage = styled.img`
   height: 5rem;
   margin-right: 1rem;
-  background-color: var(--color-grey-50);
 `;
 
 export const WebsiteName = styled.h1`
@@ -32,7 +31,7 @@ export const NavLinks = styled.nav`
   gap: 2rem;
 `;
 
-export const StyledLink = styled(Link)`
+export const StyledHeaderLink = styled(Link)`
   color: var(--color-grey-50);
   text-decoration: none;
   font-size: 2rem;
