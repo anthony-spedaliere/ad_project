@@ -38,7 +38,10 @@ const router = createBrowserRouter([
   {
     path: "signup",
     element: <SignupPage />,
-    errorElement: <ErrorFallback />,
+  },
+  {
+    path: "dashboard",
+    element: <DashboardPage />,
   },
 ]);
 
