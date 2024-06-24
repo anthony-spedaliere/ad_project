@@ -8,7 +8,11 @@ Date Started: 6/15/2024
 // libraries
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 
 // styles
 import GlobalStyles from "./styles/GlobalStyles";
@@ -22,6 +26,11 @@ import CreateNewDraftPage from "./pages/CreateNewDraftPage";
 import JoinDraftPage from "./pages/JoinDraftPage";
 import DraftPage from "./pages/DraftPage";
 import LoginForm from "./components/LoginForm";
+import ProtectedRoute from "./ui/ProtectedRoute";
+import AppLayout from "./ui/AppLayout";
+
+// page not found
+import PageNotFound from "./ui/PageNotFound";
 
 // error page
 import ErrorFallback from "./ui/ErrorFallback";
@@ -29,19 +38,46 @@ import ErrorFallback from "./ui/ErrorFallback";
 //----------------End Imports-----------------
 
 // router
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <Homepage />,
+//     errorElement: <ErrorFallback />,
+//   },
+//   {
+//     path: "signup",
+//     element: <SignupPage />,
+//   },
+//   {
+//     path: "dashboard",
+//     element: <DashboardPage />,
+//   },
+// ]);
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Homepage />,
-    errorElement: <ErrorFallback />,
+    element: <Navigate replace to="/dashboard" />,
   },
   {
-    path: "signup",
+    path: "/login",
+    element: <Homepage />,
+  },
+  {
+    path: "/signup",
     element: <SignupPage />,
   },
   {
-    path: "dashboard",
-    element: <DashboardPage />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
+    children: [{ path: "dashboard", element: <DashboardPage /> }],
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);
 
