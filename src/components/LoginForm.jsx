@@ -1,5 +1,6 @@
 // LoginForm.js
 import { useState } from "react";
+import { useLogin } from "../authentication/useLogin";
 
 import StyledInput from "../ui/StyledInput";
 import StyledButton from "../ui/StyledButton";
@@ -11,7 +12,6 @@ import StyledLink from "../ui/StyledLink";
 import HorizontalLine from "../ui/HorizontalLine";
 import SocialMediaIcons from "../ui/SocialMediaIcons";
 import SignUp from "../ui/SignUp";
-import { useLogin } from "../authentication/useLogin";
 import SpinnerMini from "../ui/SpinnerMini";
 
 const FullScreenContainer = styled.div`

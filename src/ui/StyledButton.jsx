@@ -24,7 +24,7 @@ const StyledButton = styled.button`
 `;
 
 const Button = ({ children, ...props }) => {
-  return <StyledButton {...props}>{children || "Submit"}</StyledButton>;
+  return <StyledButton {...props}> {children || "Submit"} </StyledButton>;
 };
 
 export default Button;

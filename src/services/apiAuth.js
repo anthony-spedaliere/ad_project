@@ -21,12 +21,19 @@ export async function getCurrentUser() {
 
   const { data, error } = await supabase.auth.getUser();
 
-  console.log(data);
-
   if (error) {
     console.error("Login error: ", error.message);
     throw new Error(error.message);
   }
 
   return data?.user;
+}
+
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error("Signout error: ", error.message);
+    throw new Error(error.message);
+  }
 }

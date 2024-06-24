@@ -3,7 +3,7 @@ import { getCurrentUser } from "../services/apiAuth";
 
 export function useUser() {
   const {
-    isLoading,
+    isPending,
     data: user,
     error,
     isFetching,
@@ -13,7 +13,7 @@ export function useUser() {
   });
 
   return {
-    isLoading,
+    isPending,
     user,
     isAuthenticated: user?.role === "authenticated",
     isFetching,

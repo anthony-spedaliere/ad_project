@@ -16,18 +16,18 @@ function ProtectedRoute({ children }) {
   const navigate = useNavigate();
 
   // 1. load the authenticated user
-  const { isLoading, isAuthenticated, isFetching } = useUser();
+  const { isPending, isAuthenticated, isFetching } = useUser();
 
   // 2. if there is no authenticated user, redirect to the /login page
   useEffect(
     function () {
-      if (!isLoading && !isAuthenticated && !isFetching) navigate("/login");
+      if (!isPending && !isAuthenticated && !isFetching) navigate("/login");
     },
-    [isAuthenticated, isLoading, navigate, isFetching]
+    [isAuthenticated, isPending, navigate, isFetching]
   );
 
   // 3. while loading, show spinner
-  if (isLoading)
+  if (isPending)
     return (
       <FullPage>
         <Spinner />;
