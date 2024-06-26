@@ -1,10 +1,15 @@
 import styled from "styled-components";
 
 // components
+import { useForm } from "react-hook-form";
+
 import StyledContainer from "../ui/StyledContainer";
 import StyledHeader from "../ui/StyledHeader";
 import StyledInput from "../ui/StyledInput";
 import StyledButton from "../ui/StyledButton";
+import FormRow from "../ui/FormRow";
+
+// Email regex: /\S+@\S+\.\S+/
 
 const FullScreenContainer = styled.div`
   display: flex;
@@ -15,11 +20,22 @@ const FullScreenContainer = styled.div`
   margin: 4rem;
 `;
 
+const Label = styled.label`
+  font-weight: 500;
+`;
+
 function SignupForm() {
+  const { register, formState, getValues, handleSubmit } = useForm();
+  const { errors } = formState;
+
+  function onSubmit(data) {
+    console.log(data);
+  }
+
   return (
     <>
       <FullScreenContainer>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <StyledContainer $width="60rem" $bgColor="var(--background-color)">
             <StyledContainer
               $bgColor="var(--background-color)"
@@ -31,48 +47,90 @@ function SignupForm() {
               </StyledHeader>
             </StyledContainer>
 
-            <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
-              <StyledHeader $fontSize="2rem" $fontWeight="400">
-                Username
-              </StyledHeader>
-              <StyledInput />
-            </StyledContainer>
+            <FormRow label="Username" error={errors?.username?.message}>
+              <StyledInput
+                type="text"
+                id="username"
+                {...register("username", {
+                  required: "This field is required.",
+                })}
+              />
+            </FormRow>
 
-            <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
-              <StyledHeader $fontSize="2rem" $fontWeight="400">
-                Email
-              </StyledHeader>
-              <StyledInput />
-            </StyledContainer>
+            <FormRow label="Email" error={errors?.email?.message}>
+              <StyledInput
+                type="email"
+                id="email"
+                {...register("email", {
+                  required: "This field is required.",
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: "Please provide a valid email address.",
+                  },
+                })}
+              />
+            </FormRow>
 
-            <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
-              <StyledHeader $fontSize="2rem" $fontWeight="400">
-                Confirm Email
-              </StyledHeader>
-              <StyledInput />
-            </StyledContainer>
+            <FormRow
+              label="Confirm Email"
+              error={errors?.confirmEmail?.message}
+            >
+              <StyledInput
+                type="email"
+                id="confirmEmail"
+                {...register("confirmEmail", {
+                  required: "This field is required.",
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: "Please provide a valid email address.",
+                  },
+                  validate: (value) =>
+                    value === getValues().email || "Emails need to match.",
+                })}
+              />
+            </FormRow>
 
-            <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
-              <StyledHeader $fontSize="2rem" $fontWeight="400">
-                Password
-              </StyledHeader>
-              <StyledInput />
-            </StyledContainer>
+            <FormRow
+              label="Password (minimum of 8 characters)"
+              error={errors?.password?.message}
+            >
+              <StyledInput
+                type="password"
+                id="password"
+                {...register("password", {
+                  required: "This field is required.",
+                  minLength: {
+                    value: 8,
+                    message: "Password needs a minimum of 8 characters.",
+                  },
+                })}
+              />
+            </FormRow>
 
-            <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
-              <StyledHeader $fontSize="2rem" $fontWeight="400">
-                Confirm Password
-              </StyledHeader>
-              <StyledInput />
-            </StyledContainer>
+            <FormRow
+              label="Confirm Password"
+              error={errors?.confirmPassword?.message}
+            >
+              <StyledInput
+                type="password"
+                id="confirmPassword"
+                {...register("confirmPassword", {
+                  required: "This field is required.",
+                  validate: (value) =>
+                    value === getValues().password ||
+                    "Passwords need to match.",
+                })}
+              />
+            </FormRow>
 
-            <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
+            <FormRow>
               <StyledButton
                 $bgColor="var(--brand-color)"
                 $textColor="var(--background-color)"
                 $hoverBgColor="#B5B3DE"
+                $marginTop="2rem"
               ></StyledButton>
-            </StyledContainer>
+            </FormRow>
           </StyledContainer>
         </form>
       </FullScreenContainer>
@@ -81,3 +139,91 @@ function SignupForm() {
 }
 
 export default SignupForm;
+
+{
+  /* <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
+              <StyledHeader
+                $fontSize="2rem"
+                $fontWeight="400"
+                // error={errors?.username?.message}
+              >
+                Username
+              </StyledHeader>
+              <StyledInput
+                type="text"
+                id="username"
+                {...register("username", {
+                  required: "This field is required.",
+                })}
+              />
+            </StyledContainer> */
+}
+
+{
+  /* <StyledContainer $bgColor="var(--background-color)" $rowGap="none">
+  <StyledHeader $fontSize="2rem" $fontWeight="400">
+    Email
+  </StyledHeader>
+  <StyledInput
+    type="email"
+    id="email"
+    {...register("email", {
+      required: "This field is required.",
+      pattern: {
+        value: /\S+@\S+\.\S+/,
+        message: "Please provide a valid email address.",
+      },
+    })}
+  />
+</StyledContainer>
+
+<StyledContainer $bgColor="var(--background-color)" $rowGap="none">
+  <StyledHeader $fontSize="2rem" $fontWeight="400">
+    Confirm Email
+  </StyledHeader>
+  <StyledInput
+    type="email"
+    id="confirmEmail"
+    {...register("confirmEmail", {
+      required: "This field is required.",
+      pattern: {
+        value: /\S+@\S+\.\S+/,
+        message: "Please provide a valid email address.",
+      },
+    })}
+  />
+</StyledContainer>
+
+<StyledContainer $bgColor="var(--background-color)" $rowGap="none">
+  <StyledHeader $fontSize="2rem" $fontWeight="400">
+    {"Password (minimum of 8 characters)"}
+  </StyledHeader>
+  <StyledInput
+    type="password"
+    id="password"
+    {...register("password", {
+      required: "This field is required.",
+      minLength: {
+        value: 8,
+        message: "Password needs a minimum of 8 characters.",
+      },
+    })}
+  />
+</StyledContainer>
+
+<StyledContainer $bgColor="var(--background-color)" $rowGap="none">
+  <StyledHeader $fontSize="2rem" $fontWeight="400">
+    Confirm Password
+  </StyledHeader>
+  <StyledInput
+    type="password"
+    id="confirmPassword"
+    {...register("confirmPassword", {
+      required: "This field is required.",
+      validate: (value) =>
+        value === getValues().password ||
+        "Passwords need to match.",
+    })}
+  />
+</StyledContainer> */
+}

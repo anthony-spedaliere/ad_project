@@ -4,6 +4,7 @@ import styled from "styled-components";
 const StyledButton = styled.button`
   width: ${(props) => props.width || "auto"};
   height: ${(props) => props.height || "5rem"};
+  margin-top: ${(props) => props.$marginTop || "none"};
   background-color: ${(props) => props.$bgColor || "#35343F"};
   box-shadow: ${(props) =>
     props.dropShadow || "0px 4px 6px rgba(0, 0, 0, 0.1)"};
