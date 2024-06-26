@@ -9,6 +9,8 @@ import StyledInput from "../ui/StyledInput";
 import StyledButton from "../ui/StyledButton";
 import FormRow from "../ui/FormRow";
 
+import { useSignup } from "../authentication/useSignup";
+
 // Email regex: /\S+@\S+\.\S+/
 
 const FullScreenContainer = styled.div`
@@ -25,11 +27,17 @@ const Label = styled.label`
 `;
 
 function SignupForm() {
-  const { register, formState, getValues, handleSubmit } = useForm();
+  const { signup, isPending } = useSignup();
+  const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
-  function onSubmit(data) {
-    console.log(data);
+  function onSubmit({ username, email, password }) {
+    signup(
+      { username, email, password },
+      {
+        onSettled: reset,
+      }
+    );
   }
 
   return (
@@ -51,6 +59,7 @@ function SignupForm() {
               <StyledInput
                 type="text"
                 id="username"
+                disabled={isPending}
                 {...register("username", {
                   required: "This field is required.",
                 })}
@@ -61,6 +70,7 @@ function SignupForm() {
               <StyledInput
                 type="email"
                 id="email"
+                disabled={isPending}
                 {...register("email", {
                   required: "This field is required.",
                   pattern: {
@@ -78,6 +88,7 @@ function SignupForm() {
               <StyledInput
                 type="email"
                 id="confirmEmail"
+                disabled={isPending}
                 {...register("confirmEmail", {
                   required: "This field is required.",
                   pattern: {
@@ -97,6 +108,7 @@ function SignupForm() {
               <StyledInput
                 type="password"
                 id="password"
+                disabled={isPending}
                 {...register("password", {
                   required: "This field is required.",
                   minLength: {
@@ -114,6 +126,7 @@ function SignupForm() {
               <StyledInput
                 type="password"
                 id="confirmPassword"
+                disabled={isPending}
                 {...register("confirmPassword", {
                   required: "This field is required.",
                   validate: (value) =>
@@ -129,7 +142,18 @@ function SignupForm() {
                 $textColor="var(--background-color)"
                 $hoverBgColor="#B5B3DE"
                 $marginTop="2rem"
+                disabled={isPending}
               ></StyledButton>
+              <StyledButton
+                $bgColor="var(--brand-color)"
+                $textColor="var(--background-color)"
+                $hoverBgColor="#B5B3DE"
+                $marginTop="2rem"
+                type="reset"
+                disabled={isPending}
+              >
+                Cancel
+              </StyledButton>
             </FormRow>
           </StyledContainer>
         </form>
