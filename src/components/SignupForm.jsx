@@ -11,8 +11,6 @@ import FormRow from "../ui/FormRow";
 
 import { useSignup } from "../authentication/useSignup";
 
-// Email regex: /\S+@\S+\.\S+/
-
 const FullScreenContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -20,10 +18,6 @@ const FullScreenContainer = styled.div`
   min-height: 100vh;
   background-color: #3c3b48;
   margin: 4rem;
-`;
-
-const Label = styled.label`
-  font-weight: 500;
 `;
 
 function SignupForm() {
@@ -35,7 +29,9 @@ function SignupForm() {
     signup(
       { username, email, password },
       {
-        onSettled: reset,
+        onSuccess: () => {
+          reset();
+        },
       }
     );
   }

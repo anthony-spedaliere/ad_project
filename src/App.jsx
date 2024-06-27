@@ -6,7 +6,11 @@ Date Started: 6/15/2024
 
 //----------------Imports-----------------
 // libraries
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createBrowserRouter,
@@ -34,25 +38,9 @@ import PageNotFound from "./ui/PageNotFound";
 
 // error page
 import ErrorFallback from "./ui/ErrorFallback";
+import toast, { Toaster } from "react-hot-toast";
 
 //----------------End Imports-----------------
-
-// router
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <Homepage />,
-//     errorElement: <ErrorFallback />,
-//   },
-//   {
-//     path: "signup",
-//     element: <SignupPage />,
-//   },
-//   {
-//     path: "dashboard",
-//     element: <DashboardPage />,
-//   },
-// ]);
 
 const router = createBrowserRouter([
   {
@@ -94,6 +82,27 @@ function App() {
       <RouterProvider router={router} />
       <GlobalStyles />
       <ReactQueryDevtools />
+
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerStyle={{ margin: "8px" }}
+        toastOptions={{
+          success: {
+            duration: 5000,
+          },
+          error: {
+            duration: 5000,
+          },
+          style: {
+            fontSize: "16px",
+            maxWidth: "500px",
+            padding: "16px 24px",
+            backgroundColor: "var(--brand-color)",
+            color: "var(--background-color)",
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

@@ -59,7 +59,7 @@ function LoginForm() {
             <StyledInput
               type="email"
               id="email"
-              placeholder="username"
+              placeholder="email"
               value={email}
               autoComplete="username"
               onChange={(e) => setEmail(e.target.value)}
