@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledInput = styled.input`
   border-radius: 2rem;
-  background-color: ${(props) => props.$bgColor || "#EEEEDD"};
+  background-color: ${(props) => props.$bgColor || "var(--color-grey-50)"};
   box-shadow: ${(props) =>
     props.dropShadow || "0px 4px 6px rgba(0, 0, 0, 0.1)"};
   width: ${(props) => props.width || "auto"};

@@ -39,7 +39,7 @@ const StyledCheckboxSpan = styled.span`
   left: 0;
   height: 25px;
   width: 25px;
-  background-color: #eeeedd;
+  background-color: var(--color-grey-50);
   border-radius: 0.5rem;
   box-shadow: ${(props) =>
     props.dropShadow || "0px 4px 6px rgba(0, 0, 0, 0.1)"};

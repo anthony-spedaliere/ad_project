@@ -4,7 +4,7 @@ import styled from "styled-components";
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: ${(props) => props.$flexDirection || "column"};
-  row-gap: 2rem;
+  row-gap: ${(props) => props.$rowGap || "2rem"};
   align-items: ${(props) => props.$alignItems || "none"};
   justify-content: ${(props) => props.$justifyContent || "none"};
   width: ${(props) => props.$width || "auto"};
