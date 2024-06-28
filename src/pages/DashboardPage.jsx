@@ -1,10 +1,10 @@
-import Logout from "../components/Logout";
+// Components
+import { Outlet } from "react-router-dom";
 
 function DashboardPage() {
   return (
     <div>
-      <h1>DashboardPage</h1>
-      <Logout />
+      <Outlet />
     </div>
   );
 }

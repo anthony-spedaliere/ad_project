@@ -6,11 +6,7 @@ Date Started: 6/15/2024
 
 //----------------Imports-----------------
 // libraries
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createBrowserRouter,
@@ -33,6 +29,9 @@ import DraftPage from "./pages/DraftPage";
 import LoginForm from "./components/LoginForm";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import AppLayout from "./ui/AppLayout";
+import MyDrafts from "./pages/MyDrafts";
+import DraftHistory from "./pages/DraftHistory";
+import SettingsPage from "./pages/SettingsPage";
 
 // page not found
 import PageNotFound from "./ui/PageNotFound";
@@ -61,7 +60,17 @@ const router = createBrowserRouter([
         <AppLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: "dashboard", element: <DashboardPage /> }],
+    children: [
+      {
+        path: "dashboard",
+        element: <DashboardPage />,
+        children: [
+          { path: "my-drafts", element: <MyDrafts /> },
+          { path: "draft-history", element: <DraftHistory /> },
+          { path: "settings", element: <SettingsPage /> },
+        ],
+      },
+    ],
   },
   {
     path: "*",

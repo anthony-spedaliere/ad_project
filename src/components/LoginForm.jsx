@@ -84,6 +84,7 @@ function LoginForm() {
               to="/signup"
               customColor="var(--background-color)"
               fontWeight="700"
+              marginLeft={"auto"}
             >
               Forgot Password?
             </StyledLink>
