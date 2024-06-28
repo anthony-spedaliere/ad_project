@@ -61,7 +61,7 @@ function LoginForm() {
               id="email"
               placeholder="email"
               value={email}
-              autoComplete="username"
+              autoComplete="email"
               onChange={(e) => setEmail(e.target.value)}
               disabled={isPending}
             />

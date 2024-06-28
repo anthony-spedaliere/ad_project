@@ -1,13 +1,12 @@
 import toast from "react-hot-toast";
 import supabase from "./supabase";
 
-export async function signup({ username, email, password }) {
+export async function signup({ email, password }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        username,
         avatar: "",
       },
     },
@@ -60,5 +59,3 @@ export async function logout() {
     throw new Error(error.message);
   }
 }
-
-export async function checkIfUsernameExists() {}

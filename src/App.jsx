@@ -17,6 +17,7 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 // styles
 import GlobalStyles from "./styles/GlobalStyles";
@@ -38,7 +39,6 @@ import PageNotFound from "./ui/PageNotFound";
 
 // error page
 import ErrorFallback from "./ui/ErrorFallback";
-import toast, { Toaster } from "react-hot-toast";
 
 //----------------End Imports-----------------
 
