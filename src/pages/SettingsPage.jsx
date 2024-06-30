@@ -1,8 +1,10 @@
+import { DashboardLinkContainer } from "../styles/DashboardStyles";
+
 function SettingsPage() {
   return (
-    <div>
+    <DashboardLinkContainer>
       <h1>Settings</h1>
-    </div>
+    </DashboardLinkContainer>
   );
 }
 

@@ -46,3 +46,9 @@ export const StyledLogoutButton = styled.button`
     outline: none;
   }
 `;
+
+export const DashboardLinkContainer = styled.div`
+  background-color: var(--background-color);
+  height: 100vh;
+  min-width: 120rem;
+`;
