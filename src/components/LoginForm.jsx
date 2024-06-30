@@ -59,9 +59,9 @@ function LoginForm() {
             <StyledInput
               type="email"
               id="email"
-              placeholder="username"
+              placeholder="email"
               value={email}
-              autoComplete="username"
+              autoComplete="email"
               onChange={(e) => setEmail(e.target.value)}
               disabled={isPending}
             />
@@ -84,6 +84,7 @@ function LoginForm() {
               to="/signup"
               customColor="var(--background-color)"
               fontWeight="700"
+              marginLeft={"auto"}
             >
               Forgot Password?
             </StyledLink>

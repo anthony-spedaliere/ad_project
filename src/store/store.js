@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./slices/counterSlice";
 
-export default configureStore({
+import selectedLinkReducer from "./slices/dashboardLinksSlice";
+
+const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    selectedLink: selectedLinkReducer,
   },
 });
+
+export default store;

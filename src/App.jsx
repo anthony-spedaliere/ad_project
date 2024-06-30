@@ -13,6 +13,7 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 // styles
 import GlobalStyles from "./styles/GlobalStyles";
@@ -28,6 +29,9 @@ import DraftPage from "./pages/DraftPage";
 import LoginForm from "./components/LoginForm";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import AppLayout from "./ui/AppLayout";
+import MyDrafts from "./pages/MyDrafts";
+import DraftHistory from "./pages/DraftHistory";
+import SettingsPage from "./pages/SettingsPage";
 
 // page not found
 import PageNotFound from "./ui/PageNotFound";
@@ -36,23 +40,6 @@ import PageNotFound from "./ui/PageNotFound";
 import ErrorFallback from "./ui/ErrorFallback";
 
 //----------------End Imports-----------------
-
-// router
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <Homepage />,
-//     errorElement: <ErrorFallback />,
-//   },
-//   {
-//     path: "signup",
-//     element: <SignupPage />,
-//   },
-//   {
-//     path: "dashboard",
-//     element: <DashboardPage />,
-//   },
-// ]);
 
 const router = createBrowserRouter([
   {
@@ -73,7 +60,17 @@ const router = createBrowserRouter([
         <AppLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: "dashboard", element: <DashboardPage /> }],
+    children: [
+      {
+        path: "dashboard",
+        element: <DashboardPage />,
+        children: [
+          { path: "my-drafts", element: <MyDrafts /> },
+          { path: "draft-history", element: <DraftHistory /> },
+          { path: "settings", element: <SettingsPage /> },
+        ],
+      },
+    ],
   },
   {
     path: "*",
@@ -94,6 +91,27 @@ function App() {
       <RouterProvider router={router} />
       <GlobalStyles />
       <ReactQueryDevtools />
+
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerStyle={{ margin: "8px" }}
+        toastOptions={{
+          success: {
+            duration: 5000,
+          },
+          error: {
+            duration: 5000,
+          },
+          style: {
+            fontSize: "16px",
+            maxWidth: "500px",
+            padding: "16px 24px",
+            backgroundColor: "var(--brand-color)",
+            color: "var(--background-color)",
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

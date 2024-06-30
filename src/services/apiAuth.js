@@ -1,12 +1,12 @@
+import toast from "react-hot-toast";
 import supabase from "./supabase";
 
-export async function signup({ username, email, password }) {
+export async function signup({ email, password }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        username,
         avatar: "",
       },
     },
@@ -27,6 +27,8 @@ export async function login({ email, password }) {
   });
 
   if (error) {
+    toast.error(`There was an error logging up: ${error.message}`);
+
     console.error("Login error: ", error.message);
     throw new Error(error.message);
   }
