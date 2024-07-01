@@ -44,7 +44,7 @@ import ErrorFallback from "./ui/ErrorFallback";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate replace to="/dashboard" />,
+    element: <Navigate replace to="/dashboard/my-drafts" />,
   },
   {
     path: "/login",

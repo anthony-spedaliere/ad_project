@@ -1,9 +1,15 @@
-import toast from "react-hot-toast";
 import supabase from "./supabase";
 
-export async function registerUsername({ username }) {
+export async function isUsernameUnique(username) {
   const { data, error } = await supabase
     .from("usernames")
-    .insert({ username: username })
-    .select();
+    .select("username")
+    .eq("username", username);
+
+  if (error) {
+    console.error("Error checking username: ", error.message);
+    throw new Error(error.message);
+  }
+
+  return data.length === 0;
 }

@@ -12,7 +12,7 @@ export function useSignup() {
       toast.success(
         "Account successfully created. Please verify the new account form the users email address"
       );
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard/my-drafts", { replace: true });
     },
     onError: (error) => {
       toast.error(`There was an error signing up: ${error.message}`);

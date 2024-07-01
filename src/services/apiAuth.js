@@ -1,20 +1,7 @@
 import toast from "react-hot-toast";
 import supabase from "./supabase";
 
-// helper function for signup to check if username is already taken
-async function isUsernameUnique(username) {
-  const { data, error } = await supabase
-    .from("usernames")
-    .select("username")
-    .eq("username", username);
-
-  if (error) {
-    console.error("Error checking username: ", error.message);
-    throw new Error(error.message);
-  }
-
-  return data.length === 0;
-}
+import { isUsernameUnique } from "./apiUsernames";
 
 export async function signup({ email, password, username }) {
   if (!(await isUsernameUnique(username))) {
