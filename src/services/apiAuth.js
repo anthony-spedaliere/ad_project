@@ -1,12 +1,32 @@
 import toast from "react-hot-toast";
 import supabase from "./supabase";
 
-export async function signup({ email, password }) {
+// helper function for signup to check if username is already taken
+async function isUsernameUnique(username) {
+  const { data, error } = await supabase
+    .from("usernames")
+    .select("username")
+    .eq("username", username);
+
+  if (error) {
+    console.error("Error checking username: ", error.message);
+    throw new Error(error.message);
+  }
+
+  return data.length === 0;
+}
+
+export async function signup({ email, password, username }) {
+  if (!(await isUsernameUnique(username))) {
+    throw new Error("Username is already taken.");
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
+        username,
         avatar: "",
       },
     },
@@ -15,6 +35,16 @@ export async function signup({ email, password }) {
   if (error) {
     console.error("Login error: ", error.message);
     throw new Error(error.message);
+  }
+
+  // Create usernames entry with username
+  const { error: profileError } = await supabase
+    .from("usernames")
+    .insert({ user: data.user.id, username });
+
+  if (profileError) {
+    console.log("Profile creation error: ", profileError.message);
+    throw new Error(profileError.message);
   }
 
   return data;

@@ -25,9 +25,9 @@ function SignupForm() {
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
-  function onSubmit({ email, password }) {
+  function onSubmit({ email, password, username }) {
     signup(
-      { email, password },
+      { email, password, username },
       {
         onSuccess: () => {
           reset();
@@ -50,6 +50,28 @@ function SignupForm() {
                 Sign Up
               </StyledHeader>
             </StyledContainer>
+
+            <FormRow
+              label="Username (Username can be between 1-20 characters in length.)"
+              error={errors?.username?.message}
+            >
+              <StyledInput
+                type="text"
+                id="username"
+                disabled={isPending}
+                {...register("username", {
+                  required: "This field is required.",
+                  minLength: {
+                    value: 1,
+                    message: "Username must be between 1 and 20 characters.",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Username must be between 1 and 20 characters.",
+                  },
+                })}
+              />
+            </FormRow>
 
             <FormRow label="Email" error={errors?.email?.message}>
               <StyledInput
