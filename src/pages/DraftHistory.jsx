@@ -1,11 +1,11 @@
 // style imports
-import { DashboardLinkContainer } from "../styles/DashboardStyles";
+import { DashboardContentContainer } from "../styles/DashboardStyles";
 
 function DraftHistory() {
   return (
-    <DashboardLinkContainer>
+    <DashboardContentContainer>
       <h1>Draft History</h1>
-    </DashboardLinkContainer>
+    </DashboardContentContainer>
   );
 }
 

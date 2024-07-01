@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSelectedLink } from "../store/slices/dashboardLinksSlice";
 import { DashboardCustomLink } from "../styles/DashboardStyles";
 import Logout from "../components/Logout";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const StyledSidebar = styled.aside`
   background-color: var(--background-color-dark);
@@ -18,6 +20,19 @@ const StyledSidebar = styled.aside`
 function Sidebar() {
   const dispatch = useDispatch();
   const selectedLink = useSelector((state) => state.selectedLink.selectedLink);
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathToLinkMap = {
+      "/dashboard/my-drafts": "link1",
+      "/dashboard/draft-history": "link2",
+      "/dashboard/settings": "link3",
+    };
+    const selectedLinkFromPath = pathToLinkMap[location.pathname];
+    if (selectedLinkFromPath) {
+      dispatch(setSelectedLink(selectedLinkFromPath));
+    }
+  }, [location.pathname, dispatch]);
 
   const handleLinkClick = (link) => {
     dispatch(setSelectedLink(link));
