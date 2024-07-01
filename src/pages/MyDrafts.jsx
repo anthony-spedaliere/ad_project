@@ -1,14 +1,11 @@
-// library imports
-import styled from "styled-components";
-
 // style imports
-import { DashboardLinkContainer } from "../styles/DashboardStyles";
+import { DashboardContentContainer } from "../styles/DashboardStyles";
 
 function MyDrafts() {
   return (
-    <DashboardLinkContainer>
+    <DashboardContentContainer>
       <h1>My Drafts</h1>
-    </DashboardLinkContainer>
+    </DashboardContentContainer>
   );
 }
 

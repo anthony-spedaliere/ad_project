@@ -5,9 +5,11 @@ const GlobalStyles = createGlobalStyle`
 :root {
 
     --brand-color: #C9C7F2;
+    --brand-color-dark: #B5B3DA;
     --background-color: #3C3B48;
     --background-color-dark: #35343f;
     --red-color: #BA5F5F;
+    --red-color-dark: #a75656;
 
     --color-grey-0: #fff;
     --color-grey-50: #f9fafb;
