@@ -4,7 +4,12 @@ import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUserId } from "../store/slices/userSlice";
+import {
+  setUserEmail,
+  setUserId,
+  setUserUsername,
+} from "../store/slices/userSlice";
+import { useGetUsername } from "../authentication/useGetUsername";
 
 const FullPage = styled.div`
   height: 100vh;
@@ -20,6 +25,7 @@ function ProtectedRoute({ children }) {
 
   // 1. load the authenticated user
   const { isPending, isAuthenticated, isFetching, user } = useUser();
+  const { data: usernameData } = useGetUsername(user?.id);
 
   // 2. if there is no authenticated user, redirect to the /login page
   useEffect(
@@ -29,12 +35,14 @@ function ProtectedRoute({ children }) {
     [isAuthenticated, isPending, navigate, isFetching]
   );
 
-  // add user id to the global state
+  // add user info to the global state on login
   useEffect(() => {
-    if (isAuthenticated && user?.id) {
+    if (isAuthenticated && user?.id && usernameData) {
       dispatch(setUserId(user.id));
+      dispatch(setUserEmail(user?.email));
+      dispatch(setUserUsername(usernameData[0].username));
     }
-  }, [isAuthenticated, user, dispatch]);
+  }, [isAuthenticated, user, dispatch, usernameData]);
 
   // 3. while loading, show spinner
   if (isPending)

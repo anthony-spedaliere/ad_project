@@ -23,7 +23,6 @@ import Spinner from "../ui/Spinner";
 function DraftHistory() {
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useCompletedDrafts(userId);
-  console.log(drafts);
 
   // Format date to MM/DD/YYYY
   const formatDate = (dateString) => {
@@ -105,7 +104,7 @@ function DraftHistory() {
                   <br />
                   {`${formatMinutes(
                     draft.draft_time_per_pick
-                  )} minutes per pick`}
+                  )} minute(s) per pick`}
                   <br />
                   {`${draft.number_of_teams} teams`}
                 </TableCell>
