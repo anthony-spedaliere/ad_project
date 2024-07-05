@@ -4,9 +4,8 @@ import StyledInput from "../ui/StyledInput";
 import StyledButton from "../ui/StyledButton";
 import styled from "styled-components";
 
-import { useUser } from "../authentication/useUser";
-import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
 
 const Container = styled.div`
   display: flex;
@@ -23,6 +22,8 @@ const Container = styled.div`
 function ChangeUserSettingsForm() {
   const currentUsername = useSelector((state) => state.user.username);
   const currentEmail = useSelector((state) => state.user.email);
+
+  const { register, formState, getValues, handleSubmit, reset } = useForm();
 
   return (
     <form onSubmit={() => {}}>

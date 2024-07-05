@@ -70,3 +70,25 @@ export async function logout() {
     throw new Error(error.message);
   }
 }
+
+export async function updateUserEmail(email) {
+  const { error } = await supabase.auth.updateUser({
+    email: email,
+  });
+
+  if (error) {
+    console.error("Signout error: ", error.message);
+    throw new Error(error.message);
+  }
+}
+
+export async function updateUserPassword(password) {
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  });
+
+  if (error) {
+    console.error("Signout error: ", error.message);
+    throw new Error(error.message);
+  }
+}

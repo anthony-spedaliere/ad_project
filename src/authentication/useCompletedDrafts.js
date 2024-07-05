@@ -5,6 +5,7 @@ export function useCompletedDrafts(userId) {
   const { data, error, isPending } = useQuery({
     queryKey: ["draft", userId],
     queryFn: getCompletedDraftsForUser,
+    enabled: !!userId,
   });
 
   if (error) {
