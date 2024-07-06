@@ -27,3 +27,23 @@ export async function getUsername(userId) {
 
   return data;
 }
+
+export async function updateUsername(userId, newUsername) {
+  try {
+    const { data, error } = await supabase
+      .from("usernames")
+      .update({ username: newUsername })
+      .eq("user", userId)
+      .select();
+
+    if (error) {
+      console.error("Error occurred in updating username: ", error.message);
+      throw new Error(error.message);
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Unexpected error:", err.message);
+    throw err;
+  }
+}

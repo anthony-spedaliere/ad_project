@@ -12,13 +12,11 @@ import {
 
 // slices
 import selectedLinkReducer from "./slices/dashboardLinksSlice";
-import draftsReducer from "./slices/draftSlice";
 import userReducer from "./slices/userSlice";
 import persistReducer from "redux-persist/es/persistReducer";
 
 const rootReducer = combineReducers({
   selectedLink: selectedLinkReducer,
-  drafts: draftsReducer,
   user: userReducer,
 });
 
