@@ -6,10 +6,10 @@ import styled from "styled-components";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { useUpdateEmail } from "../authentication/useUpdateEmail";
 import { useUpdateUsername } from "../authentication/useUpdateUsername";
-import { setUserEmail, setUserUsername } from "../store/slices/userSlice";
+import { setUserUsername } from "../store/slices/userSlice";
 import toast from "react-hot-toast";
+import { isUsernameUnique } from "../services/apiUsernames";
 
 const Container = styled.div`
   display: flex;
@@ -23,44 +23,48 @@ const Container = styled.div`
   border: none;
 `;
 
-function ChangeUserSettingsForm() {
+function ChangeUserUsernameForm() {
   const dispatch = useDispatch();
   const currentUsername = useSelector((state) => state.user.username);
   const userId = useSelector((state) => state.user.id);
-  const currentEmail = useSelector((state) => state.user.email);
 
-  const { register, formState, getValues, handleSubmit, reset } = useForm();
+  const { register, formState, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
-  const { updateUserEmail } = useUpdateEmail();
   const { updateUsername } = useUpdateUsername();
 
   const onSubmit = async (data) => {
-    const { username, email } = data;
+    const { username } = data;
 
     try {
-      // Update the email
-      if (email !== currentEmail) {
-        await updateUserEmail(email);
-        dispatch(setUserEmail(email)); // Update Redux state
+      if (!(await isUsernameUnique(username))) {
+        throw new Error("Username is already taken.");
       }
 
-      // Update the username
+      if (username === currentUsername) {
+        toast.error("Input a new username to make a change.");
+        return;
+      }
+
       if (username !== currentUsername) {
-        await updateUsername({ userId, newUsername: username });
-        dispatch(setUserUsername(username)); // Update Redux state
+        // Update the username
+        if (username !== currentUsername) {
+          await updateUsername({ userId, newUsername: username });
+          dispatch(setUserUsername(username)); // Update Redux state
+        }
+
+        toast.success("Your username was updated successfully.");
       }
 
-      toast.success("User settings updated successfully.");
       reset();
     } catch (error) {
-      toast.error(`There was an error updating the settings: ${error.message}`);
+      toast.error(`${error.message}`);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <StyledHeader $fontSize="4rem">User Settings</StyledHeader>
+      <StyledHeader $fontSize="4rem">Change Username</StyledHeader>
       <FormRow
         label="Username (Username can be between 1-20 characters in length.)"
         error={errors?.username?.message}
@@ -83,15 +87,6 @@ function ChangeUserSettingsForm() {
           })}
         />
       </FormRow>
-      <FormRow label="Email" error={errors?.email?.message}>
-        <StyledInput
-          type="email"
-          id="email"
-          placeholder="Email"
-          defaultValue={currentEmail}
-          {...register("email")}
-        />
-      </FormRow>
       <Container>
         <StyledButton
           $flex="1"
@@ -109,13 +104,13 @@ function ChangeUserSettingsForm() {
           $bgColor="var(--brand-color)"
           $textColor="var(--background-color)"
           $hoverBgColor="var(--brand-color-dark)"
-          onClick={() => reset()}
+          type="reset"
         >
-          Cancel
+          Reset
         </StyledButton>
       </Container>
     </form>
   );
 }
 
-export default ChangeUserSettingsForm;
+export default ChangeUserUsernameForm;

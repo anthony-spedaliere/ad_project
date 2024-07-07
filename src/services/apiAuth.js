@@ -77,7 +77,7 @@ export async function updateUserEmail(email) {
   });
 
   if (error) {
-    console.error("Signout error: ", error.message);
+    console.error("Error updating email: ", error.message);
     throw new Error(error.message);
   }
 }
@@ -88,7 +88,16 @@ export async function updateUserPassword(password) {
   });
 
   if (error) {
-    console.error("Signout error: ", error.message);
+    console.error("Error updating password: ", error.message);
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteAccount(userId) {
+  const { error } = await supabase.auth.admin.deleteUser(userId);
+
+  if (error) {
+    console.error("There was an error in deleting account: ", error.message);
     throw new Error(error.message);
   }
 }
