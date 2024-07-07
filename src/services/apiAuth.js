@@ -11,12 +11,6 @@ export async function signup({ email, password, username }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: {
-        username,
-        avatar: "",
-      },
-    },
   });
 
   if (error) {
@@ -73,6 +67,37 @@ export async function logout() {
 
   if (error) {
     console.error("Signout error: ", error.message);
+    throw new Error(error.message);
+  }
+}
+
+export async function updateUserEmail(email) {
+  const { error } = await supabase.auth.updateUser({
+    email: email,
+  });
+
+  if (error) {
+    console.error("Error updating email: ", error.message);
+    throw new Error(error.message);
+  }
+}
+
+export async function updateUserPassword(password) {
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  });
+
+  if (error) {
+    console.error("Error updating password: ", error.message);
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteAccount(userId) {
+  const { error } = await supabase.auth.admin.deleteUser(userId);
+
+  if (error) {
+    console.error("There was an error in deleting account: ", error.message);
     throw new Error(error.message);
   }
 }
