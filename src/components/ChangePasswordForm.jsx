@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useUpdatePassword } from "../authentication/useUpdatePassword";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import CustomModal from "../ui/CustomModal";
 
 const Container = styled.div`
   display: flex;
@@ -28,14 +30,28 @@ function ChangePasswordForm() {
   } = useForm();
   const { updateUserPassword, isPending } = useUpdatePassword();
 
+  // Modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   const onSubmit = async (data) => {
     if (data.newPassword !== data.confirmNewPassword) {
       toast.error("Passwords do not match.");
       return;
     }
+
     try {
       await updateUserPassword(data.newPassword);
       toast.success("Password updated successfully.");
+
+      handleCancel();
       reset();
     } catch (error) {
       toast.error(`Error updating password: ${error.message}`);
@@ -43,7 +59,12 @@ function ChangePasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        showModal();
+      }}
+    >
       <StyledHeader $fontSize="4rem">Change Password</StyledHeader>
       <FormRow
         label="New Password (Minimum of 8 characters.)"
@@ -91,6 +112,24 @@ function ChangePasswordForm() {
         >
           Submit
         </StyledButton>
+        <CustomModal
+          title="Change Password"
+          open={isModalVisible}
+          onOk={handleSubmit(onSubmit)}
+          onCancel={handleCancel}
+          okText="Confirm"
+          cancelText="Cancel"
+          bgColor="var(--background-color)"
+          textColor="var(--brand-color)"
+          okBgColor="var(--blue-color)"
+          okTextColor="var(--color-grey-200)"
+          cancelTextColor="var(--background-color)"
+          headerBgColor="var(--background-color)"
+          headerTextColor="var(--brand-color)"
+          defaultBgColor="var(--brand-color)"
+        >
+          Please confirm you want to make this change.
+        </CustomModal>
       </Container>
     </form>
   );
