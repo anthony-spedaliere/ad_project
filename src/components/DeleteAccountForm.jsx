@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import StyledButton from "../ui/StyledButton";
 import styled from "styled-components";
 import CustomModal from "../ui/CustomModal";

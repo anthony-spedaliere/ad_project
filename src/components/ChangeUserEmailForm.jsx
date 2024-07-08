@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { useUpdateEmail } from "../authentication/useUpdateEmail";
 import { setUserEmail } from "../store/slices/userSlice";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import CustomModal from "../ui/CustomModal";
 
 const Container = styled.div`
   display: flex;
@@ -24,7 +26,6 @@ const Container = styled.div`
 
 function ChangeUserEmailForm() {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.id);
   const currentEmail = useSelector((state) => state.user.email);
 
   const { register, formState, handleSubmit, reset } = useForm();
@@ -32,6 +33,18 @@ function ChangeUserEmailForm() {
 
   const { updateUserEmail } = useUpdateEmail();
 
+  // Modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  // change email
   const onSubmit = async (data) => {
     const { email } = data;
 
@@ -48,6 +61,7 @@ function ChangeUserEmailForm() {
         toast.success("User email updated successfully.");
       }
 
+      handleCancel();
       reset();
     } catch (error) {
       toast.error(`There was an error updating your email: ${error.message}`);
@@ -55,7 +69,12 @@ function ChangeUserEmailForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        showModal();
+      }}
+    >
       <StyledHeader $fontSize="4rem">Change Email</StyledHeader>
       <p>
         Note: You must confirm email changes by clicking the link in the email
@@ -92,6 +111,24 @@ function ChangeUserEmailForm() {
         >
           Reset
         </StyledButton>
+        <CustomModal
+          title="Change Email"
+          open={isModalVisible}
+          onOk={handleSubmit(onSubmit)}
+          onCancel={handleCancel}
+          okText="Confirm"
+          cancelText="Cancel"
+          bgColor="var(--background-color)"
+          textColor="var(--brand-color)"
+          okBgColor="var(--blue-color)"
+          okTextColor="var(--color-grey-200)"
+          cancelTextColor="var(--background-color)"
+          headerBgColor="var(--background-color)"
+          headerTextColor="var(--brand-color)"
+          defaultBgColor="var(--brand-color)"
+        >
+          Please confirm you want to make this change.
+        </CustomModal>
       </Container>
     </form>
   );

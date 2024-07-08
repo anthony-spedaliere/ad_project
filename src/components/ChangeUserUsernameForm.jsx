@@ -10,6 +10,8 @@ import { useUpdateUsername } from "../authentication/useUpdateUsername";
 import { setUserUsername } from "../store/slices/userSlice";
 import toast from "react-hot-toast";
 import { isUsernameUnique } from "../services/apiUsernames";
+import { useState } from "react";
+import CustomModal from "../ui/CustomModal";
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +35,18 @@ function ChangeUserUsernameForm() {
 
   const { updateUsername } = useUpdateUsername();
 
+  // Modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  // change username
   const onSubmit = async (data) => {
     const { username } = data;
 
@@ -56,6 +70,7 @@ function ChangeUserUsernameForm() {
         toast.success("Your username was updated successfully.");
       }
 
+      handleCancel();
       reset();
     } catch (error) {
       toast.error(`${error.message}`);
@@ -63,7 +78,12 @@ function ChangeUserUsernameForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        showModal();
+      }}
+    >
       <StyledHeader $fontSize="4rem">Change Username</StyledHeader>
       <FormRow
         label="Username (Username can be between 1-20 characters in length.)"
@@ -108,6 +128,24 @@ function ChangeUserUsernameForm() {
         >
           Reset
         </StyledButton>
+        <CustomModal
+          title="Change Username"
+          open={isModalVisible}
+          onOk={handleSubmit(onSubmit)}
+          onCancel={handleCancel}
+          okText="Confirm"
+          cancelText="Cancel"
+          bgColor="var(--background-color)"
+          textColor="var(--brand-color)"
+          okBgColor="var(--blue-color)"
+          okTextColor="var(--color-grey-200)"
+          cancelTextColor="var(--background-color)"
+          headerBgColor="var(--background-color)"
+          headerTextColor="var(--brand-color)"
+          defaultBgColor="var(--brand-color)"
+        >
+          Please confirm you want to make this change.
+        </CustomModal>
       </Container>
     </form>
   );

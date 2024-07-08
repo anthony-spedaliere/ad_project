@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal } from "antd";
 import styled from "styled-components";
 
@@ -17,9 +16,6 @@ const StyledModal = styled(Modal)`
   .ant-btn-default {
     background-color: ${(props) => props.defaultBgColor || "#1890ff"};
     border-color: ${(props) => props.defaultBorderColor || "#1890ff"};
-  }
-
-  .ant-modal-footer .ant-btn {
     color: ${(props) => props.cancelTextColor || "rgba(0, 0, 0, 0.85)"};
   }
 
