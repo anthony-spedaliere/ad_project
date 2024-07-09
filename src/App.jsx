@@ -13,7 +13,7 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 // styles
 import GlobalStyles from "./styles/GlobalStyles";
@@ -21,17 +21,19 @@ import GlobalStyles from "./styles/GlobalStyles";
 // pages
 import Homepage from "./pages/Homepage";
 import SignupPage from "./pages/SignupPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import MyDrafts from "./pages/MyDrafts";
+import DraftHistory from "./pages/DraftHistory";
+import SettingsPage from "./pages/SettingsPage";
 import DashboardPage from "./pages/DashboardPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import CreateNewDraftPage from "./pages/CreateNewDraftPage";
 import JoinDraftPage from "./pages/JoinDraftPage";
 import DraftPage from "./pages/DraftPage";
 import LoginForm from "./components/LoginForm";
+
+// ui
 import ProtectedRoute from "./ui/ProtectedRoute";
 import AppLayout from "./ui/AppLayout";
-import MyDrafts from "./pages/MyDrafts";
-import DraftHistory from "./pages/DraftHistory";
-import SettingsPage from "./pages/SettingsPage";
 
 // page not found
 import PageNotFound from "./ui/PageNotFound";

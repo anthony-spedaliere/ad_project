@@ -28,8 +28,9 @@ function ChangeUserEmailForm() {
   const dispatch = useDispatch();
   const currentEmail = useSelector((state) => state.user.email);
 
-  const { register, formState, handleSubmit, reset } = useForm();
+  const { register, formState, handleSubmit, reset, watch } = useForm();
   const { errors } = formState;
+  const watchedEmail = watch("email", currentEmail);
 
   const { updateUserEmail } = useUpdateEmail();
 
@@ -37,6 +38,11 @@ function ChangeUserEmailForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
+    if (watchedEmail === currentEmail) {
+      toast.error("Input a new email to make a change.");
+      return;
+    }
+
     setIsModalVisible(true);
   };
 

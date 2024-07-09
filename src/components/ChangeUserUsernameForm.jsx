@@ -30,8 +30,9 @@ function ChangeUserUsernameForm() {
   const currentUsername = useSelector((state) => state.user.username);
   const userId = useSelector((state) => state.user.id);
 
-  const { register, formState, handleSubmit, reset } = useForm();
+  const { register, formState, handleSubmit, reset, watch } = useForm();
   const { errors } = formState;
+  const watchedUsername = watch("usename", currentUsername);
 
   const { updateUsername } = useUpdateUsername();
 
@@ -39,6 +40,11 @@ function ChangeUserUsernameForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
+    if (watchedUsername === currentUsername) {
+      toast.error("Input a new username to make a change.");
+      return;
+    }
+
     setIsModalVisible(true);
   };
 

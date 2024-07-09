@@ -50,9 +50,8 @@ function ChangePasswordForm() {
     try {
       await updateUserPassword(data.newPassword);
       toast.success("Password updated successfully.");
-
-      handleCancel();
       reset();
+      handleCancel();
     } catch (error) {
       toast.error(`Error updating password: ${error.message}`);
     }
@@ -60,10 +59,13 @@ function ChangePasswordForm() {
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
+      onSubmit={handleSubmit((data) => {
+        if (data.newPassword !== data.confirmNewPassword) {
+          toast.error("Passwords do not match.");
+          return;
+        }
         showModal();
-      }}
+      })}
     >
       <StyledHeader $fontSize="4rem">Change Password</StyledHeader>
       <FormRow
