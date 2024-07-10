@@ -7,15 +7,16 @@ const ProgressBarContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
+  width: 100rem;
 `;
 
 const StepIndicator = styled.div`
-  font-size: 1.2rem;
+  font-size: 2rem;
   margin-bottom: 0.5rem;
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 0.5rem;
 `;
 

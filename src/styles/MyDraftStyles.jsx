@@ -9,7 +9,7 @@ export const MyDraftContainer = styled.div`
 `;
 
 export const NewDraftContainer = styled.div`
-  margin: 2rem;
+  margin: 0 2rem;
 `;
 
 export const MyDraftCustomLink = styled(Link)`
@@ -31,5 +31,34 @@ export const MyDraftCustomLink = styled(Link)`
 
 export const CustomSpan = styled.span`
   display: flex;
+  align-items: center;
+`;
+
+export const LeaveButton = styled.button`
+  color: var(--red-color);
+  text-decoration: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    color: var(--color-grey-400);
+  }
+`;
+
+export const ProgressBarContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const NewDraftFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;

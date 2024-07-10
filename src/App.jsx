@@ -78,19 +78,19 @@ const router = createBrowserRouter([
           { path: "settings", element: <SettingsPage /> },
         ],
       },
+      {
+        path: "new-draft-one",
+        element: <NewDraftPageOne />,
+      },
+      {
+        path: "new-draft-two",
+        element: <NewDraftPageTwo />,
+      },
+      {
+        path: "new-draft-three",
+        element: <NewDraftPageThree />,
+      },
     ],
-  },
-  {
-    path: "new-draft-one",
-    element: <NewDraftPageOne />,
-  },
-  {
-    path: "new-draft-two",
-    element: <NewDraftPageTwo />,
-  },
-  {
-    path: "new-draft-three",
-    element: <NewDraftPageThree />,
   },
   {
     path: "*",

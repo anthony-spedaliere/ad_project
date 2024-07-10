@@ -1,22 +1,73 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentPage } from "../store/slices/newDraftSlice";
 import ProgressBar from "../components/ProgressBar";
-import { MyDraftCustomLink, NewDraftContainer } from "../styles/MyDraftStyles";
+import {
+  NewDraftContainer,
+  LeaveButton,
+  ProgressBarContainer,
+  NewDraftFormContainer,
+} from "../styles/MyDraftStyles";
+import CustomModal from "../ui/CustomModal";
+import { useNavigate } from "react-router-dom";
+import FormRow from "../ui/FormRow";
+import StyledInput from "../ui/StyledInput";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
+  //modal
+  const navigate = useNavigate();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleConfirm = () => {
+    navigate("/dashboard/my-drafts");
+  };
+
+  // track new draft creation page number
   useEffect(() => {
     dispatch(setCurrentPage(1));
   }, [dispatch]);
 
   return (
     <NewDraftContainer>
-      <ProgressBar />
-      <MyDraftCustomLink $customColor="var(--red-color)" $textDecoration="none">
-        Leave Draft Creation
-      </MyDraftCustomLink>
+      <LeaveButton onClick={showModal}>Leave Draft Creation</LeaveButton>
+      <ProgressBarContainer>
+        <ProgressBar />
+      </ProgressBarContainer>
+      <NewDraftFormContainer>
+        <form>
+          <FormRow label="Draft Name">
+            <StyledInput type="text" id="draft-name" width="100rem" />
+          </FormRow>
+        </form>
+      </NewDraftFormContainer>
+      <CustomModal
+        title="Leave Draft Creation"
+        open={isModalVisible}
+        onOk={handleConfirm}
+        onCancel={handleCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        bgColor="var(--background-color)"
+        textColor="var(--brand-color)"
+        okBgColor="var(--red-color)"
+        okTextColor="var(--background-color)"
+        cancelTextColor="var(--background-color)"
+        headerBgColor="var(--background-color)"
+        headerTextColor="var(--red-color)"
+        defaultBgColor="var(--brand-color)"
+      >
+        Are you sure you want to exit Draft Creation? You may lose your
+        progress.
+      </CustomModal>
     </NewDraftContainer>
   );
 }

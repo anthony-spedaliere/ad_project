@@ -17,6 +17,7 @@ const StyledFormRow = styled.div`
 `;
 
 const Label = styled.label`
+  font-size: 2rem;
   font-weight: 500;
 `;
 
