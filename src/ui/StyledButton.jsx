@@ -17,6 +17,7 @@ const StyledButton = styled.button`
   font-size: 2.6rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  padding: ${(props) => props.$padding || "none"};
 
   &:hover {
     background-color: ${(props) => props.$hoverBgColor || "#2E2D34"};

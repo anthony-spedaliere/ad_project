@@ -40,6 +40,9 @@ import PageNotFound from "./ui/PageNotFound";
 
 // error page
 import ErrorFallback from "./ui/ErrorFallback";
+import NewDraftPageOne from "./pages/NewDraftPageOne";
+import NewDraftPageTwo from "./pages/NewDraftPageTwo";
+import NewDraftPageThree from "./pages/NewDraftPageThree";
 
 //----------------End Imports-----------------
 
@@ -67,12 +70,27 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <DashboardPage />,
         children: [
-          { path: "my-drafts", element: <MyDrafts /> },
+          {
+            path: "my-drafts",
+            element: <MyDrafts />,
+          },
           { path: "draft-history", element: <DraftHistory /> },
           { path: "settings", element: <SettingsPage /> },
         ],
       },
     ],
+  },
+  {
+    path: "new-draft-one",
+    element: <NewDraftPageOne />,
+  },
+  {
+    path: "new-draft-two",
+    element: <NewDraftPageTwo />,
+  },
+  {
+    path: "new-draft-three",
+    element: <NewDraftPageThree />,
   },
   {
     path: "*",

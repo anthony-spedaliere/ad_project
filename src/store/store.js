@@ -14,10 +14,12 @@ import {
 import selectedLinkReducer from "./slices/dashboardLinksSlice";
 import userReducer from "./slices/userSlice";
 import persistReducer from "redux-persist/es/persistReducer";
+import newDraftReducer from "./slices/newDraftSlice";
 
 const rootReducer = combineReducers({
   selectedLink: selectedLinkReducer,
   user: userReducer,
+  draft: newDraftReducer,
 });
 
 const persistConfig = {

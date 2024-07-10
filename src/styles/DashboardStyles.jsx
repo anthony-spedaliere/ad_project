@@ -50,20 +50,20 @@ export const StyledLogoutButton = styled.button`
 export const DashboardLinkContainer = styled.div`
   background-color: var(--background-color);
   height: 100vh;
-  min-width: 100rem;
+  max-width: 90rem;
+  margin: 0 auto;
 `;
 
 export const DashboardContentContainer = styled.div`
   background-color: var(--background-color);
-  height: 100vh;
-  min-width: 100rem;
+  min-width: 120rem;
 `;
 
 export const DashboardSettingsContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10rem;
+  gap: 6rem;
   background-color: var(--background-color);
-  height: 100vh;
-  min-width: 100rem;
+  max-width: 90rem;
+  margin: 0 auto;
 `;
