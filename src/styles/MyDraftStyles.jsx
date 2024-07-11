@@ -29,11 +29,6 @@ export const MyDraftCustomLink = styled(Link)`
   }
 `;
 
-export const CustomSpan = styled.span`
-  display: flex;
-  align-items: center;
-`;
-
 export const LeaveButton = styled.button`
   color: var(--red-color);
   text-decoration: none;
@@ -61,4 +56,22 @@ export const NewDraftFormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  row-gap: 2rem;
+`;
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const CustomSpan = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: ${(props) => props.$justifyContent || "none"};
 `;
