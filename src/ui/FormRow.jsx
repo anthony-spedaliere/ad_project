@@ -5,7 +5,8 @@ const StyledFormRow = styled.div`
   align-items: center;
   grid-template-columns: 1fr;
 
-  padding: 1.2rem 0;
+  padding: ${(props) => props.$customPadding || "1.2rem 0"};
+  /* font-weight: ${(props) => props.$fontWeight || "none"}; */
 
   &:first-child {
     padding-top: 0;
@@ -17,6 +18,7 @@ const StyledFormRow = styled.div`
 `;
 
 const Label = styled.label`
+  font-size: 2rem;
   font-weight: 500;
 `;
 
@@ -25,9 +27,9 @@ const Error = styled.span`
   color: var(--red-color);
 `;
 
-function FormRow({ label, error, children }) {
+function FormRow({ customPadding, label, error, children }) {
   return (
-    <StyledFormRow>
+    <StyledFormRow $customPadding={customPadding}>
       {label && <Label htmlFor={children.props.id}>{label}</Label>}
       {children}
       {error && <Error>{error}</Error>}

@@ -4,9 +4,9 @@ import styled from "styled-components";
 const StyledButton = styled.button`
   width: ${(props) => props.width || "auto"};
   height: ${(props) => props.height || "5rem"};
-  margin-top: ${(props) => props.$marginTop || "none"};
-  margin-left: ${(props) => props.$marginLeft || "none"};
-  margin-right: ${(props) => props.$marginRight || "none"};
+  margin-top: ${(props) => props.$marginTop || "0"};
+  margin-left: ${(props) => props.$marginLeft || "0"};
+  margin-right: ${(props) => props.$marginRight || "0"};
   flex: ${(props) => props.$flex || "none"};
   background-color: ${(props) => props.$bgColor || "#35343F"};
   box-shadow: ${(props) =>
@@ -17,6 +17,7 @@ const StyledButton = styled.button`
   font-size: 2.6rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  padding: ${(props) => props.$padding || "0"};
 
   &:hover {
     background-color: ${(props) => props.$hoverBgColor || "#2E2D34"};

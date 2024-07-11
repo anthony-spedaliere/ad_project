@@ -83,9 +83,9 @@ function ChangeUserEmailForm() {
     >
       <StyledHeader $fontSize="4rem">Change Email</StyledHeader>
       <p>
-        Note: You must confirm email changes by clicking the link in the email
-        sent to BOTH your previous email AND the updated email. Check your
-        inboxes, spam inboxes, etc.
+        Note: Once submitted, you need to confirm email changes by clicking the
+        link that is sent to BOTH your previous email AND your updated email.
+        Make sure to your spam inbox.
       </p>
       <FormRow label="Email" error={errors?.email?.message}>
         <StyledInput

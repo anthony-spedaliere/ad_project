@@ -1,11 +1,22 @@
 // style imports
-import { DashboardContentContainer } from "../styles/DashboardStyles";
+import { FaPlus } from "react-icons/fa";
+import {
+  CustomSpan,
+  MyDraftContainer,
+  MyDraftCustomLink,
+} from "../styles/MyDraftStyles";
 
 function MyDrafts() {
   return (
-    <DashboardContentContainer>
+    <MyDraftContainer>
       <h1>My Drafts</h1>
-    </DashboardContentContainer>
+      <MyDraftCustomLink to="/new-draft-one" $customColor="var(--blue-color)">
+        <CustomSpan>
+          <FaPlus />
+        </CustomSpan>
+        Create New Draft
+      </MyDraftCustomLink>
+    </MyDraftContainer>
   );
 }
 

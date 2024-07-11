@@ -11,7 +11,7 @@ const StyledCheckboxLabel = styled.label`
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  color: var(--background-color);
+  color: ${(props) => props.$textColor || "var(--background-color)"};
   font-weight: 700;
   margin-left: 0.5rem;
   margin-bottom: 5rem;
@@ -58,9 +58,9 @@ const StyledCheckboxSpan = styled.span`
   }
 `;
 
-function StyledCheckbox({ children }) {
+function StyledCheckbox({ textColor, children }) {
   return (
-    <StyledCheckboxLabel>
+    <StyledCheckboxLabel $textColor={textColor}>
       {children}
       <StyledCheckboxInput></StyledCheckboxInput>
       <StyledCheckboxSpan></StyledCheckboxSpan>
