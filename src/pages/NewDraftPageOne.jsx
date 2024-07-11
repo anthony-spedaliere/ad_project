@@ -7,6 +7,9 @@ import {
   LeaveButton,
   ProgressBarContainer,
   NewDraftFormContainer,
+  Container,
+  ButtonContainer,
+  CustomSpan,
 } from "../styles/MyDraftStyles";
 import CustomModal from "../ui/CustomModal";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +23,10 @@ import {
 import StyledSelect from "../components/StyledSelect";
 import StyledHeader from "../ui/StyledHeader";
 import DatePickerComponent from "../components/DatePickerComponent";
+import StyledCheckbox from "../ui/StyledCheckbox";
+import styled from "styled-components";
+import StyledButton from "../ui/StyledButton";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
@@ -37,6 +44,10 @@ function NewDraftPageOne() {
 
   const handleConfirm = () => {
     navigate("/dashboard/my-drafts");
+  };
+
+  const handleClick = () => {
+    navigate("/new-draft-two");
   };
 
   // Generate time options for the dropdown
@@ -75,65 +86,93 @@ function NewDraftPageOne() {
       </ProgressBarContainer>
       <NewDraftFormContainer>
         <form>
-          <FormRow label="Draft Name">
-            <StyledInput
-              type="text"
-              id="draft-name"
-              width="100rem"
-              $bgColor="var(--brand-color)"
-              height="4rem"
-            />
-          </FormRow>
-          <FormRow label="Draft Type">
-            <RadioGroup>
-              <RadioButton
-                type="radio"
-                id="standard"
-                name="draftType"
-                value="Standard"
+          <Container>
+            <FormRow customPadding="0" label="Draft Name">
+              <StyledInput
+                type="text"
+                id="draft-name"
+                width="100rem"
+                $bgColor="var(--brand-color)"
+                height="4rem"
               />
-              <RadioLabel htmlFor="standard">
-                Standard - online snake draft
-              </RadioLabel>
-              <RadioButton
-                type="radio"
-                id="autodraft"
-                name="draftType"
-                value="Autodraft"
-              />
-              <RadioLabel htmlFor="autodraft">
-                Autodraft - online draft with auto-assigned POI&apos;s
-              </RadioLabel>
-              <RadioButton
-                type="radio"
-                id="offline"
-                name="draftType"
-                value="Offline"
-              />
-              <RadioLabel htmlFor="offline">
-                Offline Draft - draft offline and enter the results
-              </RadioLabel>
-            </RadioGroup>
-          </FormRow>
-          <h4>Learn More</h4>
-          <FormRow label="Draft Time Per Pick">
-            <StyledSelect id="draft-time" name="draftTime">
-              {timeOptions}
-            </StyledSelect>
-          </FormRow>
-          <StyledHeader $fontSize="2rem" $fontWeight="100">
-            Draft Schedule
-          </StyledHeader>
-          <p>
-            Select a date and time for the draft or check the &quot;Draft
-            Now&quot; box to begin draft immediately after draft creation.
-          </p>
-          <FormRow label="Draft Date and Time">
-            <DatePickerComponent
-              selectedDate={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-            />
-          </FormRow>
+            </FormRow>
+
+            <div>
+              <FormRow label="Draft Type">
+                <RadioGroup>
+                  <RadioButton
+                    type="radio"
+                    id="standard"
+                    name="draftType"
+                    value="Standard"
+                  />
+                  <RadioLabel htmlFor="standard">
+                    Standard - online snake draft
+                  </RadioLabel>
+                  <RadioButton
+                    type="radio"
+                    id="autodraft"
+                    name="draftType"
+                    value="Autodraft"
+                  />
+                  <RadioLabel htmlFor="autodraft">
+                    Autodraft - online draft with auto-assigned POI&apos;s
+                  </RadioLabel>
+                  <RadioButton
+                    type="radio"
+                    id="offline"
+                    name="draftType"
+                    value="Offline"
+                  />
+                  <RadioLabel htmlFor="offline">
+                    Offline Draft - draft offline and enter the results
+                  </RadioLabel>
+                </RadioGroup>
+              </FormRow>
+              <h4>Learn More</h4>
+            </div>
+
+            <FormRow customPadding="0" label="Draft Time Per Pick">
+              <StyledSelect id="draft-time" name="draftTime">
+                {timeOptions}
+              </StyledSelect>
+            </FormRow>
+
+            <div>
+              <FormRow label="Draft Date and Time">
+                <DatePickerComponent
+                  selectedDate={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                />
+              </FormRow>
+              {/* <StyledCheckbox textColor="var(--brand-color)">
+            Draft Now
+            </StyledCheckbox> */}
+            </div>
+
+            <div>
+              <StyledHeader $fontSize="2rem" $fontWeight="100">
+                Email Settings
+              </StyledHeader>
+              <StyledCheckbox textColor="var(--brand-color)">
+                Send email with draft results
+              </StyledCheckbox>
+            </div>
+            <ButtonContainer>
+              <StyledButton
+                $bgColor="var(--brand-color)"
+                $textColor="var(--background-color)"
+                $hoverBgColor="var(--brand-color-dark)"
+                height="4rem"
+                width="20rem"
+                onClick={handleClick}
+              >
+                <CustomSpan $justifyContent="center">
+                  Next <MdKeyboardArrowRight />
+                </CustomSpan>
+              </StyledButton>
+            </ButtonContainer>
+          </Container>
         </form>
       </NewDraftFormContainer>
       <CustomModal
