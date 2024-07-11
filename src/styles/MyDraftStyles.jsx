@@ -68,6 +68,7 @@ export const Container = styled.div`
 export const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  width: 100rem;
 `;
 
 export const CustomSpan = styled.span`

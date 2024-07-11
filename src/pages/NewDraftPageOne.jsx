@@ -158,22 +158,22 @@ function NewDraftPageOne() {
                 Send email with draft results
               </StyledCheckbox>
             </div>
-            <ButtonContainer>
-              <StyledButton
-                $bgColor="var(--brand-color)"
-                $textColor="var(--background-color)"
-                $hoverBgColor="var(--brand-color-dark)"
-                height="4rem"
-                width="20rem"
-                onClick={handleClick}
-              >
-                <CustomSpan $justifyContent="center">
-                  Next <MdKeyboardArrowRight />
-                </CustomSpan>
-              </StyledButton>
-            </ButtonContainer>
           </Container>
         </form>
+        <ButtonContainer>
+          <StyledButton
+            $bgColor="var(--brand-color)"
+            $textColor="var(--background-color)"
+            $hoverBgColor="var(--brand-color-dark)"
+            height="4rem"
+            width="20rem"
+            onClick={handleClick}
+          >
+            <CustomSpan $justifyContent="center">
+              Next <MdKeyboardArrowRight />
+            </CustomSpan>
+          </StyledButton>
+        </ButtonContainer>
       </NewDraftFormContainer>
       <CustomModal
         title="Leave Draft Creation"
