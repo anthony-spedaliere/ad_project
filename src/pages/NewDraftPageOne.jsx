@@ -12,6 +12,14 @@ import CustomModal from "../ui/CustomModal";
 import { useNavigate } from "react-router-dom";
 import FormRow from "../ui/FormRow";
 import StyledInput from "../ui/StyledInput";
+import {
+  RadioButton,
+  RadioGroup,
+  RadioLabel,
+} from "../components/RadioButtons";
+import StyledSelect from "../components/StyledSelect";
+import StyledHeader from "../ui/StyledHeader";
+import DatePickerComponent from "../components/DatePickerComponent";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
@@ -31,10 +39,33 @@ function NewDraftPageOne() {
     navigate("/dashboard/my-drafts");
   };
 
+  // Generate time options for the dropdown
+  const timeOptions = [];
+  for (let i = 30; i <= 300; i += 30) {
+    const minutes = Math.floor(i / 60);
+    const seconds = i % 60;
+    const label = minutes > 0 ? `${minutes} min${minutes > 1 ? "s" : ""}` : "";
+    const optionLabel = `${label}${minutes > 0 && seconds > 0 ? " " : ""}${
+      seconds > 0 ? `${seconds} sec${seconds > 1 ? "s" : ""}` : ""
+    }`;
+    timeOptions.push(
+      <option key={i} value={i}>
+        {optionLabel}
+      </option>
+    );
+  }
+
   // track new draft creation page number
   useEffect(() => {
     dispatch(setCurrentPage(1));
   }, [dispatch]);
+
+  // Set the initial state for selected date to 00:00
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Set the time to 00:00
+    return now;
+  });
 
   return (
     <NewDraftContainer>
@@ -45,7 +76,63 @@ function NewDraftPageOne() {
       <NewDraftFormContainer>
         <form>
           <FormRow label="Draft Name">
-            <StyledInput type="text" id="draft-name" width="100rem" />
+            <StyledInput
+              type="text"
+              id="draft-name"
+              width="100rem"
+              $bgColor="var(--brand-color)"
+              height="4rem"
+            />
+          </FormRow>
+          <FormRow label="Draft Type">
+            <RadioGroup>
+              <RadioButton
+                type="radio"
+                id="standard"
+                name="draftType"
+                value="Standard"
+              />
+              <RadioLabel htmlFor="standard">
+                Standard - online snake draft
+              </RadioLabel>
+              <RadioButton
+                type="radio"
+                id="autodraft"
+                name="draftType"
+                value="Autodraft"
+              />
+              <RadioLabel htmlFor="autodraft">
+                Autodraft - online draft with auto-assigned POI&apos;s
+              </RadioLabel>
+              <RadioButton
+                type="radio"
+                id="offline"
+                name="draftType"
+                value="Offline"
+              />
+              <RadioLabel htmlFor="offline">
+                Offline Draft - draft offline and enter the results
+              </RadioLabel>
+            </RadioGroup>
+          </FormRow>
+          <h4>Learn More</h4>
+          <FormRow label="Draft Time Per Pick">
+            <StyledSelect id="draft-time" name="draftTime">
+              {timeOptions}
+            </StyledSelect>
+          </FormRow>
+          <StyledHeader $fontSize="2rem" $fontWeight="100">
+            Draft Schedule
+          </StyledHeader>
+          <p>
+            Select a date and time for the draft or check the &quot;Draft
+            Now&quot; box to begin draft immediately after draft creation.
+          </p>
+          <FormRow label="Draft Date and Time">
+            <DatePickerComponent
+              selectedDate={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+            />
           </FormRow>
         </form>
       </NewDraftFormContainer>
