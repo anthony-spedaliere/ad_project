@@ -10,6 +10,7 @@ export const MyDraftContainer = styled.div`
 
 export const NewDraftContainer = styled.div`
   margin: 0 2rem;
+  min-width: 120rem;
 `;
 
 export const MyDraftCustomLink = styled(Link)`
@@ -59,10 +60,11 @@ export const NewDraftFormContainer = styled.div`
   row-gap: 2rem;
 `;
 
-export const Container = styled.div`
+export const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4rem;
+  width: 100rem;
 `;
 
 export const ButtonContainer = styled.div`
