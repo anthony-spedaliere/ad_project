@@ -11,6 +11,7 @@ const StyledInput = styled.input`
   padding: ${(props) => props.$customPadding || "1rem"};
   font-size: 1.6rem;
   color: ${(props) => props.color || "#000"};
+  flex: ${(props) => props.$flex || "none"};
 
   &:focus {
     outline: none;

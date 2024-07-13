@@ -7,7 +7,8 @@ const StyledSelect = styled.select`
   padding: 1rem;
   border: none;
   font-size: 1.6rem;
-  width: 100%;
+  width: ${(props) => props.$width || "100%"};
+  flex: ${(props) => props.$flex || "none"};
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
 

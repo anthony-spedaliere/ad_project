@@ -69,7 +69,8 @@ export const SubContainer = styled.div`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${(props) => props.$justifyContent || "flex-end"};
+  margin-top: ${(props) => props.$marginTop || "0"};
   width: 100rem;
 `;
 
@@ -77,4 +78,32 @@ export const CustomSpan = styled.span`
   display: flex;
   align-items: center;
   justify-content: ${(props) => props.$justifyContent || "none"};
+`;
+
+export const TeamRowContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: start;
+  gap: 1rem;
+`;
+
+export const TeamHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+`;
+
+export const TeamHeaderItem = styled.div`
+  flex: 1;
+  text-align: start;
+  font-weight: bold;
+  color: var(--brand-color);
+`;
+
+export const TeamContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
