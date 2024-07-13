@@ -7,7 +7,7 @@ import {
   LeaveButton,
   ProgressBarContainer,
   NewDraftFormContainer,
-  Container,
+  SubContainer,
   ButtonContainer,
   CustomSpan,
 } from "../styles/MyDraftStyles";
@@ -24,7 +24,6 @@ import StyledSelect from "../components/StyledSelect";
 import StyledHeader from "../ui/StyledHeader";
 import DatePickerComponent from "../components/DatePickerComponent";
 import StyledCheckbox from "../ui/StyledCheckbox";
-import styled from "styled-components";
 import StyledButton from "../ui/StyledButton";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
@@ -86,7 +85,7 @@ function NewDraftPageOne() {
       </ProgressBarContainer>
       <NewDraftFormContainer>
         <form>
-          <Container>
+          <SubContainer>
             <FormRow customPadding="0" label="Draft Name">
               <StyledInput
                 type="text"
@@ -154,11 +153,11 @@ function NewDraftPageOne() {
               <StyledHeader $fontSize="2rem" $fontWeight="100">
                 Email Settings
               </StyledHeader>
-              <StyledCheckbox textColor="var(--brand-color)">
+              <StyledCheckbox fontWeight="100" textColor="var(--brand-color)">
                 Send email with draft results
               </StyledCheckbox>
             </div>
-          </Container>
+          </SubContainer>
         </form>
         <ButtonContainer>
           <StyledButton

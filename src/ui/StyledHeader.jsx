@@ -5,6 +5,7 @@ const StyledHeader = styled.h1`
   font-weight: ${(props) => props.$fontWeight || "700"};
   font-size: ${(props) => props.$fontSize || "inherit"};
   margin-bottom: ${(props) => props.$mgBottom || "none"};
+  text-decoration: ${(props) => props.$textDecoration || "none"};
 `;
 
 export default StyledHeader;

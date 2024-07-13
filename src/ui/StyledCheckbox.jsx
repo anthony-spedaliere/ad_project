@@ -6,15 +6,15 @@ const StyledCheckboxLabel = styled.label`
   padding-left: 35px;
   margin-bottom: 12px;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 2rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   color: ${(props) => props.$textColor || "var(--background-color)"};
-  font-weight: 700;
+  font-weight: ${(props) => props.$fontWeight || "700"};
   margin-left: 0.5rem;
-  margin-bottom: 5rem;
+  margin-bottom: ${(props) => props.$marginBottom || "5rem"};
 `;
 
 const StyledCheckboxInput = styled.input.attrs({ type: "checkbox" })`
@@ -25,7 +25,7 @@ const StyledCheckboxInput = styled.input.attrs({ type: "checkbox" })`
   width: 0;
 
   &:checked ~ span {
-    background-color: #2196f3;
+    background-color: var(--blue-color);
 
     &:after {
       display: block;
@@ -58,11 +58,21 @@ const StyledCheckboxSpan = styled.span`
   }
 `;
 
-function StyledCheckbox({ textColor, children }) {
+function StyledCheckbox({
+  fontWeight,
+  marginBottom,
+  textColor,
+  onChange,
+  children,
+}) {
   return (
-    <StyledCheckboxLabel $textColor={textColor}>
+    <StyledCheckboxLabel
+      $fontWeight={fontWeight}
+      $marginBottom={marginBottom}
+      $textColor={textColor}
+    >
       {children}
-      <StyledCheckboxInput></StyledCheckboxInput>
+      <StyledCheckboxInput onChange={onChange}></StyledCheckboxInput>
       <StyledCheckboxSpan></StyledCheckboxSpan>
     </StyledCheckboxLabel>
   );

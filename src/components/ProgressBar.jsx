@@ -36,7 +36,7 @@ const FilledBar = styled.div`
 `;
 
 const ProgressBar = () => {
-  const currentPage = useSelector((state) => state.draft.currentPage);
+  const currentPage = useSelector((state) => state.newDraft.currentPage);
 
   const pageTitles = ["Set Up Draft", "Set Up Teams", "Set Up Maps"];
   const fillPercentage = (currentPage / 3) * 100;

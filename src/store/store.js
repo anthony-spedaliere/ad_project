@@ -19,7 +19,7 @@ import newDraftReducer from "./slices/newDraftSlice";
 const rootReducer = combineReducers({
   selectedLink: selectedLinkReducer,
   user: userReducer,
-  draft: newDraftReducer,
+  newDraft: newDraftReducer,
 });
 
 const persistConfig = {
