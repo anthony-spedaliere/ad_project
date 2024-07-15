@@ -16,12 +16,11 @@ import {
   NewDraftFormContainer,
   ProgressBarContainer,
   SubContainer,
-  TeamContainer,
   TeamHeader,
   TeamHeaderItem,
 } from "../styles/MyDraftStyles";
 import CustomModal from "../ui/CustomModal";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 import StyledButton from "../ui/StyledButton";
 import StyledHeader from "../ui/StyledHeader";
 import StyledInput from "../ui/StyledInput";
@@ -137,14 +136,14 @@ function NewDraftPageThree() {
                       }
                     />
                   </FormRow>
-                  <FormRow label="Number of Storm Point POI's">
+                  <FormRow label="Number of POI's">
                     <StyledInput
                       $bgColor="var(--brand-color)"
                       height="4rem"
                       type="number"
-                      value={map.stormPoints}
+                      value={map.numPoi}
                       onChange={(e) =>
-                        handleMapChange(index, "stormPoints", e.target.value)
+                        handleMapChange(index, "numPoi", e.target.value)
                       }
                     />
                   </FormRow>

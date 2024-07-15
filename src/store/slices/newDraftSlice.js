@@ -21,14 +21,14 @@ const newDraftSlice = createSlice({
       const numberOfMaps = action.payload;
       state.maps = Array.from({ length: numberOfMaps }, () => ({
         mapName: "",
-        stormPoints: 0,
+        numPoi: 0,
         pois: [],
       }));
     },
     updateMap(state, action) {
       const { index, key, value } = action.payload;
-      if (key === "stormPoints") {
-        state.maps[index].stormPoints = value;
+      if (key === "numPoi") {
+        state.maps[index].numPoi = value;
         state.maps[index].pois = Array.from({ length: value }, () => ({
           name: "",
           points: 0,
