@@ -92,7 +92,7 @@ export const TeamHeader = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  align-items: center;
+  align-items: start;
 `;
 
 export const TeamHeaderItem = styled.div`
