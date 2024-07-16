@@ -237,7 +237,8 @@ function NewDraftPageTwo() {
                   $bgColor="var(--brand-color)"
                   height="4rem"
                   onChange={handleTeamCountChange}
-                ></StyledInput>
+                  onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
+                />
               </FormRow>
               <TeamContainer>
                 <TeamHeader>

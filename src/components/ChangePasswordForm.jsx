@@ -28,6 +28,7 @@ function ChangePasswordForm() {
     formState: { errors },
     reset,
   } = useForm();
+
   const { updateUserPassword, isPending } = useUpdatePassword();
 
   // Modal

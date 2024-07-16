@@ -17,6 +17,18 @@ const StyledInput = styled.input`
     outline: none;
     border-color: #999;
   }
+
+  /* Hide the arrows in Firefox */
+  &[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Hide the arrows in Chrome, Safari, Edge, and Opera */
+  &[type="number"]::-webkit-outer-spin-button,
+  &[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
 
 export default StyledInput;

@@ -31,7 +31,9 @@ function NewDraftPageThree() {
   //modal
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  // redux state
   const maps = useSelector((state) => state.newDraft.maps);
+  const numMaps = useSelector((state) => state.newDraft.numMap);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -53,19 +55,33 @@ function NewDraftPageThree() {
     navigate("/new-draft-two");
   };
 
-  const handleNumberOfMapsChange = (e) => {
-    const numberOfMaps = parseInt(e.target.value, 10);
+  const handleNumberOfMapsChange = (n) => {
+    const numberOfMaps = n;
     if (numberOfMaps >= 0 && numberOfMaps <= 4) {
       dispatch(setNumberOfMaps(numberOfMaps));
     }
   };
 
   const handleMapChange = (index, key, value) => {
-    dispatch(updateMap({ index, key, value }));
+    if (key == "numPoi") {
+      if (value >= 0 && value <= 30) {
+        dispatch(updateMap({ index, key, value }));
+      }
+      return;
+    } else {
+      dispatch(updateMap({ index, key, value }));
+    }
   };
 
   const handlePOIChange = (mapIndex, poiIndex, key, value) => {
-    dispatch(updatePOI({ mapIndex, poiIndex, key, value }));
+    if (key === "points") {
+      if (value >= 0 && value <= 30) {
+        dispatch(updatePOI({ mapIndex, poiIndex, key, value }));
+      }
+      return;
+    } else {
+      dispatch(updatePOI({ mapIndex, poiIndex, key, value }));
+    }
   };
 
   // track new draft creation page number
@@ -102,9 +118,10 @@ function NewDraftPageThree() {
                   $bgColor="var(--brand-color)"
                   height="4rem"
                   type="number"
-                  min="0"
-                  max="4"
-                  onChange={handleNumberOfMapsChange}
+                  id="numberOfMaps"
+                  value={numMaps}
+                  onChange={(e) => handleNumberOfMapsChange(e.target.value)}
+                  onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                 />
               </FormRow>
             </div>
@@ -130,6 +147,8 @@ function NewDraftPageThree() {
                       $bgColor="var(--brand-color)"
                       height="4rem"
                       type="text"
+                      maxLength="30"
+                      id={`mapName-${index}`}
                       value={map.mapName}
                       onChange={(e) =>
                         handleMapChange(index, "mapName", e.target.value)
@@ -141,16 +160,18 @@ function NewDraftPageThree() {
                       $bgColor="var(--brand-color)"
                       height="4rem"
                       type="number"
+                      id={`numOfPoi-${index}`}
                       value={map.numPoi}
                       onChange={(e) =>
                         handleMapChange(index, "numPoi", e.target.value)
                       }
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                     />
                   </FormRow>
 
                   <TeamHeader>
-                    <TeamHeaderItem>Team Name</TeamHeaderItem>
-                    <TeamHeaderItem>Draft Priority</TeamHeaderItem>
+                    <TeamHeaderItem>POI Name</TeamHeaderItem>
+                    <TeamHeaderItem>POI Number</TeamHeaderItem>
                   </TeamHeader>
                   {map.pois.map((poi, poiIndex) => (
                     <div
@@ -165,8 +186,10 @@ function NewDraftPageThree() {
                         $flex="1"
                         $bgColor="var(--brand-color)"
                         height="4rem"
+                        id={`poiName-${index}-${poiIndex}`}
                         type="text"
                         placeholder={`POI ${poiIndex + 1} Name`}
+                        maxLength="30"
                         value={poi.name}
                         onChange={(e) =>
                           handlePOIChange(
@@ -182,6 +205,7 @@ function NewDraftPageThree() {
                         $bgColor="var(--brand-color)"
                         height="4rem"
                         type="number"
+                        id={`poiNumber-${index}-${poiIndex}`}
                         placeholder={`POI ${poiIndex + 1} Points`}
                         value={poi.points}
                         onChange={(e) =>
