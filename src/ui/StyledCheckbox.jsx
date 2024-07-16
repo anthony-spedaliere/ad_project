@@ -24,7 +24,7 @@ const StyledCheckboxInput = styled.input.attrs({ type: "checkbox" })`
   height: 0;
   width: 0;
 
-  &:checked ~ span {
+  &:checked + span {
     background-color: var(--blue-color);
 
     &:after {
@@ -62,6 +62,7 @@ function StyledCheckbox({
   fontWeight,
   marginBottom,
   textColor,
+  checked,
   onChange,
   children,
 }) {
@@ -72,7 +73,10 @@ function StyledCheckbox({
       $textColor={textColor}
     >
       {children}
-      <StyledCheckboxInput onChange={onChange}></StyledCheckboxInput>
+      <StyledCheckboxInput
+        checked={checked}
+        onChange={onChange}
+      ></StyledCheckboxInput>
       <StyledCheckboxSpan></StyledCheckboxSpan>
     </StyledCheckboxLabel>
   );

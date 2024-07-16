@@ -5,6 +5,13 @@ const initialState = {
   currentPage: 1,
   groups: [],
   maps: [],
+  numMap: 0,
+  draftName: "",
+  draftType: "Standard",
+  draftTimePerPick: 30, // stored in seconds
+  draftDate: null,
+  draftTime: null,
+  shouldSendEmail: false,
 };
 
 const newDraftSlice = createSlice({
@@ -19,6 +26,7 @@ const newDraftSlice = createSlice({
     },
     setNumberOfMaps(state, action) {
       const numberOfMaps = action.payload;
+      state.numMap = numberOfMaps;
       state.maps = Array.from({ length: numberOfMaps }, () => ({
         mapName: "",
         numPoi: 0,
@@ -41,6 +49,24 @@ const newDraftSlice = createSlice({
       const { mapIndex, poiIndex, key, value } = action.payload;
       state.maps[mapIndex].pois[poiIndex][key] = value;
     },
+    setDraftName(state, action) {
+      state.draftName = action.payload;
+    },
+    setDraftType(state, action) {
+      state.draftType = action.payload;
+    },
+    setDraftTimePerPick(state, action) {
+      state.draftTimePerPick = action.payload;
+    },
+    setDraftDate(state, action) {
+      state.draftDate = action.payload;
+    },
+    setDraftTime(state, action) {
+      state.draftTime = action.payload;
+    },
+    setShouldSendEmail: (state, action) => {
+      state.shouldSendEmail = action.payload;
+    },
   },
 });
 
@@ -50,6 +76,12 @@ export const {
   setNumberOfMaps,
   updateMap,
   updatePOI,
+  setDraftName,
+  setDraftType,
+  setDraftTimePerPick,
+  setDraftDate,
+  setDraftTime,
+  setShouldSendEmail,
 } = newDraftSlice.actions;
 
 export default newDraftSlice.reducer;
