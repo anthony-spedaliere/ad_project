@@ -3,10 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentPage,
   setGroups,
+  setNumGroups,
   setShouldAddGroups,
+  setNumTeams,
+  setTeams,
+  updateTeam,
 } from "../store/slices/newDraftSlice";
 import { useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
 // styles
 import {
   LeaveButton,
@@ -37,27 +40,16 @@ function NewDraftPageTwo() {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [groupCount, setGroupCount] = useState(0);
-
   //**
   const [teamCount, setTeamCount] = useState(0);
   const groupNames = useSelector((state) => state.newDraft.groups);
   const shouldAddGroups = useSelector(
     (state) => state.newDraft.shouldAddGroups
   );
-
-  const {
-    control,
-    watch,
-    formState: { errors },
-    setValue,
-    clearErrors,
-    register,
-  } = useForm({
-    defaultValues: {
-      groups: [],
-    },
-  });
+  const numGroups = useSelector((state) => state.newDraft.numGroups);
+  const groups = useSelector((state) => state.newDraft.groups);
+  const numTeams = useSelector((state) => state.newDraft.numTeams);
+  const teams = useSelector((state) => state.newDraft.teams);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -87,63 +79,91 @@ function NewDraftPageTwo() {
   const handleCheckboxChange = (e) => {
     const isChecked = e.target.checked;
     dispatch(setShouldAddGroups(isChecked)); // Dispatch the action
-    if (!e.target.checked) {
-      setGroupCount(0);
-      setValue("groupCount", 0);
-      clearErrors("groupCount");
+    if (!isChecked) {
+      dispatch(setNumGroups(0)); // Reset numGroups in Redux state
     }
   };
 
   const handleGroupCountChange = (e) => {
     const value = parseInt(e.target.value, 10);
-    setGroupCount(value);
+    dispatch(setNumGroups(isNaN(value) ? 0 : value)); // Update numGroups in Redux state
   };
 
-  // **
+  // Handle group name change
+  const handleGroupNameChange = (index, value) => {
+    const updatedGroups = [...groups];
+    updatedGroups[index] = value;
+    dispatch(setGroups(updatedGroups));
+  };
+
   const handleTeamCountChange = (e) => {
     const value = parseInt(e.target.value, 10);
-    setTeamCount(value);
+    dispatch(setNumTeams(isNaN(value) ? 0 : value));
+    dispatch(
+      setTeams(
+        Array.from({ length: isNaN(value) ? 0 : value }, () => ({
+          teamName: "",
+          draftPriority: 0,
+          groupOfTeam: "",
+        }))
+      )
+    );
   };
 
-  const groupInputs = Array.from({ length: groupCount }).map((_, index) => (
+  const handleTeamDetailChange = (index, key, value) => {
+    dispatch(updateTeam({ index, key, value }));
+  };
+
+  const groupInputs = Array.from({ length: numGroups }).map((_, index) => (
     <FormRow key={index} customPadding="0" label={`Group ${index + 1} Name`}>
       <StyledInput
         type="text"
         $bgColor="var(--brand-color)"
         height="4rem"
-        {...register(`group${index + 1}`, {
-          required: true,
-          onChange: (e) => {
-            const currentGroups = watch("groups") || [];
-            const updatedGroups = [...currentGroups];
-            updatedGroups[index] = e.target.value;
-            setValue("groups", updatedGroups);
-            dispatch(setGroups(updatedGroups));
-          },
-        })}
+        value={groups[index] || ""}
+        onChange={(e) => handleGroupNameChange(index, e.target.value)}
       />
     </FormRow>
   ));
 
-  const teamRows = Array.from({ length: teamCount }).map((_, index) => (
+  const teamRows = Array.from({ length: numTeams }).map((_, index) => (
     <TeamRowContainer key={index}>
       <StyledInput
         type="text"
+        id={`teamName${index}`}
         $bgColor="var(--brand-color)"
         height="4rem"
         $flex="1"
         placeholder={`Team ${index + 1} Name`}
-        {...register(`team${index + 1}Name`, { required: true })}
+        value={teams[index]?.teamName || ""}
+        onChange={(e) =>
+          handleTeamDetailChange(index, "teamName", e.target.value)
+        }
       />
       <StyledInput
         type="number"
+        id={`draftPriority${index}`}
         $bgColor="var(--brand-color)"
         height="4rem"
         $flex="1"
         value={index + 1}
+        // value={teams[index]?.draftPriority || 0}
+        onChange={(e) =>
+          handleTeamDetailChange(
+            index,
+            "draftPriority",
+            parseInt(e.target.value, 10)
+          )
+        }
         disabled
       />
-      <StyledSelect $flex="1" {...register(`team${index + 1}Group`)}>
+      <StyledSelect
+        $flex="1"
+        value={teams[index]?.groupOfTeam || ""}
+        onChange={(e) =>
+          handleTeamDetailChange(index, "groupOfTeam", e.target.value)
+        }
+      >
         {groupNames.length > 0 ? (
           groupNames.map((group, i) => (
             <option key={i} value={group}>
@@ -199,65 +219,37 @@ function NewDraftPageTwo() {
                     customPadding="2rem 0"
                     label="Number of Groups (max. of 10 group allowed)"
                   >
-                    <Controller
-                      name="groupCount"
-                      control={control}
-                      render={({ field }) => (
-                        <StyledSelect
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            handleGroupCountChange(e);
-                          }}
-                          value={field.value}
-                        >
-                          {Array.from({ length: 11 }).map((_, index) => (
-                            <option key={index} value={index}>
-                              {index}
-                            </option>
-                          ))}
-                        </StyledSelect>
-                      )}
+                    <StyledInput
+                      type="number"
+                      $bgColor="var(--brand-color)"
+                      height="4rem"
+                      min={1}
+                      max={10}
+                      value={numGroups || ""} // Set value from Redux state
+                      onChange={handleGroupCountChange}
                     />
                   </FormRow>
-
                   {groupInputs}
                 </>
               )}
             </div>
-            <div>
-              <StyledHeader
-                $textDecoration="underline"
-                $fontSize="2rem"
-                $fontWeight="100"
-              >
-                Teams
-              </StyledHeader>
-              <StyledHeader
-                $fontSize="1.5rem"
-                $fontWeight="100"
-                $mgBottom="1rem"
-              >
-                Add teams who will participate in the draft.
-              </StyledHeader>
-              <FormRow label="Number of Teams (max. of 20 Teams allowed)">
+            <TeamContainer>
+              <FormRow label="Number of Teams">
                 <StyledInput
                   type="number"
                   $bgColor="var(--brand-color)"
                   height="4rem"
+                  value={numTeams || ""}
                   onChange={handleTeamCountChange}
-                  onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                 />
               </FormRow>
-              <TeamContainer>
-                <TeamHeader>
-                  <TeamHeaderItem>Team Name</TeamHeaderItem>
-                  <TeamHeaderItem>Draft Priority</TeamHeaderItem>
-                  <TeamHeaderItem>Group</TeamHeaderItem>
-                </TeamHeader>
-                {teamRows}
-              </TeamContainer>
-            </div>
+              <TeamHeader>
+                <TeamHeaderItem>Team Name</TeamHeaderItem>
+                <TeamHeaderItem>Team Number</TeamHeaderItem>
+                <TeamHeaderItem>Group</TeamHeaderItem>
+              </TeamHeader>
+              {teamRows}
+            </TeamContainer>
           </SubContainer>
         </form>
         <ButtonContainer $marginTop="4rem" $justifyContent="space-between">
