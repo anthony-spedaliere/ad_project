@@ -12,6 +12,10 @@ const initialState = {
   draftDate: null,
   draftTime: null,
   shouldSendEmail: false,
+  shouldAddGroups: false,
+  numGroups: 0,
+  numTeams: 0,
+  teams: [],
 };
 
 const newDraftSlice = createSlice({
@@ -67,6 +71,26 @@ const newDraftSlice = createSlice({
     setShouldSendEmail: (state, action) => {
       state.shouldSendEmail = action.payload;
     },
+    setShouldAddGroups(state, action) {
+      // New action
+      state.shouldAddGroups = action.payload;
+    },
+    setNumGroups(state, action) {
+      // Add action to set numGroups
+      state.numGroups = action.payload;
+    },
+    setNumTeams(state, action) {
+      state.numTeams = action.payload;
+    },
+    setTeams(state, action) {
+      state.teams = action.payload;
+    },
+    updateTeam(state, action) {
+      const { index, key, value } = action.payload;
+      if (state.teams[index]) {
+        state.teams[index][key] = value;
+      }
+    },
   },
 });
 
@@ -82,6 +106,11 @@ export const {
   setDraftDate,
   setDraftTime,
   setShouldSendEmail,
+  setShouldAddGroups,
+  setNumGroups,
+  setNumTeams,
+  setTeams,
+  updateTeam,
 } = newDraftSlice.actions;
 
 export default newDraftSlice.reducer;
