@@ -12,6 +12,7 @@ const initialState = {
   draftDate: null,
   draftTime: null,
   shouldSendEmail: false,
+  shouldAddGroups: false,
 };
 
 const newDraftSlice = createSlice({
@@ -67,6 +68,10 @@ const newDraftSlice = createSlice({
     setShouldSendEmail: (state, action) => {
       state.shouldSendEmail = action.payload;
     },
+    setShouldAddGroups(state, action) {
+      // New action
+      state.shouldAddGroups = action.payload;
+    },
   },
 });
 
@@ -82,6 +87,7 @@ export const {
   setDraftDate,
   setDraftTime,
   setShouldSendEmail,
+  setShouldAddGroups,
 } = newDraftSlice.actions;
 
 export default newDraftSlice.reducer;

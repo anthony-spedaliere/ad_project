@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentPage, setGroups } from "../store/slices/newDraftSlice";
+import {
+  setCurrentPage,
+  setGroups,
+  setShouldAddGroups,
+} from "../store/slices/newDraftSlice";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 // styles
@@ -32,12 +36,15 @@ function NewDraftPageTwo() {
   //modal
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [showGroups, setShowGroups] = useState(false); // State for checkbox
+
   const [groupCount, setGroupCount] = useState(0);
 
   //**
   const [teamCount, setTeamCount] = useState(0);
   const groupNames = useSelector((state) => state.newDraft.groups);
+  const shouldAddGroups = useSelector(
+    (state) => state.newDraft.shouldAddGroups
+  );
 
   const {
     control,
@@ -78,7 +85,8 @@ function NewDraftPageTwo() {
   }, [dispatch]);
 
   const handleCheckboxChange = (e) => {
-    setShowGroups(e.target.checked);
+    const isChecked = e.target.checked;
+    dispatch(setShouldAddGroups(isChecked)); // Dispatch the action
     if (!e.target.checked) {
       setGroupCount(0);
       setValue("groupCount", 0);
@@ -179,12 +187,13 @@ function NewDraftPageTwo() {
                 marginBottom="0"
                 textColor="var(--brand-color)"
                 fontWeight="100"
+                checked={shouldAddGroups}
                 onChange={handleCheckboxChange}
               >
                 Add Groups
               </StyledCheckbox>
 
-              {showGroups && (
+              {shouldAddGroups && (
                 <>
                   <FormRow
                     customPadding="2rem 0"
