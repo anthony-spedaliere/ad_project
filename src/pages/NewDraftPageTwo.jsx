@@ -8,13 +8,12 @@ import {
   setNumTeams,
   setTeams,
   updateTeam,
+  resetDraftForm,
 } from "../store/slices/newDraftSlice";
 import { useNavigate } from "react-router-dom";
 // styles
 import {
-  LeaveButton,
   NewDraftContainer,
-  ProgressBarContainer,
   SubContainer,
   NewDraftFormContainer,
   TeamContainer,
@@ -24,7 +23,6 @@ import {
   ButtonContainer,
   CustomSpan,
 } from "../styles/MyDraftStyles";
-import ProgressBar from "../components/ProgressBar";
 import CustomModal from "../ui/CustomModal";
 import StyledHeader from "../ui/StyledHeader";
 import StyledCheckbox from "../ui/StyledCheckbox";
@@ -33,15 +31,18 @@ import StyledInput from "../ui/StyledInput";
 import StyledSelect from "../components/StyledSelect";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import StyledButton from "../ui/StyledButton";
+import NewDraftPageHeader from "../components/NewDraftPageHeader";
 
 function NewDraftPageTwo() {
   const dispatch = useDispatch();
   //modal
   const navigate = useNavigate();
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  //**
-  const [teamCount, setTeamCount] = useState(0);
+  // modals
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+
+  // state
   const groupNames = useSelector((state) => state.newDraft.groups);
   const shouldAddGroups = useSelector(
     (state) => state.newDraft.shouldAddGroups
@@ -51,6 +52,7 @@ function NewDraftPageTwo() {
   const numTeams = useSelector((state) => state.newDraft.numTeams);
   const teams = useSelector((state) => state.newDraft.teams);
 
+  // Exit Modal functions
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -62,6 +64,31 @@ function NewDraftPageTwo() {
   const handleConfirm = () => {
     navigate("/dashboard/my-drafts");
   };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Reset Modal functions
+
+  const showResetModal = () => {
+    setIsResetModalVisible(true);
+  };
+
+  const handleResetCancel = () => {
+    setIsResetModalVisible(false);
+  };
+
+  const handleResetConfirm = () => {
+    handleResetDraftForm();
+    handleResetCancel();
+  };
+
+  const handleResetDraftForm = () => {
+    dispatch(resetDraftForm());
+  };
+
+  //=====================================================================
+  //=====================================================================
 
   const handleClickNext = () => {
     navigate("/new-draft-three");
@@ -179,10 +206,11 @@ function NewDraftPageTwo() {
 
   return (
     <NewDraftContainer>
-      <LeaveButton onClick={showModal}>Leave Draft Creation</LeaveButton>
-      <ProgressBarContainer>
-        <ProgressBar />
-      </ProgressBarContainer>
+      <NewDraftPageHeader
+        showExitModal={showModal}
+        showResetModal={showResetModal}
+      />
+
       <NewDraftFormContainer>
         <form>
           <SubContainer>
@@ -297,6 +325,25 @@ function NewDraftPageTwo() {
       >
         Are you sure you want to exit Draft Creation? You may lose your
         progress.
+      </CustomModal>
+      <CustomModal
+        title="Reset New Draft Form"
+        open={isResetModalVisible}
+        onOk={handleResetConfirm}
+        onCancel={handleResetCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        bgColor="var(--background-color)"
+        textColor="var(--brand-color)"
+        okBgColor="var(--red-color)"
+        okTextColor="var(--background-color)"
+        cancelTextColor="var(--background-color)"
+        headerBgColor="var(--background-color)"
+        headerTextColor="var(--red-color)"
+        defaultBgColor="var(--brand-color)"
+      >
+        Are you sure you want to reset the new draft form? This will reset all
+        your progress.
       </CustomModal>
     </NewDraftContainer>
   );

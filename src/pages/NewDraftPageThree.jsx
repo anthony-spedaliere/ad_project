@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  resetDraftForm,
   setCurrentPage,
   setNumberOfMaps,
   updateMap,
@@ -10,8 +11,9 @@ import ProgressBar from "../components/ProgressBar";
 import { useNavigate } from "react-router-dom";
 import {
   ButtonContainer,
+  ButtonHeaderContainer,
   CustomSpan,
-  LeaveButton,
+  NewDraftButton,
   NewDraftContainer,
   NewDraftFormContainer,
   ProgressBarContainer,
@@ -25,16 +27,21 @@ import StyledButton from "../ui/StyledButton";
 import StyledHeader from "../ui/StyledHeader";
 import StyledInput from "../ui/StyledInput";
 import FormRow from "../ui/FormRow";
+import NewDraftPageHeader from "../components/NewDraftPageHeader";
 
 function NewDraftPageThree() {
   const dispatch = useDispatch();
-  //modal
   const navigate = useNavigate();
+
+  //modal
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+
   // redux state
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
 
+  // Exit Modal functions
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -46,6 +53,31 @@ function NewDraftPageThree() {
   const handleConfirm = () => {
     navigate("/dashboard/my-drafts");
   };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Reset Modal functions
+
+  const showResetModal = () => {
+    setIsResetModalVisible(true);
+  };
+
+  const handleResetCancel = () => {
+    setIsResetModalVisible(false);
+  };
+
+  const handleResetConfirm = () => {
+    handleResetDraftForm();
+    handleResetCancel();
+  };
+
+  const handleResetDraftForm = () => {
+    dispatch(resetDraftForm());
+  };
+
+  //=====================================================================
+  //=====================================================================
 
   const handleClickNext = () => {
     navigate("/new-draft-three");
@@ -91,10 +123,11 @@ function NewDraftPageThree() {
 
   return (
     <NewDraftContainer>
-      <LeaveButton onClick={showModal}>Leave Draft Creation</LeaveButton>
-      <ProgressBarContainer>
-        <ProgressBar />
-      </ProgressBarContainer>
+      <NewDraftPageHeader
+        showExitModal={showModal}
+        showResetModal={showResetModal}
+      />
+
       <NewDraftFormContainer>
         <form>
           <SubContainer>
@@ -267,6 +300,25 @@ function NewDraftPageThree() {
       >
         Are you sure you want to exit Draft Creation? You may lose your
         progress.
+      </CustomModal>
+      <CustomModal
+        title="Reset New Draft Form"
+        open={isResetModalVisible}
+        onOk={handleResetConfirm}
+        onCancel={handleResetCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        bgColor="var(--background-color)"
+        textColor="var(--brand-color)"
+        okBgColor="var(--red-color)"
+        okTextColor="var(--background-color)"
+        cancelTextColor="var(--background-color)"
+        headerBgColor="var(--background-color)"
+        headerTextColor="var(--red-color)"
+        defaultBgColor="var(--brand-color)"
+      >
+        Are you sure you want to reset the new draft form? This will reset all
+        your progress.
       </CustomModal>
     </NewDraftContainer>
   );

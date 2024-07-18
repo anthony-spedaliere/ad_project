@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  resetDraftForm,
   setCurrentPage,
   setDraftDate,
   setDraftName,
@@ -9,11 +10,9 @@ import {
   setDraftType,
   setShouldSendEmail,
 } from "../store/slices/newDraftSlice";
-import ProgressBar from "../components/ProgressBar";
+
 import {
   NewDraftContainer,
-  LeaveButton,
-  ProgressBarContainer,
   NewDraftFormContainer,
   SubContainer,
   ButtonContainer,
@@ -34,12 +33,17 @@ import DatePickerComponent from "../components/DatePickerComponent";
 import StyledCheckbox from "../ui/StyledCheckbox";
 import StyledButton from "../ui/StyledButton";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import NewDraftPageHeader from "../components/NewDraftPageHeader";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
-  //modal
   const navigate = useNavigate();
+
+  // Modal
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+
+  // redux state
   const currentDraftName = useSelector((state) => state.newDraft.draftName); // Get draftName from state
   const currentDraftType = useSelector((state) => state.newDraft.draftType); // get draftType from state
   const draftTimePerPick = useSelector(
@@ -51,6 +55,7 @@ function NewDraftPageOne() {
     (state) => state.newDraft.shouldSendEmail
   ); //get shouldSendEmail from state
 
+  // Exit Modal functions
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -62,6 +67,27 @@ function NewDraftPageOne() {
   const handleConfirm = () => {
     navigate("/dashboard/my-drafts");
   };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Reset Modal functions
+
+  const showResetModal = () => {
+    setIsResetModalVisible(true);
+  };
+
+  const handleResetCancel = () => {
+    setIsResetModalVisible(false);
+  };
+
+  const handleResetConfirm = () => {
+    handleResetDraftForm();
+    handleResetCancel();
+  };
+
+  //=====================================================================
+  //=====================================================================
 
   const handleClick = () => {
     navigate("/new-draft-two");
@@ -134,12 +160,17 @@ function NewDraftPageOne() {
     }
   }, [selectedDate]);
 
+  const handleResetDraftForm = () => {
+    dispatch(resetDraftForm());
+  };
+
   return (
     <NewDraftContainer>
-      <LeaveButton onClick={showModal}>Leave Draft Creation</LeaveButton>
-      <ProgressBarContainer>
-        <ProgressBar />
-      </ProgressBarContainer>
+      <NewDraftPageHeader
+        showExitModal={showModal}
+        showResetModal={showResetModal}
+      />
+
       <NewDraftFormContainer>
         <form>
           <SubContainer>
@@ -264,6 +295,25 @@ function NewDraftPageOne() {
       >
         Are you sure you want to exit Draft Creation? You may lose your
         progress.
+      </CustomModal>
+      <CustomModal
+        title="Reset New Draft Form"
+        open={isResetModalVisible}
+        onOk={handleResetConfirm}
+        onCancel={handleResetCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        bgColor="var(--background-color)"
+        textColor="var(--brand-color)"
+        okBgColor="var(--red-color)"
+        okTextColor="var(--background-color)"
+        cancelTextColor="var(--background-color)"
+        headerBgColor="var(--background-color)"
+        headerTextColor="var(--red-color)"
+        defaultBgColor="var(--brand-color)"
+      >
+        Are you sure you want to reset the new draft form? This will reset all
+        your progress.
       </CustomModal>
     </NewDraftContainer>
   );
