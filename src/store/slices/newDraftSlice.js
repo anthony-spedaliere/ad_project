@@ -91,6 +91,9 @@ const newDraftSlice = createSlice({
         state.teams[index][key] = value;
       }
     },
+    resetDraftForm: () => {
+      return initialState; // Reset state to initial state
+    },
   },
 });
 
@@ -111,6 +114,7 @@ export const {
   setNumTeams,
   setTeams,
   updateTeam,
+  resetDraftForm,
 } = newDraftSlice.actions;
 
 export default newDraftSlice.reducer;

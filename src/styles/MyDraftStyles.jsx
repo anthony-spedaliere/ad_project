@@ -13,6 +13,11 @@ export const NewDraftContainer = styled.div`
   min-width: 120rem;
 `;
 
+export const ButtonHeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const MyDraftCustomLink = styled(Link)`
   color: ${(props) => props.$customColor || "white"};
   text-decoration: ${(props) => props.$textDecoration || "underline"};
@@ -30,7 +35,7 @@ export const MyDraftCustomLink = styled(Link)`
   }
 `;
 
-export const LeaveButton = styled.button`
+export const NewDraftButton = styled.button`
   color: var(--red-color);
   text-decoration: none;
   font-size: 2rem;
