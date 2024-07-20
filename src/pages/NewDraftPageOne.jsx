@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetDraftForm,
@@ -113,10 +113,13 @@ function NewDraftPageOne() {
   };
 
   // Handle date and time change
-  const handleDateChange = (date) => {
-    dispatch(setDraftDate(date.toISOString().split("T")[0])); // Store date as ISO string (yyyy-mm-dd)
-    dispatch(setDraftTime(date.toTimeString().split(" ")[0])); // Store time as hh:mm:ss
-  };
+  const handleDateChange = useCallback(
+    (date) => {
+      dispatch(setDraftDate(date.toISOString().split("T")[0])); // Store date as ISO string (yyyy-mm-dd)
+      dispatch(setDraftTime(date.toTimeString().split(" ")[0])); // Store time as hh:mm:ss
+    },
+    [dispatch]
+  );
 
   // Handle should send email change
   const handleShouldSendEmailChange = (e) => {
@@ -158,7 +161,7 @@ function NewDraftPageOne() {
     if (selectedDate) {
       handleDateChange(selectedDate);
     }
-  }, [selectedDate]);
+  }, [handleDateChange, selectedDate]);
 
   const handleResetDraftForm = () => {
     dispatch(resetDraftForm());

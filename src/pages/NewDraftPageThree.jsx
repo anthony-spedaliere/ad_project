@@ -7,16 +7,13 @@ import {
   updateMap,
   updatePOI,
 } from "../store/slices/newDraftSlice";
-import ProgressBar from "../components/ProgressBar";
+
 import { useNavigate } from "react-router-dom";
 import {
   ButtonContainer,
-  ButtonHeaderContainer,
   CustomSpan,
-  NewDraftButton,
   NewDraftContainer,
   NewDraftFormContainer,
-  ProgressBarContainer,
   SubContainer,
   TeamHeader,
   TeamHeaderItem,

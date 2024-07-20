@@ -32,7 +32,7 @@ function DraftHistory() {
 
   // Format time to HH:MM PM/AM
   const formatTime = (timeString) => {
-    const [time, offset] = timeString.split("-");
+    const [time] = timeString.split("-");
     const [hours, minutes, seconds] = time.split(":");
     const date = new Date();
     date.setHours(parseInt(hours));

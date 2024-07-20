@@ -16,6 +16,7 @@ export function useUser() {
     isPending,
     user,
     isAuthenticated: user?.role === "authenticated",
+    id: user?.id,
     isFetching,
     error,
   };
