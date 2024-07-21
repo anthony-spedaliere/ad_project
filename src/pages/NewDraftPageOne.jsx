@@ -115,8 +115,14 @@ function NewDraftPageOne() {
   // Handle date and time change
   const handleDateChange = useCallback(
     (date) => {
-      dispatch(setDraftDate(date.toISOString().split("T")[0])); // Store date as ISO string (yyyy-mm-dd)
-      dispatch(setDraftTime(date.toTimeString().split(" ")[0])); // Store time as hh:mm:ss
+      const localDate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      );
+      const localTimeString = date.toLocaleTimeString("en-US", {
+        hour12: false,
+      });
+      dispatch(setDraftDate(localDate.toISOString().split("T")[0])); // Store date as ISO string (yyyy-mm-dd)
+      dispatch(setDraftTime(localTimeString)); // Store time as hh:mm:ss
     },
     [dispatch]
   );
