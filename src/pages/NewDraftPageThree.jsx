@@ -25,6 +25,7 @@ import StyledHeader from "../ui/StyledHeader";
 import StyledInput from "../ui/StyledInput";
 import FormRow from "../ui/FormRow";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
+import { useSubmitNewDraft } from "../authentication/useSubmitNewDraft";
 
 function NewDraftPageThree() {
   const dispatch = useDispatch();
@@ -37,6 +38,9 @@ function NewDraftPageThree() {
   // redux state
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
+
+  // react-query
+  const { submitNewDraft, isPending } = useSubmitNewDraft();
 
   // Exit Modal functions
   const showModal = () => {
@@ -77,7 +81,9 @@ function NewDraftPageThree() {
   //=====================================================================
 
   const handleFinish = () => {
-    navigate("/new-draft-three");
+    submitNewDraft();
+    dispatch(resetDraftForm());
+    navigate("/dashboard/my-drafts");
   };
 
   const handleClickPrev = () => {

@@ -1,10 +1,10 @@
 import supabase from "./supabase";
 
-export async function insertPois(mapsArray, mapId) {
+export async function insertPois(poisArray, mapId) {
   const { data: pois, error } = await supabase
     .from("poi")
     .insert(
-      mapsArray.pois.map((poi) => ({
+      poisArray.map((poi) => ({
         poi_name: poi.name,
         poi_number: poi.points,
         map_id: mapId,
@@ -14,8 +14,6 @@ export async function insertPois(mapsArray, mapId) {
 
   if (error) {
     console.error("Error inserting pois:", error);
-  } else {
-    console.log("Inserted pois:", pois);
   }
 
   return { pois, error };

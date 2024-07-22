@@ -30,7 +30,7 @@ export async function insertNewDraft(
   numMap,
   id
 ) {
-  const { data: draft, error } = await supabase
+  const { data, error } = await supabase
     .from("draft")
     .insert([
       {
@@ -51,23 +51,7 @@ export async function insertNewDraft(
 
   if (error) {
     console.error("Error inserting draft:", error);
-  } else {
-    console.log("Inserted draft:", draft);
   }
 
-  return { draft, error };
+  return { draft: data[0], error };
 }
-
-// Sample Call
-//   insertNewDraft(
-//     "Scrim Draft Groups A+C",
-//     "standard",
-//     90,
-//     "2024-06-29",
-//     "18:40:00",
-//     true,
-//     2,
-//     21,
-//     2,
-//     "f8b46572-e5cc-42d0-aa36-5644e56eece9"
-//   );

@@ -13,8 +13,6 @@ export async function insertGroupName(groupNames, draftId) {
 
   if (error) {
     console.error("Error inserting groups:", error);
-  } else {
-    console.log("Inserted groups:", group);
   }
 
   return { group, error };
