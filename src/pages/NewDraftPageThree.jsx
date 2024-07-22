@@ -76,7 +76,7 @@ function NewDraftPageThree() {
   //=====================================================================
   //=====================================================================
 
-  const handleClickNext = () => {
+  const handleFinish = () => {
     navigate("/new-draft-three");
   };
 
@@ -273,7 +273,7 @@ function NewDraftPageThree() {
             $hoverBgColor="var(--brand-color-dark)"
             height="4rem"
             width="20rem"
-            onClick={handleClickNext}
+            onClick={handleFinish}
           >
             <CustomSpan $justifyContent="center">Finish</CustomSpan>
           </StyledButton>
