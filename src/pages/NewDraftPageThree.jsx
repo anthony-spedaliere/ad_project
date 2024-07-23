@@ -7,16 +7,13 @@ import {
   updateMap,
   updatePOI,
 } from "../store/slices/newDraftSlice";
-import ProgressBar from "../components/ProgressBar";
+
 import { useNavigate } from "react-router-dom";
 import {
   ButtonContainer,
-  ButtonHeaderContainer,
   CustomSpan,
-  NewDraftButton,
   NewDraftContainer,
   NewDraftFormContainer,
-  ProgressBarContainer,
   SubContainer,
   TeamHeader,
   TeamHeaderItem,
@@ -28,6 +25,7 @@ import StyledHeader from "../ui/StyledHeader";
 import StyledInput from "../ui/StyledInput";
 import FormRow from "../ui/FormRow";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
+import { useSubmitNewDraft } from "../authentication/useSubmitNewDraft";
 
 function NewDraftPageThree() {
   const dispatch = useDispatch();
@@ -40,6 +38,9 @@ function NewDraftPageThree() {
   // redux state
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
+
+  // react-query
+  const { submitNewDraft, isPending } = useSubmitNewDraft();
 
   // Exit Modal functions
   const showModal = () => {
@@ -79,8 +80,10 @@ function NewDraftPageThree() {
   //=====================================================================
   //=====================================================================
 
-  const handleClickNext = () => {
-    navigate("/new-draft-three");
+  const handleFinish = () => {
+    submitNewDraft();
+    dispatch(resetDraftForm());
+    navigate("/dashboard/my-drafts");
   };
 
   const handleClickPrev = () => {
@@ -276,7 +279,7 @@ function NewDraftPageThree() {
             $hoverBgColor="var(--brand-color-dark)"
             height="4rem"
             width="20rem"
-            onClick={handleClickNext}
+            onClick={handleFinish}
           >
             <CustomSpan $justifyContent="center">Finish</CustomSpan>
           </StyledButton>

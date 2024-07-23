@@ -108,12 +108,15 @@ function NewDraftPageTwo() {
     dispatch(setShouldAddGroups(isChecked)); // Dispatch the action
     if (!isChecked) {
       dispatch(setNumGroups(0)); // Reset numGroups in Redux state
+      dispatch(setGroups([])); // Clear groups in Redux state
     }
   };
 
   const handleGroupCountChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    dispatch(setNumGroups(isNaN(value) ? 0 : value)); // Update numGroups in Redux state
+    const value = e.target.value;
+    if (value >= 0 && value <= 6) {
+      dispatch(setNumGroups(isNaN(value) ? 0 : value)); // Update numGroups in Redux state
+    }
   };
 
   // Handle group name change
@@ -121,20 +124,33 @@ function NewDraftPageTwo() {
     const updatedGroups = [...groups];
     updatedGroups[index] = value;
     dispatch(setGroups(updatedGroups));
+
+    // Update group names in teams
+    const updatedTeams = teams.map((team) => {
+      if (team.groupOfTeam === groups[index]) {
+        return { ...team, groupOfTeam: value };
+      }
+      return team;
+    });
+    dispatch(setTeams(updatedTeams));
   };
 
+  // Initialize teams with default values
   const handleTeamCountChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    dispatch(setNumTeams(isNaN(value) ? 0 : value));
-    dispatch(
-      setTeams(
-        Array.from({ length: isNaN(value) ? 0 : value }, () => ({
-          teamName: "",
-          draftPriority: 0,
-          groupOfTeam: "",
-        }))
-      )
-    );
+    const value = e.target.value;
+
+    if (value >= 0 && value <= 30) {
+      dispatch(setNumTeams(isNaN(value) ? 0 : value));
+      dispatch(
+        setTeams(
+          Array.from({ length: isNaN(value) ? 0 : value }, (_, index) => ({
+            teamName: "",
+            draftPriority: index + 1, // Set draftPriority to index + 1
+            groupOfTeam: groupNames.length > 0 ? groupNames[0] : "No group", // Set groupOfTeam to the first group
+          }))
+        )
+      );
+    }
   };
 
   const handleTeamDetailChange = (index, key, value) => {
@@ -186,7 +202,10 @@ function NewDraftPageTwo() {
       />
       <StyledSelect
         $flex="1"
-        value={teams[index]?.groupOfTeam || ""}
+        value={
+          teams[index]?.groupOfTeam ||
+          (groupNames.length > 0 ? groupNames[0] : "No group")
+        }
         onChange={(e) =>
           handleTeamDetailChange(index, "groupOfTeam", e.target.value)
         }
@@ -198,7 +217,7 @@ function NewDraftPageTwo() {
             </option>
           ))
         ) : (
-          <option value="">No groups</option>
+          <option value="No group">No group</option>
         )}
       </StyledSelect>
     </TeamRowContainer>
@@ -245,16 +264,15 @@ function NewDraftPageTwo() {
                 <>
                   <FormRow
                     customPadding="2rem 0"
-                    label="Number of Groups (max. of 10 group allowed)"
+                    label="Number of Groups (max. of 6 group allowed)"
                   >
                     <StyledInput
                       type="number"
                       $bgColor="var(--brand-color)"
                       height="4rem"
-                      min={1}
-                      max={10}
                       value={numGroups || ""} // Set value from Redux state
                       onChange={handleGroupCountChange}
+                      onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                     />
                   </FormRow>
                   {groupInputs}
@@ -262,18 +280,19 @@ function NewDraftPageTwo() {
               )}
             </div>
             <TeamContainer>
-              <FormRow label="Number of Teams">
+              <FormRow label="Number of Teams (max. of 30 teams allowed)">
                 <StyledInput
                   type="number"
                   $bgColor="var(--brand-color)"
                   height="4rem"
                   value={numTeams || ""}
                   onChange={handleTeamCountChange}
+                  onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                 />
               </FormRow>
               <TeamHeader>
                 <TeamHeaderItem>Team Name</TeamHeaderItem>
-                <TeamHeaderItem>Team Number</TeamHeaderItem>
+                <TeamHeaderItem>Draft Priority</TeamHeaderItem>
                 <TeamHeaderItem>Group</TeamHeaderItem>
               </TeamHeader>
               {teamRows}
