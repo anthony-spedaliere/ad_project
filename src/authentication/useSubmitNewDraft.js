@@ -1,13 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { insertNewDraft } from "../services/apiDrafts";
 import { insertGroupName } from "../services/apiGroup";
 import { insertMaps } from "../services/apiMap";
 import { insertPois } from "../services/apiPoi";
 import { insertTeams } from "../services/apiTeam";
 import toast from "react-hot-toast";
-import { resetDraftForm } from "../store/slices/newDraftSlice";
-import { useNavigate } from "react-router-dom";
 
 export function useSubmitNewDraft() {
   const userId = useSelector((state) => state.user.id);
@@ -36,8 +34,10 @@ export function useSubmitNewDraft() {
         // retrieve id of new draft
         const draftId = newDraftResponse.draft.id;
 
-        //insert groups
-        const groupsResponse = await insertGroupName(draftData.groups, draftId);
+        // Insert groups, handling the default "No group" if necessary
+        const groupsToInsert =
+          draftData.groups.length > 0 ? draftData.groups : ["No group"];
+        const groupsResponse = await insertGroupName(groupsToInsert, draftId);
         // check for errors
         if (groupsResponse.error) throw new Error(groupsResponse.error.message);
 

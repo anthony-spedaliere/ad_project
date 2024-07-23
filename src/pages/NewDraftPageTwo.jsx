@@ -108,6 +108,7 @@ function NewDraftPageTwo() {
     dispatch(setShouldAddGroups(isChecked)); // Dispatch the action
     if (!isChecked) {
       dispatch(setNumGroups(0)); // Reset numGroups in Redux state
+      dispatch(setGroups([])); // Clear groups in Redux state
     }
   };
 
@@ -145,7 +146,7 @@ function NewDraftPageTwo() {
           Array.from({ length: isNaN(value) ? 0 : value }, (_, index) => ({
             teamName: "",
             draftPriority: index + 1, // Set draftPriority to index + 1
-            groupOfTeam: groupNames.length > 0 ? groupNames[0] : "", // Set groupOfTeam to the first group
+            groupOfTeam: groupNames.length > 0 ? groupNames[0] : "No group", // Set groupOfTeam to the first group
           }))
         )
       );
@@ -203,7 +204,7 @@ function NewDraftPageTwo() {
         $flex="1"
         value={
           teams[index]?.groupOfTeam ||
-          (groupNames.length > 0 ? groupNames[0] : "")
+          (groupNames.length > 0 ? groupNames[0] : "No group")
         }
         onChange={(e) =>
           handleTeamDetailChange(index, "groupOfTeam", e.target.value)
@@ -216,7 +217,7 @@ function NewDraftPageTwo() {
             </option>
           ))
         ) : (
-          <option value="">No groups</option>
+          <option value="No group">No group</option>
         )}
       </StyledSelect>
     </TeamRowContainer>
@@ -279,7 +280,7 @@ function NewDraftPageTwo() {
               )}
             </div>
             <TeamContainer>
-              <FormRow label="Number of Teams">
+              <FormRow label="Number of Teams (max. of 30 teams allowed)">
                 <StyledInput
                   type="number"
                   $bgColor="var(--brand-color)"
