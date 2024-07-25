@@ -34,6 +34,7 @@ import StyledCheckbox from "../ui/StyledCheckbox";
 import StyledButton from "../ui/StyledButton";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
+import EditDraftsHeader from "../components/EditDraftsHeader";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
@@ -176,11 +177,14 @@ function NewDraftPageOne() {
 
   return (
     <NewDraftContainer>
-      <NewDraftPageHeader
-        showExitModal={showModal}
-        showResetModal={showResetModal}
-      />
-
+      {!isEditingState ? (
+        <NewDraftPageHeader
+          showExitModal={showModal}
+          showResetModal={showResetModal}
+        />
+      ) : (
+        <EditDraftsHeader />
+      )}
       <NewDraftFormContainer>
         <form>
           <SubContainer>

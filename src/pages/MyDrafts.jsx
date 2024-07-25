@@ -1,5 +1,5 @@
 // style importsimport { FaPlus } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useUncompletedDrafts } from "../authentication/useUncompletedDrafts";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
 import {
@@ -18,13 +18,17 @@ import {
   formatDate,
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
+import { setIsEditing } from "../store/slices/newDraftSlice";
 
 function MyDrafts() {
+  const dispatch = useDispatch();
+
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
   const navigate = useNavigate();
 
-  function handleClick() {
+  function handleClickEdit() {
+    dispatch(setIsEditing(true));
     navigate("/new-draft-one");
   }
 
@@ -90,7 +94,7 @@ function MyDrafts() {
                 <TableCell>
                   <ActionsContainer>
                     <ActionButton>Start Now</ActionButton>
-                    <ActionButton onClick={handleClick}>Edit</ActionButton>
+                    <ActionButton onClick={handleClickEdit}>Edit</ActionButton>
                     <ActionButton $customColor="var(--red-color)">
                       Delete
                     </ActionButton>
