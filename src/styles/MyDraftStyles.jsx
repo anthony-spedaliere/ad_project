@@ -23,8 +23,8 @@ export const MyDraftCustomLink = styled(Link)`
   text-decoration: ${(props) => props.$textDecoration || "underline"};
   font-size: ${(props) => props.$fontSize || "2rem"};
   transition: color 0.3s ease;
-  margin-left: ${(props) => props.$marginLeft || "none"};
-  font-weight: ${(props) => props.$fontWeight || "none"};
+  margin-left: ${(props) => props.$marginLeft || "0"};
+  font-weight: ${(props) => props.$fontWeight || "100"};
 
   display: flex;
   align-items: center;

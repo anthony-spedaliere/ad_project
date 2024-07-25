@@ -7,50 +7,26 @@ import { DashboardContentContainer } from "../styles/DashboardStyles";
 
 // draft history style imports
 import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableCell,
   ActionButton,
   CenteredMessage,
   ActionsContainer,
   DraftHistoryContentContainer,
 } from "../styles/DraftHistoryStyles";
 
+import { Table, TableHeader, TableRow, TableCell } from "../ui/TableStyles";
+
 import StyledHeader from "../ui/StyledHeader";
 import Spinner from "../ui/Spinner";
+import {
+  capitalizeFirstLetter,
+  formatDate,
+  formatMinutes,
+  formatTime,
+} from "../utils/helperFunctions";
 
 function DraftHistory() {
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useCompletedDrafts(userId);
-
-  // Format date to MM/DD/YYYY
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  // Format time to HH:MM PM/AM
-  const formatTime = (timeString) => {
-    const [time] = timeString.split("-");
-    const [hours, minutes, seconds] = time.split(":");
-    const date = new Date();
-    date.setHours(parseInt(hours));
-    date.setMinutes(parseInt(minutes));
-    date.setSeconds(parseInt(seconds));
-    let formattedTime = date.toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit",
-    });
-    return formattedTime;
-  };
-
-  // Convert seconds to minutes
-  const formatMinutes = (seconds) => (seconds / 60).toFixed(1);
-
-  // Capitalize first letter
-  const capitalizeFirstLetter = (string) =>
-    string.charAt(0).toUpperCase() + string.slice(1);
 
   if (isPending) {
     return (
