@@ -17,10 +17,16 @@ import {
   formatTime,
   formatDate,
 } from "../utils/helperFunctions";
+import { useNavigate } from "react-router-dom";
 
 function MyDrafts() {
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
+  const navigate = useNavigate();
+
+  function handleClick() {
+    navigate("/new-draft-one");
+  }
 
   if (isPending) {
     return (
@@ -84,7 +90,7 @@ function MyDrafts() {
                 <TableCell>
                   <ActionsContainer>
                     <ActionButton>Start Now</ActionButton>
-                    <ActionButton>Edit</ActionButton>
+                    <ActionButton onClick={handleClick}>Edit</ActionButton>
                     <ActionButton $customColor="var(--red-color)">
                       Delete
                     </ActionButton>

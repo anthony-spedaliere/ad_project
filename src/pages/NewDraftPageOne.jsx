@@ -44,6 +44,7 @@ function NewDraftPageOne() {
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
 
   // redux state
+  const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
   const currentDraftName = useSelector((state) => state.newDraft.draftName); // Get draftName from state
   const currentDraftType = useSelector((state) => state.newDraft.draftType); // get draftType from state
   const draftTimePerPick = useSelector(
@@ -93,11 +94,6 @@ function NewDraftPageOne() {
     navigate("/new-draft-two");
   };
 
-  useEffect(() => {
-    // Initialize shouldSendEmail state when component mounts
-    dispatch(setShouldSendEmail(shouldSendEmail));
-  }, [dispatch, shouldSendEmail]); // Only run once on mount
-
   // Handle draft name change
   const handleDraftNameChange = (e) => {
     dispatch(setDraftName(e.target.value));
@@ -132,6 +128,10 @@ function NewDraftPageOne() {
     dispatch(setShouldSendEmail(e.target.checked));
   };
 
+  const handleResetDraftForm = () => {
+    dispatch(resetDraftForm());
+  };
+
   // Generate time options for the dropdown
   const timeOptions = [];
   for (let i = 30; i <= 300; i += 30) {
@@ -158,6 +158,11 @@ function NewDraftPageOne() {
     return now;
   });
 
+  useEffect(() => {
+    // Initialize shouldSendEmail state when component mounts
+    dispatch(setShouldSendEmail(shouldSendEmail));
+  }, [dispatch, shouldSendEmail]); // Only run once on mount
+
   // track new draft creation page number
   useEffect(() => {
     dispatch(setCurrentPage(1));
@@ -168,10 +173,6 @@ function NewDraftPageOne() {
       handleDateChange(selectedDate);
     }
   }, [handleDateChange, selectedDate]);
-
-  const handleResetDraftForm = () => {
-    dispatch(resetDraftForm());
-  };
 
   return (
     <NewDraftContainer>
