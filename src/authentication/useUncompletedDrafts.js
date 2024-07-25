@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCompletedDraftsForUser } from "../services/apiDrafts";
+import { getUncompletedDraftsForUser } from "../services/apiDrafts";
 
-export function useCompletedDrafts(userId) {
+export function useUncompletedDrafts(userId) {
   const { data, error, isPending } = useQuery({
-    queryKey: ["completedDrafts", userId],
-    queryFn: getCompletedDraftsForUser,
+    queryKey: ["uncompletedDrafts", userId],
+    queryFn: getUncompletedDraftsForUser,
     enabled: !!userId,
+    refetchOnWindowFocus: true,
   });
 
   if (error) {

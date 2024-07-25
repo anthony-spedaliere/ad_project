@@ -17,6 +17,23 @@ export async function getCompletedDraftsForUser({ queryKey }) {
   return data;
 }
 
+export async function getUncompletedDraftsForUser({ queryKey }) {
+  const [, userId] = queryKey;
+
+  const { data, error } = await supabase
+    .from("draft")
+    .select("*")
+    .eq("admin", userId)
+    .eq("is_draft_complete", false);
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return data;
+}
+
 // insert a new draft
 export async function insertNewDraft(
   draftName,
