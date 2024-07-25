@@ -9,6 +9,7 @@ import {
   setTeams,
   updateTeam,
   resetDraftForm,
+  setIsEditing,
 } from "../store/slices/newDraftSlice";
 import { useNavigate } from "react-router-dom";
 // styles
@@ -32,6 +33,7 @@ import StyledSelect from "../components/StyledSelect";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import StyledButton from "../ui/StyledButton";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
+import EditDraftsHeader from "../components/EditDraftsHeader";
 
 function NewDraftPageTwo() {
   const dispatch = useDispatch();
@@ -41,8 +43,11 @@ function NewDraftPageTwo() {
   // modals
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
 
   // state
+  const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
   const groupNames = useSelector((state) => state.newDraft.groups);
   const shouldAddGroups = useSelector(
     (state) => state.newDraft.shouldAddGroups
@@ -85,6 +90,44 @@ function NewDraftPageTwo() {
 
   const handleResetDraftForm = () => {
     dispatch(resetDraftForm());
+  };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Cancel Modal functions
+  const showCancelModal = () => {
+    setIsCancelModalVisible(true);
+  };
+
+  const handleCancelCancel = () => {
+    setIsCancelModalVisible(false);
+  };
+
+  const handleCancelConfirm = () => {
+    handleResetDraftForm();
+    handleCancelCancel();
+    navigate("/dashboard/my-drafts");
+    dispatch(setIsEditing(false));
+  };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Save Modal functions
+  const showSaveModal = () => {
+    setIsSaveModalVisible(true);
+  };
+
+  const handleSaveCancel = () => {
+    setIsSaveModalVisible(false);
+  };
+
+  const handleSaveConfirm = () => {
+    handleResetDraftForm();
+    handleSaveCancel();
+    navigate("/dashboard/my-drafts");
+    dispatch(setIsEditing(false));
   };
 
   //=====================================================================
@@ -225,10 +268,17 @@ function NewDraftPageTwo() {
 
   return (
     <NewDraftContainer>
-      <NewDraftPageHeader
-        showExitModal={showModal}
-        showResetModal={showResetModal}
-      />
+      {!isEditingState ? (
+        <NewDraftPageHeader
+          showExitModal={showModal}
+          showResetModal={showResetModal}
+        />
+      ) : (
+        <EditDraftsHeader
+          showCancelModal={showCancelModal}
+          showSaveModal={showSaveModal}
+        />
+      )}
 
       <NewDraftFormContainer>
         <form>
@@ -363,6 +413,42 @@ function NewDraftPageTwo() {
       >
         Are you sure you want to reset the new draft form? This will reset all
         your progress.
+      </CustomModal>
+      <CustomModal
+        title="Edit Draft"
+        open={isCancelModalVisible}
+        onOk={handleCancelConfirm}
+        onCancel={handleCancelCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        bgColor="var(--background-color)"
+        textColor="var(--brand-color)"
+        okBgColor="var(--red-color)"
+        okTextColor="var(--background-color)"
+        cancelTextColor="var(--background-color)"
+        headerBgColor="var(--background-color)"
+        headerTextColor="var(--red-color)"
+        defaultBgColor="var(--brand-color)"
+      >
+        Are you sure you want to leave edit draft mode?
+      </CustomModal>
+      <CustomModal
+        title="Save Changes"
+        open={isSaveModalVisible}
+        onOk={handleSaveConfirm}
+        onCancel={handleSaveCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        bgColor="var(--background-color)"
+        textColor="var(--brand-color)"
+        okBgColor="var(--red-color)"
+        okTextColor="var(--background-color)"
+        cancelTextColor="var(--background-color)"
+        headerBgColor="var(--background-color)"
+        headerTextColor="var(--red-color)"
+        defaultBgColor="var(--brand-color)"
+      >
+        Please confirm you want to save changes.
       </CustomModal>
     </NewDraftContainer>
   );

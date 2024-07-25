@@ -3,6 +3,7 @@ import {
   NewDraftButton,
   ProgressBarContainer,
 } from "../styles/MyDraftStyles";
+import StyledHeader from "../ui/StyledHeader";
 
 function NewDraftPageHeader({ showCancelModal, showSaveModal }) {
   return (
@@ -12,7 +13,9 @@ function NewDraftPageHeader({ showCancelModal, showSaveModal }) {
         <NewDraftButton onClick={showSaveModal}>Save</NewDraftButton>
       </ButtonHeaderContainer>
 
-      <ProgressBarContainer>Edit Draft</ProgressBarContainer>
+      <ProgressBarContainer>
+        <StyledHeader $fontSize="3rem">Edit Draft</StyledHeader>
+      </ProgressBarContainer>
     </>
   );
 }
