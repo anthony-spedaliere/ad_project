@@ -19,7 +19,6 @@ import {
   ButtonContainer,
   CustomSpan,
 } from "../styles/MyDraftStyles";
-import CustomModal from "../ui/CustomModal";
 import { useNavigate } from "react-router-dom";
 import FormRow from "../ui/FormRow";
 import StyledInput from "../ui/StyledInput";

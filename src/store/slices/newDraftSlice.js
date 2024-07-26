@@ -16,7 +16,7 @@ const initialState = {
   numGroups: 0,
   numTeams: 0,
   teams: [],
-  isEditing: false,
+  isEditing: false, // used to check if new draft template to be used or edit template to be used
 };
 
 const newDraftSlice = createSlice({

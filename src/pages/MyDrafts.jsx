@@ -19,15 +19,27 @@ import {
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import { setIsEditing } from "../store/slices/newDraftSlice";
+import { useGetDraft } from "../authentication/useGetDraft";
+import { setDraftId } from "../store/slices/draftSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
 
+  const currentDraftId = useSelector((state) => state.draft.draftId);
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
   const navigate = useNavigate();
 
-  function handleClickEdit() {
+  // const {
+  //   selectedDraft,
+  //   isPending: getDraftIsPending,
+  //   error: getDraftError,
+  //   isFetching,
+  // } = useGetDraft(1);
+  // console.log(selectedDraft);
+
+  function handleClickEdit(draftId) {
+    dispatch(setDraftId(draftId));
     dispatch(setIsEditing(true));
     navigate("/new-draft-one");
   }
@@ -94,7 +106,9 @@ function MyDrafts() {
                 <TableCell>
                   <ActionsContainer>
                     <ActionButton>Start Now</ActionButton>
-                    <ActionButton onClick={handleClickEdit}>Edit</ActionButton>
+                    <ActionButton onClick={() => handleClickEdit(draft.id)}>
+                      Edit
+                    </ActionButton>
                     <ActionButton $customColor="var(--red-color)">
                       Delete
                     </ActionButton>

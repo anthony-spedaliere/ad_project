@@ -1,4 +1,3 @@
-import React from "react";
 import CustomModal from "../ui/CustomModal";
 
 export function EditDraftSaveModal({

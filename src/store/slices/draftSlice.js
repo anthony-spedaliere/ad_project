@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const draftSlice = createSlice({
-  name: "drafts",
+  name: "draft",
   initialState: {
-    completedDrafts: [],
+    draftId: null,
   },
   reducers: {
-    setCompletedDrafts: (state, action) => {
-      state.completedDrafts = action.payload;
+    setDraftId: (state, action) => {
+      state.draftId = action.payload;
     },
   },
 });
 
-export const { setCompletedDrafts } = draftSlice.actions;
+export const { setDraftId } = draftSlice.actions;
 export default draftSlice.reducer;

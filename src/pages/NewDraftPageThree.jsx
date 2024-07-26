@@ -50,7 +50,7 @@ function NewDraftPageThree() {
   const numMaps = useSelector((state) => state.newDraft.numMap);
 
   // react-query
-  const { submitNewDraft, isPending } = useSubmitNewDraft();
+  const { submitNewDraft } = useSubmitNewDraft();
 
   // Exit Modal functions
   const showModal = () => {

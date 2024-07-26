@@ -1,5 +1,19 @@
 import supabase from "./supabase";
 
+export async function getDraft(draftId) {
+  let { data: draft, error } = await supabase
+    .from("draft")
+    .select("*")
+    .eq("id", draftId);
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return { draft, error };
+}
+
 export async function getCompletedDraftsForUser({ queryKey }) {
   const [, userId] = queryKey;
 
