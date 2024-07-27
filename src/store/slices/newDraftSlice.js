@@ -95,6 +95,9 @@ const newDraftSlice = createSlice({
         state.teams[index][key] = value;
       }
     },
+    setMaps(state, action) {
+      state.maps = action.payload;
+    },
     resetDraftForm: () => {
       return initialState; // Reset state to initial state
     },
@@ -120,6 +123,7 @@ export const {
   updateTeam,
   resetDraftForm,
   setIsEditing,
+  setMaps,
 } = newDraftSlice.actions;
 
 export default newDraftSlice.reducer;

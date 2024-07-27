@@ -18,30 +18,86 @@ import {
   formatDate,
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
-import { setIsEditing } from "../store/slices/newDraftSlice";
+import {
+  setDraftDate,
+  setDraftName,
+  setDraftTime,
+  setDraftTimePerPick,
+  setDraftType,
+  setGroups,
+  setIsEditing,
+  setNumberOfMaps,
+  setNumGroups,
+  setNumTeams,
+  setShouldAddGroups,
+  setShouldSendEmail,
+} from "../store/slices/newDraftSlice";
 import { useGetDraft } from "../authentication/useGetDraft";
 import { setDraftId } from "../store/slices/draftSlice";
+import { useGetGroups } from "../authentication/useGetGroups";
+import { useGetMaps } from "../authentication/useGetMapsNames";
+import { useGetPois } from "../authentication/useGetPois";
+import { useEffect, useMemo, useState } from "react";
 
 function MyDrafts() {
   const dispatch = useDispatch();
 
-  const currentDraftId = useSelector((state) => state.draft.draftId);
+  // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
+  const isEditingState = useSelector((state) => state.newDraft.isEditing);
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
   const navigate = useNavigate();
 
-  // const {
-  //   selectedDraft,
-  //   isPending: getDraftIsPending,
-  //   error: getDraftError,
-  //   isFetching,
-  // } = useGetDraft(1);
-  // console.log(selectedDraft);
+  const [selectedDraftId, setSelectedDraftId] = useState(null);
+
+  const { selectedDraft } = useGetDraft(selectedDraftId);
+  const { selectedGroups } = useGetGroups(selectedDraftId);
+  const {
+    selectedMaps,
+    isPending: mapsIsLoading,
+    error: mapsError,
+  } = useGetMaps(selectedDraftId);
+
+  const groupsNameArray = useMemo(
+    () =>
+      selectedGroups && selectedGroups.group
+        ? selectedGroups.group.map((obj) => Object.values(obj)[0])
+        : [],
+    [selectedGroups]
+  );
+
+  useEffect(() => {
+    // Wait for the draft data to be fetched
+    if (selectedDraft && selectedGroups && selectedMaps && isEditingState) {
+      dispatch(setDraftName(selectedDraft.draft[0].name));
+      dispatch(setDraftType(selectedDraft.draft[0].draft_type));
+      dispatch(setDraftTimePerPick(selectedDraft.draft[0].draft_time_per_pick));
+      dispatch(setDraftDate(selectedDraft.draft[0].draft_date));
+      dispatch(setDraftTime(selectedDraft.draft[0].draft_time));
+      dispatch(setShouldSendEmail(selectedDraft.draft[0].send_email));
+      if (selectedDraft.draft[0].number_of_groups) {
+        dispatch(setShouldAddGroups(true));
+      }
+      dispatch(setNumGroups(selectedDraft.draft[0].number_of_groups));
+      dispatch(setNumTeams(selectedDraft.draft[0].number_of_teams));
+      dispatch(setNumberOfMaps(selectedDraft.draft[0].number_of_maps));
+      dispatch(setGroups(groupsNameArray));
+      navigate("/new-draft-one");
+    }
+  }, [
+    selectedDraft,
+    selectedGroups,
+    selectedMaps,
+    dispatch,
+    groupsNameArray,
+    navigate,
+    isEditingState,
+  ]);
 
   function handleClickEdit(draftId) {
     dispatch(setDraftId(draftId));
     dispatch(setIsEditing(true));
-    navigate("/new-draft-one");
+    setSelectedDraftId(draftId);
   }
 
   if (isPending) {
