@@ -14,6 +14,18 @@ export async function getDraft(draftId) {
   return { draft, error };
 }
 
+export async function getDraftDetails(draftId) {
+  const { data, error } = await supabase.rpc("get_draft_data", {
+    draft_id_param: draftId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 export async function getCompletedDraftsForUser({ queryKey }) {
   const [, userId] = queryKey;
 

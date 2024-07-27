@@ -16,6 +16,7 @@ import {
   formatMinutes,
   formatTime,
   formatDate,
+  groupData,
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import {
@@ -32,12 +33,8 @@ import {
   setShouldAddGroups,
   setShouldSendEmail,
 } from "../store/slices/newDraftSlice";
-import { useGetDraft } from "../authentication/useGetDraft";
-import { setDraftId } from "../store/slices/draftSlice";
-import { useGetGroups } from "../authentication/useGetGroups";
-import { useGetMaps } from "../authentication/useGetMapsNames";
-import { useGetPois } from "../authentication/useGetPois";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -50,54 +47,38 @@ function MyDrafts() {
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 
-  const { selectedDraft } = useGetDraft(selectedDraftId);
-  const { selectedGroups } = useGetGroups(selectedDraftId);
-  const {
-    selectedMaps,
-    isPending: mapsIsLoading,
-    error: mapsError,
-  } = useGetMaps(selectedDraftId);
-
-  const groupsNameArray = useMemo(
-    () =>
-      selectedGroups && selectedGroups.group
-        ? selectedGroups.group.map((obj) => Object.values(obj)[0])
-        : [],
-    [selectedGroups]
-  );
+  // custom hook to get selected draft details for editing
+  const { draftDetails } = useGetDraftDetails(selectedDraftId);
 
   useEffect(() => {
     // Wait for the draft data to be fetched
-    if (selectedDraft && selectedGroups && selectedMaps && isEditingState) {
-      dispatch(setDraftName(selectedDraft.draft[0].name));
-      dispatch(setDraftType(selectedDraft.draft[0].draft_type));
-      dispatch(setDraftTimePerPick(selectedDraft.draft[0].draft_time_per_pick));
-      dispatch(setDraftDate(selectedDraft.draft[0].draft_date));
-      dispatch(setDraftTime(selectedDraft.draft[0].draft_time));
-      dispatch(setShouldSendEmail(selectedDraft.draft[0].send_email));
-      if (selectedDraft.draft[0].number_of_groups) {
+    if (draftDetails && isEditingState) {
+      const groupedData = groupData(draftDetails);
+      const draft = Object.values(groupedData)[0];
+
+      // // set global state
+      dispatch(setDraftName(draft.draft_name));
+      dispatch(setDraftType(draft.draft_type));
+      dispatch(setDraftTimePerPick(draft.draft_time_per_pick));
+      dispatch(setDraftDate(draft.draft_date));
+      dispatch(setDraftTime(draft.draft_time));
+      dispatch(setShouldSendEmail(draft.send_email));
+      if (draft.number_of_groups) {
         dispatch(setShouldAddGroups(true));
+        dispatch(setNumGroups(draft.number_of_groups));
+        dispatch(setGroups(Object.keys(draft.groups)));
       }
-      dispatch(setNumGroups(selectedDraft.draft[0].number_of_groups));
-      dispatch(setNumTeams(selectedDraft.draft[0].number_of_teams));
-      dispatch(setNumberOfMaps(selectedDraft.draft[0].number_of_maps));
-      dispatch(setGroups(groupsNameArray));
+      dispatch(setNumTeams(draft.number_of_teams));
+      dispatch(setNumberOfMaps(draft.number_of_maps));
+
       navigate("/new-draft-one");
     }
-  }, [
-    selectedDraft,
-    selectedGroups,
-    selectedMaps,
-    dispatch,
-    groupsNameArray,
-    navigate,
-    isEditingState,
-  ]);
+  }, [draftDetails, dispatch, navigate, isEditingState]);
 
   function handleClickEdit(draftId) {
-    dispatch(setDraftId(draftId));
-    dispatch(setIsEditing(true));
     setSelectedDraftId(draftId);
+
+    dispatch(setIsEditing(true));
   }
 
   if (isPending) {
