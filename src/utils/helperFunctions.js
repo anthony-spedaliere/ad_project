@@ -26,3 +26,79 @@ export const formatMinutes = (seconds) => (seconds / 60).toFixed(1);
 // Capitalize first letter
 export const capitalizeFirstLetter = (string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
+
+export const groupData = (sampleData) => {
+  return sampleData.reduce((acc, item) => {
+    // Create a unique key for each draft
+    const draftKey = `${item.draft_name}`;
+
+    // Initialize the draft entry if it doesn't exist
+    if (!acc[draftKey]) {
+      acc[draftKey] = {
+        draft_id: item.draft_id,
+        draft_created_at: item.draft_created_at,
+        draft_name: item.draft_name,
+        draft_type: item.draft_type,
+        draft_time_per_pick: item.draft_time_per_pick,
+        draft_date: item.draft_date,
+        draft_time: item.draft_time,
+        send_email: item.send_email,
+        number_of_groups: item.number_of_groups,
+        number_of_teams: item.number_of_teams,
+        number_of_maps: item.number_of_maps,
+        is_draft_complete: item.is_draft_complete,
+        admin: item.admin,
+        groups: {},
+        maps: {},
+      };
+    }
+
+    // Handle groups
+    const groupKey = `${item.group_name}`;
+    if (!acc[draftKey].groups[groupKey]) {
+      acc[draftKey].groups[groupKey] = {
+        group_id: item.group_id,
+        group_created_at: item.group_created_at,
+        group_name: item.group_name,
+        teams: {}, // Add teams here
+      };
+    }
+
+    // Handle maps
+    const mapKey = `${item.map_name}`;
+    if (!acc[draftKey].maps[mapKey]) {
+      acc[draftKey].maps[mapKey] = {
+        map_id: item.map_id,
+        map_created_at: item.map_created_at,
+        map_name: item.map_name,
+        pois: {},
+      };
+    }
+
+    // Handle POIs
+    const poiKey = `${item.poi_name}`;
+    acc[draftKey].maps[mapKey].pois[poiKey] = {
+      poi_id: item.poi_id,
+      poi_created_at: item.poi_created_at,
+      poi_name: item.poi_name,
+      poi_number: item.poi_number,
+    };
+
+    // Handle teams
+    if (item.team_id) {
+      const teamKey = `${item.team_name}`;
+      if (!acc[draftKey].groups[groupKey].teams[teamKey]) {
+        acc[draftKey].groups[groupKey].teams[teamKey] = {
+          team_id: item.team_id,
+          team_created_at: item.team_created_at,
+          team_name: item.team_name,
+          draft_priority: item.draft_priority,
+          team_group_id: item.team_group_id,
+          team_draft_id: item.team_draft_id,
+        };
+      }
+    }
+
+    return acc;
+  }, {});
+};

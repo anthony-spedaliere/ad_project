@@ -8,6 +8,7 @@ import {
   setDraftTime,
   setDraftTimePerPick,
   setDraftType,
+  setIsEditing,
   setShouldSendEmail,
 } from "../store/slices/newDraftSlice";
 
@@ -18,7 +19,6 @@ import {
   ButtonContainer,
   CustomSpan,
 } from "../styles/MyDraftStyles";
-import CustomModal from "../ui/CustomModal";
 import { useNavigate } from "react-router-dom";
 import FormRow from "../ui/FormRow";
 import StyledInput from "../ui/StyledInput";
@@ -27,6 +27,12 @@ import {
   RadioGroup,
   RadioLabel,
 } from "../components/RadioButtons";
+import {
+  EditDraftSaveModal,
+  EditDraftCancelModal,
+  LeaveDraftCreationModal,
+  ResetDraftFormModal,
+} from "../ui/CustomModals";
 import StyledSelect from "../components/StyledSelect";
 import StyledHeader from "../ui/StyledHeader";
 import DatePickerComponent from "../components/DatePickerComponent";
@@ -34,6 +40,7 @@ import StyledCheckbox from "../ui/StyledCheckbox";
 import StyledButton from "../ui/StyledButton";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
+import EditDraftsHeader from "../components/EditDraftsHeader";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
@@ -42,8 +49,11 @@ function NewDraftPageOne() {
   // Modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
 
   // redux state
+  const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
   const currentDraftName = useSelector((state) => state.newDraft.draftName); // Get draftName from state
   const currentDraftType = useSelector((state) => state.newDraft.draftType); // get draftType from state
   const draftTimePerPick = useSelector(
@@ -72,7 +82,6 @@ function NewDraftPageOne() {
   //=====================================================================
 
   // Reset Modal functions
-
   const showResetModal = () => {
     setIsResetModalVisible(true);
   };
@@ -89,14 +98,47 @@ function NewDraftPageOne() {
   //=====================================================================
   //=====================================================================
 
+  // Cancel Modal functions
+  const showCancelModal = () => {
+    setIsCancelModalVisible(true);
+  };
+
+  const handleCancelCancel = () => {
+    setIsCancelModalVisible(false);
+  };
+
+  const handleCancelConfirm = () => {
+    handleResetDraftForm();
+    handleCancelCancel();
+    navigate("/dashboard/my-drafts");
+    dispatch(setIsEditing(false));
+  };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Save Modal functions
+  const showSaveModal = () => {
+    setIsSaveModalVisible(true);
+  };
+
+  const handleSaveCancel = () => {
+    setIsSaveModalVisible(false);
+  };
+
+  const handleSaveConfirm = () => {
+    handleResetDraftForm();
+    handleSaveCancel();
+    navigate("/dashboard/my-drafts");
+    dispatch(setIsEditing(false));
+  };
+
+  //=====================================================================
+  //=====================================================================
+
   const handleClick = () => {
     navigate("/new-draft-two");
   };
-
-  useEffect(() => {
-    // Initialize shouldSendEmail state when component mounts
-    dispatch(setShouldSendEmail(shouldSendEmail));
-  }, [dispatch, shouldSendEmail]); // Only run once on mount
 
   // Handle draft name change
   const handleDraftNameChange = (e) => {
@@ -132,6 +174,10 @@ function NewDraftPageOne() {
     dispatch(setShouldSendEmail(e.target.checked));
   };
 
+  const handleResetDraftForm = () => {
+    dispatch(resetDraftForm());
+  };
+
   // Generate time options for the dropdown
   const timeOptions = [];
   for (let i = 30; i <= 300; i += 30) {
@@ -158,6 +204,11 @@ function NewDraftPageOne() {
     return now;
   });
 
+  useEffect(() => {
+    // Initialize shouldSendEmail state when component mounts
+    dispatch(setShouldSendEmail(shouldSendEmail));
+  }, [dispatch, shouldSendEmail]); // Only run once on mount
+
   // track new draft creation page number
   useEffect(() => {
     dispatch(setCurrentPage(1));
@@ -169,17 +220,19 @@ function NewDraftPageOne() {
     }
   }, [handleDateChange, selectedDate]);
 
-  const handleResetDraftForm = () => {
-    dispatch(resetDraftForm());
-  };
-
   return (
     <NewDraftContainer>
-      <NewDraftPageHeader
-        showExitModal={showModal}
-        showResetModal={showResetModal}
-      />
-
+      {!isEditingState ? (
+        <NewDraftPageHeader
+          showExitModal={showModal}
+          showResetModal={showResetModal}
+        />
+      ) : (
+        <EditDraftsHeader
+          showCancelModal={showCancelModal}
+          showSaveModal={showSaveModal}
+        />
+      )}
       <NewDraftFormContainer>
         <form>
           <SubContainer>
@@ -286,44 +339,29 @@ function NewDraftPageOne() {
           </StyledButton>
         </ButtonContainer>
       </NewDraftFormContainer>
-      <CustomModal
-        title="Leave Draft Creation"
-        open={isModalVisible}
-        onOk={handleConfirm}
-        onCancel={handleCancel}
-        okText="Confirm"
-        cancelText="Cancel"
-        bgColor="var(--background-color)"
-        textColor="var(--brand-color)"
-        okBgColor="var(--red-color)"
-        okTextColor="var(--background-color)"
-        cancelTextColor="var(--background-color)"
-        headerBgColor="var(--background-color)"
-        headerTextColor="var(--red-color)"
-        defaultBgColor="var(--brand-color)"
-      >
-        Are you sure you want to exit Draft Creation? You may lose your
-        progress.
-      </CustomModal>
-      <CustomModal
-        title="Reset New Draft Form"
-        open={isResetModalVisible}
-        onOk={handleResetConfirm}
-        onCancel={handleResetCancel}
-        okText="Confirm"
-        cancelText="Cancel"
-        bgColor="var(--background-color)"
-        textColor="var(--brand-color)"
-        okBgColor="var(--red-color)"
-        okTextColor="var(--background-color)"
-        cancelTextColor="var(--background-color)"
-        headerBgColor="var(--background-color)"
-        headerTextColor="var(--red-color)"
-        defaultBgColor="var(--brand-color)"
-      >
-        Are you sure you want to reset the new draft form? This will reset all
-        your progress.
-      </CustomModal>
+      <LeaveDraftCreationModal
+        isModalVisible={isModalVisible}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+      />
+
+      <ResetDraftFormModal
+        isResetModalVisible={isResetModalVisible}
+        handleResetConfirm={handleResetConfirm}
+        handleResetCancel={handleResetCancel}
+      />
+
+      <EditDraftCancelModal
+        isCancelModalVisible={isCancelModalVisible}
+        handleCancelConfirm={handleCancelConfirm}
+        handleCancelCancel={handleCancelCancel}
+      />
+
+      <EditDraftSaveModal
+        isSaveModalVisible={isSaveModalVisible}
+        handleSaveConfirm={handleSaveConfirm}
+        handleSaveCancel={handleSaveCancel}
+      />
     </NewDraftContainer>
   );
 }

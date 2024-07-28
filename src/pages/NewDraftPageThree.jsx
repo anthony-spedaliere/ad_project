@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   resetDraftForm,
   setCurrentPage,
+  setIsEditing,
   setNumberOfMaps,
   updateMap,
   updatePOI,
@@ -18,7 +19,6 @@ import {
   TeamHeader,
   TeamHeaderItem,
 } from "../styles/MyDraftStyles";
-import CustomModal from "../ui/CustomModal";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import StyledButton from "../ui/StyledButton";
 import StyledHeader from "../ui/StyledHeader";
@@ -26,6 +26,13 @@ import StyledInput from "../ui/StyledInput";
 import FormRow from "../ui/FormRow";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
 import { useSubmitNewDraft } from "../authentication/useSubmitNewDraft";
+import EditDraftsHeader from "../components/EditDraftsHeader";
+import {
+  EditDraftSaveModal,
+  EditDraftCancelModal,
+  LeaveDraftCreationModal,
+  ResetDraftFormModal,
+} from "../ui/CustomModals";
 
 function NewDraftPageThree() {
   const dispatch = useDispatch();
@@ -34,13 +41,16 @@ function NewDraftPageThree() {
   //modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
 
   // redux state
+  const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
 
   // react-query
-  const { submitNewDraft, isPending } = useSubmitNewDraft();
+  const { submitNewDraft } = useSubmitNewDraft();
 
   // Exit Modal functions
   const showModal = () => {
@@ -75,6 +85,44 @@ function NewDraftPageThree() {
 
   const handleResetDraftForm = () => {
     dispatch(resetDraftForm());
+  };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Cancel Modal functions
+  const showCancelModal = () => {
+    setIsCancelModalVisible(true);
+  };
+
+  const handleCancelCancel = () => {
+    setIsCancelModalVisible(false);
+  };
+
+  const handleCancelConfirm = () => {
+    handleResetDraftForm();
+    handleCancelCancel();
+    navigate("/dashboard/my-drafts");
+    dispatch(setIsEditing(false));
+  };
+
+  //=====================================================================
+  //=====================================================================
+
+  // Save Modal functions
+  const showSaveModal = () => {
+    setIsSaveModalVisible(true);
+  };
+
+  const handleSaveCancel = () => {
+    setIsSaveModalVisible(false);
+  };
+
+  const handleSaveConfirm = () => {
+    handleResetDraftForm();
+    handleSaveCancel();
+    navigate("/dashboard/my-drafts");
+    dispatch(setIsEditing(false));
   };
 
   //=====================================================================
@@ -126,10 +174,17 @@ function NewDraftPageThree() {
 
   return (
     <NewDraftContainer>
-      <NewDraftPageHeader
-        showExitModal={showModal}
-        showResetModal={showResetModal}
-      />
+      {!isEditingState ? (
+        <NewDraftPageHeader
+          showExitModal={showModal}
+          showResetModal={showResetModal}
+        />
+      ) : (
+        <EditDraftsHeader
+          showCancelModal={showCancelModal}
+          showSaveModal={showSaveModal}
+        />
+      )}
 
       <NewDraftFormContainer>
         <form>
@@ -285,44 +340,29 @@ function NewDraftPageThree() {
           </StyledButton>
         </ButtonContainer>
       </NewDraftFormContainer>
-      <CustomModal
-        title="Leave Draft Creation"
-        open={isModalVisible}
-        onOk={handleConfirm}
-        onCancel={handleCancel}
-        okText="Confirm"
-        cancelText="Cancel"
-        bgColor="var(--background-color)"
-        textColor="var(--brand-color)"
-        okBgColor="var(--red-color)"
-        okTextColor="var(--background-color)"
-        cancelTextColor="var(--background-color)"
-        headerBgColor="var(--background-color)"
-        headerTextColor="var(--red-color)"
-        defaultBgColor="var(--brand-color)"
-      >
-        Are you sure you want to exit Draft Creation? You may lose your
-        progress.
-      </CustomModal>
-      <CustomModal
-        title="Reset New Draft Form"
-        open={isResetModalVisible}
-        onOk={handleResetConfirm}
-        onCancel={handleResetCancel}
-        okText="Confirm"
-        cancelText="Cancel"
-        bgColor="var(--background-color)"
-        textColor="var(--brand-color)"
-        okBgColor="var(--red-color)"
-        okTextColor="var(--background-color)"
-        cancelTextColor="var(--background-color)"
-        headerBgColor="var(--background-color)"
-        headerTextColor="var(--red-color)"
-        defaultBgColor="var(--brand-color)"
-      >
-        Are you sure you want to reset the new draft form? This will reset all
-        your progress.
-      </CustomModal>
+      <LeaveDraftCreationModal
+        isModalVisible={isModalVisible}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+      />
+
+      <ResetDraftFormModal
+        isResetModalVisible={isResetModalVisible}
+        handleResetConfirm={handleResetConfirm}
+        handleResetCancel={handleResetCancel}
+      />
+
+      <EditDraftCancelModal
+        isCancelModalVisible={isCancelModalVisible}
+        handleCancelConfirm={handleCancelConfirm}
+        handleCancelCancel={handleCancelCancel}
+      />
+
+      <EditDraftSaveModal
+        isSaveModalVisible={isSaveModalVisible}
+        handleSaveConfirm={handleSaveConfirm}
+        handleSaveCancel={handleSaveCancel}
+      />
     </NewDraftContainer>
   );
 }

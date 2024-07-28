@@ -18,3 +18,16 @@ export async function insertMaps(mapArray, draftId) {
 
   return { maps, error };
 }
+
+export async function getMaps(draftId) {
+  let { data: maps, error } = await supabase
+    .from("map")
+    .select("*")
+    .eq("draft_id", draftId);
+
+  if (error) {
+    console.error("Error getting maps:", error);
+  }
+
+  return maps;
+}

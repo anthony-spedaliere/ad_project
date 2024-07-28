@@ -17,3 +17,16 @@ export async function insertGroupName(groupNames, draftId) {
 
   return { group, error };
 }
+
+export async function getGroups(draftId) {
+  let { data: group, error } = await supabase
+    .from("group")
+    .select("group_name")
+    .eq("draft", draftId);
+
+  if (error) {
+    console.error("Error getting groups:", error);
+  }
+
+  return { group, error };
+}

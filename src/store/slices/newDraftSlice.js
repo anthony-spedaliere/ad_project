@@ -16,6 +16,7 @@ const initialState = {
   numGroups: 0,
   numTeams: 0,
   teams: [],
+  isEditing: false, // used to check if new draft template to be used or edit template to be used
 };
 
 const newDraftSlice = createSlice({
@@ -85,11 +86,18 @@ const newDraftSlice = createSlice({
     setTeams(state, action) {
       state.teams = action.payload;
     },
+    setIsEditing(state, action) {
+      state.isEditing = action.payload;
+    },
     updateTeam(state, action) {
       const { index, key, value } = action.payload;
       if (state.teams[index]) {
         state.teams[index][key] = value;
       }
+    },
+    setMapData(state, action) {
+      const { maps } = action.payload;
+      state.maps = maps;
     },
     resetDraftForm: () => {
       return initialState; // Reset state to initial state
@@ -115,6 +123,8 @@ export const {
   setTeams,
   updateTeam,
   resetDraftForm,
+  setIsEditing,
+  setMapData,
 } = newDraftSlice.actions;
 
 export default newDraftSlice.reducer;

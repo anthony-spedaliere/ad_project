@@ -18,3 +18,16 @@ export async function insertPois(poisArray, mapId) {
 
   return { pois, error };
 }
+
+export async function getPois(mapId) {
+  let { data: map, error } = await supabase
+    .from("poi")
+    .select("*")
+    .eq("map_id", mapId);
+
+  if (error) {
+    console.error("Error getting pois:", error);
+  }
+
+  return { map, error };
+}
