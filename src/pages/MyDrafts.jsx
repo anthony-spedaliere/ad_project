@@ -57,7 +57,6 @@ function MyDrafts() {
     if (draftDetails && isEditingState) {
       const groupedData = groupData(draftDetails);
       const draft = Object.values(groupedData)[0];
-      console.log(draft);
 
       // // set global state
       dispatch(setDraftName(draft.draft_name));
