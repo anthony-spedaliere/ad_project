@@ -4,12 +4,20 @@ import {
   MyDraftContainer,
   MyDraftCustomLink,
 } from "../styles/MyDraftStyles";
+import { useDispatch } from "react-redux";
+import { resetDraftForm } from "../store/slices/newDraftSlice";
 
 function MyDraftsHeader() {
+  const dispatch = useDispatch();
+
   return (
     <MyDraftContainer>
       <h1>My Drafts</h1>
-      <MyDraftCustomLink to="/new-draft-one" $customColor="var(--blue-color)">
+      <MyDraftCustomLink
+        onClick={() => dispatch(resetDraftForm())}
+        to="/new-draft-one"
+        $customColor="var(--blue-color)"
+      >
         <CustomSpan>
           <FaPlus />
         </CustomSpan>

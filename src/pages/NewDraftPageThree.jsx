@@ -129,9 +129,12 @@ function NewDraftPageThree() {
   //=====================================================================
 
   const handleFinish = () => {
-    submitNewDraft();
-    dispatch(resetDraftForm());
-    navigate("/dashboard/my-drafts");
+    submitNewDraft(undefined, {
+      onSuccess: () => {
+        dispatch(resetDraftForm());
+        navigate("/dashboard/my-drafts");
+      },
+    });
   };
 
   const handleClickPrev = () => {

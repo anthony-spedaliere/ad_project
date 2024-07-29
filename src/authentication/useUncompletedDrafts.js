@@ -4,7 +4,8 @@ import { getUncompletedDraftsForUser } from "../services/apiDrafts";
 export function useUncompletedDrafts(userId) {
   const { data, error, isPending } = useQuery({
     queryKey: ["uncompletedDrafts", userId],
-    queryFn: getUncompletedDraftsForUser,
+    queryFn: () =>
+      getUncompletedDraftsForUser({ queryKey: ["uncompletedDrafts", userId] }),
     enabled: !!userId,
     refetchOnWindowFocus: true,
   });

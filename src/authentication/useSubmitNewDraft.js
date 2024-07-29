@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { insertNewDraft } from "../services/apiDrafts";
 import { insertGroupName } from "../services/apiGroup";
@@ -8,6 +8,7 @@ import { insertTeams } from "../services/apiTeam";
 import toast from "react-hot-toast";
 
 export function useSubmitNewDraft() {
+  const queryClient = useQueryClient();
   const userId = useSelector((state) => state.user.id);
   const draftData = useSelector((state) => state.newDraft);
 
@@ -58,6 +59,9 @@ export function useSubmitNewDraft() {
         await insertTeams(draftData.teams, groupsResponse.group, draftId);
 
         toast.success("Draft submitted successfully!");
+
+        // Invalidate the drafts query cache to refetch the drafts data
+        queryClient.invalidateQueries(["uncompletedDrafts", userId]);
       } catch (error) {
         toast.error(`Error submitting new draft: ${error.message}`);
         throw new Error(`Error submitting new draft: ${error.message}`);
