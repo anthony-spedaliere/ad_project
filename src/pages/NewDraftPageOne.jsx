@@ -46,6 +46,13 @@ function NewDraftPageOne() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // error handling state
+  const [errors, setErrors] = useState({
+    draftName: "",
+    draftTimePerPick: "",
+    draftDate: "",
+  });
+
   // Modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
@@ -64,6 +71,30 @@ function NewDraftPageOne() {
   const shouldSendEmail = useSelector(
     (state) => state.newDraft.shouldSendEmail
   ); //get shouldSendEmail from state
+
+  // error handling function
+  const validateInputs = useCallback(() => {
+    const newErrors = {};
+
+    if (!currentDraftName) {
+      newErrors.draftName = "Draft Name is required.";
+    } else if (currentDraftName.length > 50) {
+      newErrors.draftName = "Draft Name cannot exceed 50 characters.";
+    }
+
+    if (!draftTimePerPick) {
+      newErrors.draftTimePerPick = "Draft Time Per Pick is required.";
+    }
+
+    if (!draftDate) {
+      newErrors.draftDate = "Draft Date is required.";
+    }
+
+    setErrors(newErrors);
+
+    // If there are no errors, return true, otherwise false
+    return Object.keys(newErrors).length === 0;
+  }, [currentDraftName, draftDate, draftTimePerPick]);
 
   // Exit Modal functions
   const showModal = () => {
@@ -143,6 +174,7 @@ function NewDraftPageOne() {
   // Handle draft name change
   const handleDraftNameChange = (e) => {
     dispatch(setDraftName(e.target.value));
+    validateInputs();
   };
 
   const handleDraftTypeChange = (e) => {
@@ -152,6 +184,7 @@ function NewDraftPageOne() {
   // Handle draft time per pick change
   const handleDraftTimePerPickChange = (e) => {
     dispatch(setDraftTimePerPick(parseInt(e.target.value)));
+    validateInputs();
   };
 
   // Handle date and time change
@@ -165,8 +198,9 @@ function NewDraftPageOne() {
       });
       dispatch(setDraftDate(localDate.toISOString().split("T")[0])); // Store date as ISO string (yyyy-mm-dd)
       dispatch(setDraftTime(localTimeString)); // Store time as hh:mm:ss
+      validateInputs();
     },
-    [dispatch]
+    [dispatch, validateInputs]
   );
 
   // Handle should send email change
@@ -236,7 +270,11 @@ function NewDraftPageOne() {
       <NewDraftFormContainer>
         <form>
           <SubContainer>
-            <FormRow customPadding="0" label="Draft Name">
+            <FormRow
+              customPadding="0"
+              label="Draft Name"
+              error={errors.draftName}
+            >
               <StyledInput
                 type="text"
                 id="draft-name"
@@ -249,7 +287,7 @@ function NewDraftPageOne() {
             </FormRow>
 
             <div>
-              <FormRow label="Draft Type">
+              <FormRow label="Draft Type" error="">
                 <RadioGroup
                   onChange={handleDraftTypeChange}
                   value={currentDraftType}
@@ -289,7 +327,11 @@ function NewDraftPageOne() {
               <h4>Learn More</h4>
             </div>
 
-            <FormRow customPadding="0" label="Draft Time Per Pick">
+            <FormRow
+              customPadding="0"
+              label="Draft Time Per Pick"
+              error={errors.draftTimePerPick}
+            >
               <StyledSelect
                 id="draft-time"
                 name="draftTime"
@@ -301,7 +343,7 @@ function NewDraftPageOne() {
             </FormRow>
 
             <div>
-              <FormRow label="Draft Date and Time">
+              <FormRow label="Draft Schedule" error={errors.draftDate}>
                 <DatePickerComponent
                   selectedDate={selectedDate}
                   onChange={(date) => setSelectedDate(date)}
