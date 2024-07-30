@@ -37,7 +37,6 @@ import EditDraftsHeader from "../components/EditDraftsHeader";
 
 function NewDraftPageTwo() {
   const dispatch = useDispatch();
-  //modal
   const navigate = useNavigate();
 
   // modals

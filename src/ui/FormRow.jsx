@@ -27,12 +27,12 @@ const Error = styled.span`
   color: var(--red-color);
 `;
 
-function FormRow({ customPadding, label, error, children }) {
+function FormRow({ customPadding, label, $error, children }) {
   return (
     <StyledFormRow $customPadding={customPadding}>
       {label && <Label htmlFor={children.props.id}>{label}</Label>}
       {children}
-      {error && <Error>{error}</Error>}
+      {$error && <Error>{$error}</Error>}
     </StyledFormRow>
   );
 }

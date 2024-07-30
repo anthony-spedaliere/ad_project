@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetDraftForm,
@@ -52,6 +52,9 @@ function NewDraftPageOne() {
     draftTimePerPick: "",
     draftDate: "",
   });
+
+  // state to track if the button has been clicked
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   // Modal
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -168,7 +171,10 @@ function NewDraftPageOne() {
   //=====================================================================
 
   const handleClick = () => {
-    navigate("/new-draft-two");
+    setButtonClicked(true); // Set buttonClicked to true when the button is clicked
+    if (validateInputs()) {
+      navigate("/new-draft-two");
+    }
   };
 
   // Handle draft name change
@@ -273,7 +279,7 @@ function NewDraftPageOne() {
             <FormRow
               customPadding="0"
               label="Draft Name"
-              error={errors.draftName}
+              $error={buttonClicked && errors.draftName}
             >
               <StyledInput
                 type="text"
@@ -330,7 +336,7 @@ function NewDraftPageOne() {
             <FormRow
               customPadding="0"
               label="Draft Time Per Pick"
-              error={errors.draftTimePerPick}
+              $error={buttonClicked && errors.draftTimePerPick}
             >
               <StyledSelect
                 id="draft-time"
@@ -343,7 +349,10 @@ function NewDraftPageOne() {
             </FormRow>
 
             <div>
-              <FormRow label="Draft Schedule" error={errors.draftDate}>
+              <FormRow
+                label="Draft Schedule"
+                $error={buttonClicked && errors.draftDate}
+              >
                 <DatePickerComponent
                   selectedDate={selectedDate}
                   onChange={(date) => setSelectedDate(date)}
@@ -409,3 +418,39 @@ function NewDraftPageOne() {
 }
 
 export default NewDraftPageOne;
+
+// // error handling state
+// const [errors, setErrors] = useState({
+//   numGroups: "",
+//   groupName: "",
+//   numTeams: "",
+//   teamName: "",
+// });
+
+// // error handling function
+// const validateInputs = useCallback(() => {
+//   const newErrors = {};
+
+//   if (!numGroups) {
+//     newErrors.numGroups = "This field is required.";
+//   }
+
+//   if (!groupName) {
+//     newErrors.groupName = "Group Name is required.";
+//   } else if (groupName.length > 50) {
+//     newErrors.groupName = "Cannot exceed 20 characters.";
+//   }
+
+//   if (!numTeams) {
+//     newErrors.numTeams = "This field is required.";
+//   }
+
+//   if (!teamName) {
+//     newErrors.teamName = "Team Name is required.";
+//   }
+
+//   setErrors(newErrors);
+
+//   // If there are no errors, return true, otherwise false
+//   return Object.keys(newErrors).length === 0;
+// }, [teamName, numTeams, groupName, numGroups]);
