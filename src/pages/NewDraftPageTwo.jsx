@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentPage,
@@ -23,6 +23,8 @@ import {
   TeamRowContainer,
   ButtonContainer,
   CustomSpan,
+  TeamRowTeamNameContainer,
+  TeamRowError,
 } from "../styles/MyDraftStyles";
 import CustomModal from "../ui/CustomModal";
 import StyledHeader from "../ui/StyledHeader";
@@ -38,6 +40,19 @@ import EditDraftsHeader from "../components/EditDraftsHeader";
 function NewDraftPageTwo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // error handling state
+  const [errors, setErrors] = useState({
+    numGroupsError: "",
+    numTeamsError: "",
+    groupNamesErrors: [],
+    teamNamesErrors: [],
+  });
+
+  // state to track if the button has been clicked
+  const [buttonClicked, setButtonClicked] = useState(false);
+
+  //================end of error handling state=================
 
   // modals
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -55,6 +70,54 @@ function NewDraftPageTwo() {
   const groups = useSelector((state) => state.newDraft.groups);
   const numTeams = useSelector((state) => state.newDraft.numTeams);
   const teams = useSelector((state) => state.newDraft.teams);
+
+  // validation
+  const validateInputs = useCallback(() => {
+    const newErrors = {
+      numGroupsError: "",
+      numTeamsError: "",
+      groupNamesErrors: [],
+      teamNamesErrors: [],
+    };
+
+    let isValid = true;
+
+    if (shouldAddGroups) {
+      if (!numGroups) {
+        newErrors.numGroupsError = "This field is required.";
+        isValid = false;
+      } else if (numGroups < 0 || numGroups > 6) {
+        newErrors.numGroupsError = "Number of groups must be between 1 and 6.";
+        isValid = false;
+      }
+
+      for (let i = 0; i < numGroups; i++) {
+        if (!groups[i]) {
+          newErrors.groupNamesErrors[i] = "This field is required.";
+          isValid = false;
+        }
+      }
+    }
+
+    if (!numTeams) {
+      newErrors.numTeamsError = "This field is required.";
+      isValid = false;
+    } else if (numTeams < 0 || numTeams > 30) {
+      newErrors.numTeamsError = "Number of teams must be between 1 and 30.";
+      isValid = false;
+    }
+
+    for (let i = 0; i < numTeams; i++) {
+      if (!teams[i]?.teamName) {
+        newErrors.teamNamesErrors[i] = "This field is required."; // add team name error
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+
+    return isValid;
+  }, [groups, numGroups, numTeams, shouldAddGroups, teams]);
 
   // Exit Modal functions
   const showModal = () => {
@@ -133,7 +196,10 @@ function NewDraftPageTwo() {
   //=====================================================================
 
   const handleClickNext = () => {
-    navigate("/new-draft-three");
+    setButtonClicked(true);
+    if (validateInputs()) {
+      navigate("/new-draft-three");
+    }
   };
 
   const handleClickPrev = () => {
@@ -156,8 +222,18 @@ function NewDraftPageTwo() {
 
   const handleGroupCountChange = (e) => {
     const value = e.target.value;
+    if (value === "") {
+      dispatch(setGroups([])); // Clear groups if value is erased
+    }
     if (value >= 0 && value <= 6) {
       dispatch(setNumGroups(isNaN(value) ? 0 : value)); // Update numGroups in Redux state
+      if (!value || value === 0) {
+        dispatch(setGroups([])); // Clear groups if value is 0
+      }
+    }
+
+    if (shouldAddGroups) {
+      validateInputs();
     }
   };
 
@@ -193,6 +269,7 @@ function NewDraftPageTwo() {
         )
       );
     }
+    validateInputs();
   };
 
   const handleTeamDetailChange = (index, key, value) => {
@@ -200,7 +277,12 @@ function NewDraftPageTwo() {
   };
 
   const groupInputs = Array.from({ length: numGroups }).map((_, index) => (
-    <FormRow key={index} customPadding="0" label={`Group ${index + 1} Name`}>
+    <FormRow
+      key={index}
+      customPadding="0"
+      label={`Group ${index + 1} Name`}
+      $error={buttonClicked && errors.groupNamesErrors[index]}
+    >
       <StyledInput
         type="text"
         $bgColor="var(--brand-color)"
@@ -213,18 +295,24 @@ function NewDraftPageTwo() {
 
   const teamRows = Array.from({ length: numTeams }).map((_, index) => (
     <TeamRowContainer key={index}>
-      <StyledInput
-        type="text"
-        id={`teamName${index}`}
-        $bgColor="var(--brand-color)"
-        height="4rem"
-        $flex="1"
-        placeholder={`Team ${index + 1} Name`}
-        value={teams[index]?.teamName || ""}
-        onChange={(e) =>
-          handleTeamDetailChange(index, "teamName", e.target.value)
-        }
-      />
+      <TeamRowTeamNameContainer $flex="1">
+        <StyledInput
+          type="text"
+          id={`teamName${index}`}
+          $bgColor="var(--brand-color)"
+          height="4rem"
+          width="100%"
+          placeholder={`Team ${index + 1} Name`}
+          value={teams[index]?.teamName || ""}
+          onChange={(e) =>
+            handleTeamDetailChange(index, "teamName", e.target.value)
+          }
+        />
+        <TeamRowError>
+          {buttonClicked && errors.teamNamesErrors[index]}
+        </TeamRowError>
+      </TeamRowTeamNameContainer>
+
       <StyledInput
         type="number"
         id={`draftPriority${index}`}
@@ -242,6 +330,7 @@ function NewDraftPageTwo() {
         }
         disabled
       />
+
       <StyledSelect
         $flex="1"
         value={
@@ -314,6 +403,7 @@ function NewDraftPageTwo() {
                   <FormRow
                     customPadding="2rem 0"
                     label="Number of Groups (max. of 6 group allowed)"
+                    $error={buttonClicked && errors.numGroupsError}
                   >
                     <StyledInput
                       type="number"
@@ -329,7 +419,10 @@ function NewDraftPageTwo() {
               )}
             </div>
             <TeamContainer>
-              <FormRow label="Number of Teams (max. of 30 teams allowed)">
+              <FormRow
+                label="Number of Teams (max. of 30 teams allowed)"
+                $error={buttonClicked && errors.numTeamsError}
+              >
                 <StyledInput
                   type="number"
                   $bgColor="var(--brand-color)"

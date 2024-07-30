@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetDraftForm,
@@ -418,39 +418,3 @@ function NewDraftPageOne() {
 }
 
 export default NewDraftPageOne;
-
-// // error handling state
-// const [errors, setErrors] = useState({
-//   numGroups: "",
-//   groupName: "",
-//   numTeams: "",
-//   teamName: "",
-// });
-
-// // error handling function
-// const validateInputs = useCallback(() => {
-//   const newErrors = {};
-
-//   if (!numGroups) {
-//     newErrors.numGroups = "This field is required.";
-//   }
-
-//   if (!groupName) {
-//     newErrors.groupName = "Group Name is required.";
-//   } else if (groupName.length > 50) {
-//     newErrors.groupName = "Cannot exceed 20 characters.";
-//   }
-
-//   if (!numTeams) {
-//     newErrors.numTeams = "This field is required.";
-//   }
-
-//   if (!teamName) {
-//     newErrors.teamName = "Team Name is required.";
-//   }
-
-//   setErrors(newErrors);
-
-//   // If there are no errors, return true, otherwise false
-//   return Object.keys(newErrors).length === 0;
-// }, [teamName, numTeams, groupName, numGroups]);
