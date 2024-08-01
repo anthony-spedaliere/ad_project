@@ -10,7 +10,12 @@ function NewDraftPageHeader({ showCancelModal, showSaveModal }) {
     <>
       <ButtonHeaderContainer>
         <NewDraftButton onClick={showCancelModal}>Cancel</NewDraftButton>
-        <NewDraftButton onClick={showSaveModal}>Save</NewDraftButton>
+        <NewDraftButton
+          $customColor="var(--color-grey-0)"
+          onClick={showSaveModal}
+        >
+          Save
+        </NewDraftButton>
       </ButtonHeaderContainer>
 
       <ProgressBarContainer>

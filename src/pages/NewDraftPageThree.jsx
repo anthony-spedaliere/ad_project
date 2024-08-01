@@ -184,6 +184,7 @@ function NewDraftPageThree() {
 
   const handleResetDraftForm = () => {
     dispatch(resetDraftForm());
+    navigate("/new-draft-one");
   };
 
   //=====================================================================
@@ -218,10 +219,9 @@ function NewDraftPageThree() {
   };
 
   const handleSaveConfirm = () => {
-    handleResetDraftForm();
+    dispatch(setIsEditing(false));
     handleSaveCancel();
     navigate("/dashboard/my-drafts");
-    dispatch(setIsEditing(false));
   };
 
   //=====================================================================
@@ -474,16 +474,20 @@ function NewDraftPageThree() {
               <MdKeyboardArrowLeft /> Prev
             </CustomSpan>
           </StyledButton>
-          <StyledButton
-            $bgColor="var(--brand-color)"
-            $textColor="var(--background-color)"
-            $hoverBgColor="var(--brand-color-dark)"
-            height="4rem"
-            width="20rem"
-            onClick={handleFinish}
-          >
-            <CustomSpan $justifyContent="center">Finish</CustomSpan>
-          </StyledButton>
+          {!isEditingState ? (
+            <StyledButton
+              $bgColor="var(--brand-color)"
+              $textColor="var(--background-color)"
+              $hoverBgColor="var(--brand-color-dark)"
+              height="4rem"
+              width="20rem"
+              onClick={handleFinish}
+            >
+              <CustomSpan $justifyContent="center">Finish</CustomSpan>
+            </StyledButton>
+          ) : (
+            <></>
+          )}
         </ButtonContainer>
       </NewDraftFormContainer>
       <LeaveDraftCreationModal

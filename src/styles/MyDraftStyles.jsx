@@ -36,7 +36,7 @@ export const MyDraftCustomLink = styled(Link)`
 `;
 
 export const NewDraftButton = styled.button`
-  color: var(--red-color);
+  color: ${(props) => props.$customColor || "var(--red-color)"};
   text-decoration: none;
   font-size: 2rem;
   background: none;
