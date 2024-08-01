@@ -93,6 +93,28 @@ export const TeamRowContainer = styled.div`
   gap: 1rem;
 `;
 
+export const TeamRowTeamNameContainer = styled.div`
+  flex: ${(props) => props.$flex || "none"};
+  display: flex;
+  flex-direction: column;
+`;
+
+export const PoiRowPoiNameContainer = styled.div`
+  flex: ${(props) => props.$flex || "none"};
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TeamRowError = styled.span`
+  font-size: 1.4rem;
+  color: var(--red-color);
+`;
+
+export const PoiRowError = styled.span`
+  font-size: 1.4rem;
+  color: var(--red-color);
+`;
+
 export const TeamHeader = styled.div`
   display: flex;
   justify-content: space-between;
