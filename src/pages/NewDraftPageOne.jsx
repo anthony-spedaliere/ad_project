@@ -278,7 +278,7 @@ function NewDraftPageOne() {
           <SubContainer>
             <FormRow
               customPadding="0"
-              label="Draft Name"
+              label="Draft Name (Name cannot exceed 50 characters.)"
               $error={buttonClicked && errors.draftName}
             >
               <StyledInput

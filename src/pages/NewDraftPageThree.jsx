@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetDraftForm,
@@ -15,6 +15,8 @@ import {
   CustomSpan,
   NewDraftContainer,
   NewDraftFormContainer,
+  PoiRowError,
+  PoiRowPoiNameContainer,
   SubContainer,
   TeamHeader,
   TeamHeaderItem,
@@ -38,6 +40,11 @@ function NewDraftPageThree() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // state to track if the button has been clicked
+  const [buttonClicked, setButtonClicked] = useState(false);
+
+  //================end of error handling state=================
+
   //modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isResetModalVisible, setIsResetModalVisible] = useState(false);
@@ -49,8 +56,100 @@ function NewDraftPageThree() {
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
 
+  // error handling state
+  const [errors, setErrors] = useState({
+    numMapsError: "",
+    mapErrors: maps.map(() => ({
+      mapNameError: "",
+      numPoiError: "",
+      poiErrors: [],
+    })),
+  });
+
   // react-query
   const { submitNewDraft } = useSubmitNewDraft();
+
+  // validation
+  const validateInputs = useCallback(() => {
+    const newErrors = {
+      numMapsError: "",
+      mapErrors: maps.map(() => ({
+        mapNameError: "",
+        numPoiError: "",
+        poiErrors: [],
+      })),
+    };
+
+    let isValid = true;
+
+    if (!numMaps) {
+      newErrors.numMapsError = "This field is required.";
+      isValid = false;
+    } else if (numMaps < 1 || numMaps > 4) {
+      newErrors.numMapsError = "Number of maps must be between 1 and 4.";
+      isValid = false;
+    }
+
+    maps.forEach((map, index) => {
+      if (!map.mapName) {
+        newErrors.mapErrors[index].mapNameError = "Map name is required.";
+        isValid = false;
+      } else if (map.mapName.length > 30) {
+        newErrors.mapErrors[index].mapNameError =
+          "Map name cannot exceed 30 characters.";
+        isValid = false;
+      }
+
+      if (map.numPoi === undefined || map.numPoi === "" || map.numPoi === 0) {
+        newErrors.mapErrors[index].numPoiError = "Number of POI's is required.";
+        isValid = false;
+      } else if (map.numPoi < 0 || map.numPoi > 30) {
+        newErrors.mapErrors[index].numPoiError =
+          "Number of POI's must be between 0 and 30.";
+        isValid = false;
+      }
+
+      map.pois.forEach((poi, poiIndex) => {
+        if (!poi.name) {
+          if (!newErrors.mapErrors[index].poiErrors[poiIndex]) {
+            newErrors.mapErrors[index].poiErrors[poiIndex] = {
+              poiNameError: "",
+              poiPointsError: "",
+            };
+          }
+          newErrors.mapErrors[index].poiErrors[poiIndex].poiNameError =
+            "POI name is required.";
+          isValid = false;
+        } else if (poi.name.length > 30) {
+          if (!newErrors.mapErrors[index].poiErrors[poiIndex]) {
+            newErrors.mapErrors[index].poiErrors[poiIndex] = {
+              poiNameError: "",
+              poiPointsError: "",
+            };
+          }
+          newErrors.mapErrors[index].poiErrors[poiIndex].poiNameError =
+            "POI name cannot exceed 30 characters.";
+          isValid = false;
+        }
+
+        if (poi.points === undefined || poi.points === "" || poi.points === 0) {
+          if (!newErrors.mapErrors[index].poiErrors[poiIndex]) {
+            newErrors.mapErrors[index].poiErrors[poiIndex] = {
+              poiNameError: "",
+              poiPointsError: "",
+            };
+          }
+          newErrors.mapErrors[index].poiErrors[poiIndex].poiPointsError =
+            "POI number is required.";
+          isValid = false;
+        }
+      });
+    });
+
+    setErrors(newErrors);
+
+    return isValid;
+  }, [maps, numMaps]);
 
   // Exit Modal functions
   const showModal = () => {
@@ -129,12 +228,16 @@ function NewDraftPageThree() {
   //=====================================================================
 
   const handleFinish = () => {
-    submitNewDraft(undefined, {
-      onSuccess: () => {
-        dispatch(resetDraftForm());
-        navigate("/dashboard/my-drafts");
-      },
-    });
+    setButtonClicked(true);
+
+    if (validateInputs()) {
+      submitNewDraft(undefined, {
+        onSuccess: () => {
+          dispatch(resetDraftForm());
+          navigate("/dashboard/my-drafts");
+        },
+      });
+    }
   };
 
   const handleClickPrev = () => {
@@ -146,6 +249,7 @@ function NewDraftPageThree() {
     if (numberOfMaps >= 0 && numberOfMaps <= 4) {
       dispatch(setNumberOfMaps(numberOfMaps));
     }
+    validateInputs();
   };
 
   const handleMapChange = (index, key, value) => {
@@ -153,10 +257,13 @@ function NewDraftPageThree() {
       if (value >= 0 && value <= 30) {
         dispatch(updateMap({ index, key, value }));
       }
+
+      validateInputs();
       return;
     } else {
       dispatch(updateMap({ index, key, value }));
     }
+    validateInputs();
   };
 
   const handlePOIChange = (mapIndex, poiIndex, key, value) => {
@@ -207,13 +314,16 @@ function NewDraftPageThree() {
               >
                 Add map information below to be included in draft.
               </StyledHeader>
-              <FormRow label="Number of Maps (max. of 4)">
+              <FormRow
+                label="Number of Maps (max. of 4)"
+                $error={buttonClicked && errors.numMapsError}
+              >
                 <StyledInput
                   $bgColor="var(--brand-color)"
                   height="4rem"
                   type="number"
                   id="numberOfMaps"
-                  value={numMaps}
+                  value={numMaps || ""}
                   onChange={(e) => handleNumberOfMapsChange(e.target.value)}
                   onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                 />
@@ -236,12 +346,18 @@ function NewDraftPageThree() {
               </StyledHeader>
               {maps.map((map, index) => (
                 <div style={{ marginBottom: "8rem" }} key={index}>
-                  <FormRow label={`Map ${index + 1} Name`}>
+                  <FormRow
+                    label={`Map ${
+                      index + 1
+                    } Name (Map name cannot exceed 30 characters.)`}
+                    $error={
+                      buttonClicked && errors.mapErrors[index]?.mapNameError
+                    }
+                  >
                     <StyledInput
                       $bgColor="var(--brand-color)"
                       height="4rem"
                       type="text"
-                      maxLength="30"
                       id={`mapName-${index}`}
                       value={map.mapName}
                       onChange={(e) =>
@@ -249,24 +365,32 @@ function NewDraftPageThree() {
                       }
                     />
                   </FormRow>
-                  <FormRow label="Number of POI's">
+                  <FormRow
+                    label="Number of POI's"
+                    $error={
+                      buttonClicked && errors.mapErrors[index]?.numPoiError
+                    }
+                  >
                     <StyledInput
                       $bgColor="var(--brand-color)"
                       height="4rem"
                       type="number"
                       id={`numOfPoi-${index}`}
-                      value={map.numPoi}
+                      value={map.numPoi || ""}
                       onChange={(e) =>
                         handleMapChange(index, "numPoi", e.target.value)
                       }
                       onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                     />
                   </FormRow>
-
-                  <TeamHeader>
-                    <TeamHeaderItem>POI Name</TeamHeaderItem>
-                    <TeamHeaderItem>POI Number</TeamHeaderItem>
-                  </TeamHeader>
+                  {map.numPoi ? (
+                    <TeamHeader>
+                      <TeamHeaderItem>POI Name</TeamHeaderItem>
+                      <TeamHeaderItem>POI Number</TeamHeaderItem>
+                    </TeamHeader>
+                  ) : (
+                    <></>
+                  )}
                   {map.pois.map((poi, poiIndex) => (
                     <div
                       key={poiIndex}
@@ -276,41 +400,60 @@ function NewDraftPageThree() {
                         marginBottom: "1rem",
                       }}
                     >
-                      <StyledInput
-                        $flex="1"
-                        $bgColor="var(--brand-color)"
-                        height="4rem"
-                        id={`poiName-${index}-${poiIndex}`}
-                        type="text"
-                        placeholder={`POI ${poiIndex + 1} Name`}
-                        maxLength="30"
-                        value={poi.name}
-                        onChange={(e) =>
-                          handlePOIChange(
-                            index,
-                            poiIndex,
-                            "name",
-                            e.target.value
-                          )
-                        }
-                      />
-                      <StyledInput
-                        $flex="1"
-                        $bgColor="var(--brand-color)"
-                        height="4rem"
-                        type="number"
-                        id={`poiNumber-${index}-${poiIndex}`}
-                        placeholder={`POI ${poiIndex + 1} Points`}
-                        value={poi.points}
-                        onChange={(e) =>
-                          handlePOIChange(
-                            index,
-                            poiIndex,
-                            "points",
-                            e.target.value
-                          )
-                        }
-                      />
+                      <PoiRowPoiNameContainer $flex="1">
+                        <StyledInput
+                          $bgColor="var(--brand-color)"
+                          height="4rem"
+                          id={`poiName-${index}-${poiIndex}`}
+                          type="text"
+                          placeholder={`POI ${poiIndex + 1} Name`}
+                          // maxLength="30"
+                          value={poi.name}
+                          onChange={(e) =>
+                            handlePOIChange(
+                              index,
+                              poiIndex,
+                              "name",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {buttonClicked &&
+                          errors.mapErrors[index]?.poiErrors[poiIndex] && (
+                            <PoiRowError>
+                              {
+                                errors.mapErrors[index].poiErrors[poiIndex]
+                                  .poiNameError
+                              }
+                            </PoiRowError>
+                          )}
+                      </PoiRowPoiNameContainer>
+                      <PoiRowPoiNameContainer $flex="1">
+                        <StyledInput
+                          $bgColor="var(--brand-color)"
+                          height="4rem"
+                          type="number"
+                          id={`poiNumber-${index}-${poiIndex}`}
+                          value={poi.points || ""}
+                          onChange={(e) =>
+                            handlePOIChange(
+                              index,
+                              poiIndex,
+                              "points",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {buttonClicked &&
+                          errors.mapErrors[index]?.poiErrors[poiIndex] && (
+                            <PoiRowError>
+                              {
+                                errors.mapErrors[index].poiErrors[poiIndex]
+                                  .poiPointsError
+                              }
+                            </PoiRowError>
+                          )}
+                      </PoiRowPoiNameContainer>
                     </div>
                   ))}
                 </div>

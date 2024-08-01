@@ -95,14 +95,17 @@ function NewDraftPageTwo() {
         if (!groups[i]) {
           newErrors.groupNamesErrors[i] = "This field is required.";
           isValid = false;
+        } else if (groups[i].length > 20) {
+          newErrors.groupNamesErrors[i] = "Cannot exceed 20 characters.";
+          isValid = false;
         }
       }
     }
 
-    if (!numTeams) {
-      newErrors.numTeamsError = "This field is required.";
+    if (numTeams <= 0) {
+      newErrors.numTeamsError = "Cannot have zero or negative number of teams.";
       isValid = false;
-    } else if (numTeams < 0 || numTeams > 30) {
+    } else if (numTeams > 30) {
       newErrors.numTeamsError = "Number of teams must be between 1 and 30.";
       isValid = false;
     }
@@ -110,6 +113,9 @@ function NewDraftPageTwo() {
     for (let i = 0; i < numTeams; i++) {
       if (!teams[i]?.teamName) {
         newErrors.teamNamesErrors[i] = "This field is required."; // add team name error
+        isValid = false;
+      } else if (teams[i].teamName.length > 30) {
+        newErrors.teamNamesErrors[i] = "Team name cannot exceed 30 characters."; // add team name error
         isValid = false;
       }
     }
@@ -280,7 +286,9 @@ function NewDraftPageTwo() {
     <FormRow
       key={index}
       customPadding="0"
-      label={`Group ${index + 1} Name`}
+      label={`Group ${
+        index + 1
+      } Name (Group name cannot exceed 20 characters.)`}
       $error={buttonClicked && errors.groupNamesErrors[index]}
     >
       <StyledInput
@@ -432,11 +440,15 @@ function NewDraftPageTwo() {
                   onWheel={(e) => e.currentTarget.blur()} // Prevent scrolling with mouse wheel
                 />
               </FormRow>
-              <TeamHeader>
-                <TeamHeaderItem>Team Name</TeamHeaderItem>
-                <TeamHeaderItem>Draft Priority</TeamHeaderItem>
-                <TeamHeaderItem>Group</TeamHeaderItem>
-              </TeamHeader>
+              {numTeams ? (
+                <TeamHeader>
+                  <TeamHeaderItem>Team Name</TeamHeaderItem>
+                  <TeamHeaderItem>Draft Priority</TeamHeaderItem>
+                  <TeamHeaderItem>Group</TeamHeaderItem>
+                </TeamHeader>
+              ) : (
+                <></>
+              )}
               {teamRows}
             </TeamContainer>
           </SubContainer>
