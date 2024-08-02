@@ -8,11 +8,14 @@ export function useDeleteDraft() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const userId = useSelector((state) => state.user.id);
+  const isEditing = useSelector((state) => state.newDraft.isEditing);
 
   const { mutate: deleteDraft, isPending } = useMutation({
     mutationFn: (draftId) => deleteDraftApi(draftId),
     onSuccess: () => {
-      toast.success("Draft successfully deleted.");
+      if (isEditing) {
+        toast.success("Draft successfully deleted.");
+      }
       navigate("/dashboard/my-drafts", { replace: true });
       // Invalidate the drafts query cache to refetch the drafts data
       queryClient.invalidateQueries(["uncompletedDrafts", userId]);

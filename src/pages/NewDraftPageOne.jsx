@@ -41,6 +41,8 @@ import StyledButton from "../ui/StyledButton";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
 import EditDraftsHeader from "../components/EditDraftsHeader";
+import { useDeleteDraft } from "../authentication/useDeleteDraft";
+import { useSubmitNewDraft } from "../authentication/useSubmitNewDraft";
 
 function NewDraftPageOne() {
   const dispatch = useDispatch();
@@ -74,6 +76,15 @@ function NewDraftPageOne() {
   const shouldSendEmail = useSelector(
     (state) => state.newDraft.shouldSendEmail
   ); //get shouldSendEmail from state
+
+  // current draft being edited
+  const draftInEditing = useSelector((state) => state.draft.currDraftInEditing);
+  const [draftBeingEditedId, setDraftBeingEditedId] = useState(
+    draftInEditing.draft_id
+  );
+  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
+  const { submitNewDraft, isPending: submitNewDraftIsPending } =
+    useSubmitNewDraft();
 
   // error handling function
   const validateInputs = useCallback(() => {
@@ -161,9 +172,17 @@ function NewDraftPageOne() {
   };
 
   const handleSaveConfirm = () => {
-    handleResetDraftForm();
-    handleSaveCancel();
-    navigate("/dashboard/my-drafts");
+    submitNewDraft(undefined, {
+      onSuccess: () => {
+        handleSaveCancel();
+
+        deleteDraft(draftBeingEditedId);
+        dispatch(resetDraftForm());
+
+        navigate("/dashboard/my-drafts");
+      },
+    });
+
     dispatch(setIsEditing(false));
   };
 

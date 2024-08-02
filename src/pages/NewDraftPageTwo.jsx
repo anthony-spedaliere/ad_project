@@ -36,6 +36,8 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import StyledButton from "../ui/StyledButton";
 import NewDraftPageHeader from "../components/NewDraftPageHeader";
 import EditDraftsHeader from "../components/EditDraftsHeader";
+import { useSubmitNewDraft } from "../authentication/useSubmitNewDraft";
+import { useDeleteDraft } from "../authentication/useDeleteDraft";
 
 function NewDraftPageTwo() {
   const dispatch = useDispatch();
@@ -70,6 +72,15 @@ function NewDraftPageTwo() {
   const groups = useSelector((state) => state.newDraft.groups);
   const numTeams = useSelector((state) => state.newDraft.numTeams);
   const teams = useSelector((state) => state.newDraft.teams);
+
+  // current draft being edited
+  const draftInEditing = useSelector((state) => state.draft.currDraftInEditing);
+  const [draftBeingEditedId, setDraftBeingEditedId] = useState(
+    draftInEditing.draft_id
+  );
+  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
+  const { submitNewDraft, isPending: submitNewDraftIsPending } =
+    useSubmitNewDraft();
 
   // validation
   const validateInputs = useCallback(() => {
@@ -193,9 +204,17 @@ function NewDraftPageTwo() {
   };
 
   const handleSaveConfirm = () => {
-    handleResetDraftForm();
-    handleSaveCancel();
-    navigate("/dashboard/my-drafts");
+    submitNewDraft(undefined, {
+      onSuccess: () => {
+        handleSaveCancel();
+
+        deleteDraft(draftBeingEditedId);
+        dispatch(resetDraftForm());
+
+        navigate("/dashboard/my-drafts");
+      },
+    });
+
     dispatch(setIsEditing(false));
   };
 
