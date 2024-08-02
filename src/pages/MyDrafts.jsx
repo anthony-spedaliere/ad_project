@@ -38,6 +38,7 @@ import {
 import { useEffect, useState } from "react";
 import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
 import { setCurrDraftInEditing } from "../store/slices/draftSlice";
+import { useDeleteDraft } from "../authentication/useDeleteDraft";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -49,6 +50,8 @@ function MyDrafts() {
   const navigate = useNavigate();
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
+
+  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
   // custom hook to get selected draft details for editing
   const { draftDetails } = useGetDraftDetails(selectedDraftId);
@@ -179,7 +182,10 @@ function MyDrafts() {
                     <ActionButton onClick={() => handleClickEdit(draft.id)}>
                       Edit
                     </ActionButton>
-                    <ActionButton $customColor="var(--red-color)">
+                    <ActionButton
+                      onClick={() => deleteDraft(draft.id)}
+                      $customColor="var(--red-color)"
+                    >
                       Delete
                     </ActionButton>
                   </ActionsContainer>
