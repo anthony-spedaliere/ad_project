@@ -37,6 +37,7 @@ import {
 } from "../store/slices/newDraftSlice";
 import { useEffect, useState } from "react";
 import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
+import { setCurrDraftInEditing } from "../store/slices/draftSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ function MyDrafts() {
     if (draftDetails && isEditingState) {
       const groupedData = groupData(draftDetails);
       const draft = Object.values(groupedData)[0];
+      dispatch(setCurrDraftInEditing(draft));
 
       // // set global state
       dispatch(setDraftName(draft.draft_name));

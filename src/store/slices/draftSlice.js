@@ -4,17 +4,17 @@ const draftSlice = createSlice({
   name: "draft",
   initialState: {
     draftId: null,
-    currDraft: null,
+    currDraftInEditing: null,
   },
   reducers: {
     setDraftId: (state, action) => {
       state.draftId = action.payload;
     },
-    setCurrDraft: (state, action) => {
-      state.currDraft = action.payload;
+    setCurrDraftInEditing: (state, action) => {
+      state.currDraftInEditing = action.payload;
     },
   },
 });
 
-export const { setDraftId, setCurrDraft } = draftSlice.actions;
+export const { setDraftId, setCurrDraftInEditing } = draftSlice.actions;
 export default draftSlice.reducer;

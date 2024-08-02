@@ -98,3 +98,11 @@ export async function insertNewDraft(
 
   return { draft: data[0], error };
 }
+
+export async function deleteDraft(draftId) {
+  const { error } = await supabase.from("draft").delete().eq("id", draftId);
+
+  if (error) {
+    console.error("Error deleting draft:", error);
+  }
+}
