@@ -39,9 +39,14 @@ import { useEffect, useState } from "react";
 import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
 import { setCurrDraftInEditing } from "../store/slices/draftSlice";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
+import { DeleteDraftModal } from "../ui/CustomModals";
 
 function MyDrafts() {
   const dispatch = useDispatch();
+
+  // modal state
+  const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
+    useState(false);
 
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
@@ -55,6 +60,25 @@ function MyDrafts() {
 
   // custom hook to get selected draft details for editing
   const { draftDetails } = useGetDraftDetails(selectedDraftId);
+
+  //=====================================================================
+
+  // Save Modal functions
+  const showDeleteDraftModal = (draftId) => {
+    setSelectedDraftId(draftId);
+    setIsDeleteDraftSaveModalVisible(true);
+  };
+
+  const handleDeleteDraftCancel = () => {
+    setIsDeleteDraftSaveModalVisible(false);
+  };
+
+  const handleDeleteDraftConfirm = () => {
+    handleDeleteDraftCancel();
+    deleteDraft(selectedDraftId);
+  };
+
+  //=====================================================================
 
   useEffect(() => {
     // Wait for the draft data to be fetched
@@ -100,13 +124,6 @@ function MyDrafts() {
       });
       dispatch(setTeams(teams));
 
-      // const teams = Object.values(draft.teams || {}).map((team) => ({
-      //   teamName: team.team_name || "",
-      //   draftPriority: team.draft_priority || 0,
-      //   groupOfTeam: team.group_of_team || "",
-      // }));
-      // dispatch(setTeamsData({ teams }));
-
       navigate("/new-draft-one");
     }
   }, [draftDetails, dispatch, navigate, isEditingState]);
@@ -117,7 +134,7 @@ function MyDrafts() {
     dispatch(setIsEditing(true));
   }
 
-  if (isPending) {
+  if (isPending || deleteDraftIsPending) {
     return (
       <DashboardContentContainer>
         <CenteredMessage>
@@ -183,7 +200,7 @@ function MyDrafts() {
                       Edit
                     </ActionButton>
                     <ActionButton
-                      onClick={() => deleteDraft(draft.id)}
+                      onClick={() => showDeleteDraftModal(draft.id)}
                       $customColor="var(--red-color)"
                     >
                       Delete
@@ -194,6 +211,11 @@ function MyDrafts() {
             ))}
           </tbody>
         </Table>
+        <DeleteDraftModal
+          isDeleteDraftModalVisible={isDeleteDraftModalVisible}
+          handleDeleteDraftModalConfirm={handleDeleteDraftConfirm}
+          handleDeleteDraftModalCancel={handleDeleteDraftCancel}
+        />
       </DashboardContentContainer>
     </>
   );
