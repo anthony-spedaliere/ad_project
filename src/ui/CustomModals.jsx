@@ -108,3 +108,30 @@ export function EditDraftCancelModal({
     </CustomModal>
   );
 }
+
+export function DeleteDraftModal({
+  isDeleteDraftModalVisible,
+  handleDeleteDraftModalConfirm,
+  handleDeleteDraftModalCancel,
+}) {
+  return (
+    <CustomModal
+      title="Edit Draft"
+      open={isDeleteDraftModalVisible}
+      onOk={handleDeleteDraftModalConfirm}
+      onCancel={handleDeleteDraftModalCancel}
+      okText="Confirm"
+      cancelText="Cancel"
+      bgColor="var(--background-color)"
+      textColor="var(--brand-color)"
+      okBgColor="var(--red-color)"
+      okTextColor="var(--background-color)"
+      cancelTextColor="var(--background-color)"
+      headerBgColor="var(--background-color)"
+      headerTextColor="var(--red-color)"
+      defaultBgColor="var(--brand-color)"
+    >
+      Are you sure you want to delete this draft? It cannot be undone.
+    </CustomModal>
+  );
+}

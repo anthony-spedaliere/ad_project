@@ -30,3 +30,17 @@ export async function getGroups(draftId) {
 
   return { group, error };
 }
+
+export async function updateGroupName(updatedGroupName, groupId) {
+  const { data: updateGroupNameData, error } = await supabase
+    .from("group")
+    .update({ group_name: updatedGroupName })
+    .eq("id", groupId)
+    .select();
+
+  if (error) {
+    console.error("Error updating group name:", error);
+  }
+
+  return { updateGroupNameData, error };
+}

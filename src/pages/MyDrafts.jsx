@@ -37,9 +37,16 @@ import {
 } from "../store/slices/newDraftSlice";
 import { useEffect, useState } from "react";
 import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
+import { setCurrDraftInEditing } from "../store/slices/draftSlice";
+import { useDeleteDraft } from "../authentication/useDeleteDraft";
+import { DeleteDraftModal } from "../ui/CustomModals";
 
 function MyDrafts() {
   const dispatch = useDispatch();
+
+  // modal state
+  const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
+    useState(false);
 
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
@@ -49,14 +56,36 @@ function MyDrafts() {
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 
+  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
+
   // custom hook to get selected draft details for editing
   const { draftDetails } = useGetDraftDetails(selectedDraftId);
+
+  //=====================================================================
+
+  // Save Modal functions
+  const showDeleteDraftModal = (draftId) => {
+    setSelectedDraftId(draftId);
+    setIsDeleteDraftSaveModalVisible(true);
+  };
+
+  const handleDeleteDraftCancel = () => {
+    setIsDeleteDraftSaveModalVisible(false);
+  };
+
+  const handleDeleteDraftConfirm = () => {
+    handleDeleteDraftCancel();
+    deleteDraft(selectedDraftId);
+  };
+
+  //=====================================================================
 
   useEffect(() => {
     // Wait for the draft data to be fetched
     if (draftDetails && isEditingState) {
       const groupedData = groupData(draftDetails);
       const draft = Object.values(groupedData)[0];
+      dispatch(setCurrDraftInEditing(draft));
 
       // // set global state
       dispatch(setDraftName(draft.draft_name));
@@ -95,13 +124,6 @@ function MyDrafts() {
       });
       dispatch(setTeams(teams));
 
-      // const teams = Object.values(draft.teams || {}).map((team) => ({
-      //   teamName: team.team_name || "",
-      //   draftPriority: team.draft_priority || 0,
-      //   groupOfTeam: team.group_of_team || "",
-      // }));
-      // dispatch(setTeamsData({ teams }));
-
       navigate("/new-draft-one");
     }
   }, [draftDetails, dispatch, navigate, isEditingState]);
@@ -112,7 +134,7 @@ function MyDrafts() {
     dispatch(setIsEditing(true));
   }
 
-  if (isPending) {
+  if (isPending || deleteDraftIsPending) {
     return (
       <DashboardContentContainer>
         <CenteredMessage>
@@ -177,7 +199,10 @@ function MyDrafts() {
                     <ActionButton onClick={() => handleClickEdit(draft.id)}>
                       Edit
                     </ActionButton>
-                    <ActionButton $customColor="var(--red-color)">
+                    <ActionButton
+                      onClick={() => showDeleteDraftModal(draft.id)}
+                      $customColor="var(--red-color)"
+                    >
                       Delete
                     </ActionButton>
                   </ActionsContainer>
@@ -186,6 +211,11 @@ function MyDrafts() {
             ))}
           </tbody>
         </Table>
+        <DeleteDraftModal
+          isDeleteDraftModalVisible={isDeleteDraftModalVisible}
+          handleDeleteDraftModalConfirm={handleDeleteDraftConfirm}
+          handleDeleteDraftModalCancel={handleDeleteDraftCancel}
+        />
       </DashboardContentContainer>
     </>
   );

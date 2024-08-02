@@ -158,6 +158,7 @@ function NewDraftPageTwo() {
 
   const handleResetDraftForm = () => {
     dispatch(resetDraftForm());
+    navigate("/new-draft-one");
   };
 
   //=====================================================================
