@@ -35,6 +35,7 @@ import {
   LeaveDraftCreationModal,
   ResetDraftFormModal,
 } from "../ui/CustomModals";
+import { useDeleteDraft } from "../authentication/useDeleteDraft";
 
 function NewDraftPageThree() {
   const dispatch = useDispatch();
@@ -56,6 +57,14 @@ function NewDraftPageThree() {
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
 
+  // current draft being edited
+  const draftInEditing = useSelector((state) => state.draft.currDraftInEditing);
+  const [draftBeingEditedId, setDraftBeingEditedId] = useState(
+    draftInEditing.draft_id
+  );
+  const { deleteDraft } = useDeleteDraft();
+  const { submitNewDraft } = useSubmitNewDraft();
+
   // error handling state
   const [errors, setErrors] = useState({
     numMapsError: "",
@@ -65,9 +74,6 @@ function NewDraftPageThree() {
       poiErrors: [],
     })),
   });
-
-  // react-query
-  const { submitNewDraft } = useSubmitNewDraft();
 
   // validation
   const validateInputs = useCallback(() => {
@@ -219,9 +225,18 @@ function NewDraftPageThree() {
   };
 
   const handleSaveConfirm = () => {
+    submitNewDraft(undefined, {
+      onSuccess: () => {
+        handleSaveCancel();
+
+        deleteDraft(draftBeingEditedId);
+        dispatch(resetDraftForm());
+
+        navigate("/dashboard/my-drafts");
+      },
+    });
+
     dispatch(setIsEditing(false));
-    handleSaveCancel();
-    navigate("/dashboard/my-drafts");
   };
 
   //=====================================================================
