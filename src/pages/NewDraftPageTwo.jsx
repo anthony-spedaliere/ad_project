@@ -78,9 +78,8 @@ function NewDraftPageTwo() {
   const [draftBeingEditedId, setDraftBeingEditedId] = useState(
     draftInEditing.draft_id
   );
-  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
-  const { submitNewDraft, isPending: submitNewDraftIsPending } =
-    useSubmitNewDraft();
+  const { deleteDraft } = useDeleteDraft();
+  const { submitNewDraft } = useSubmitNewDraft();
 
   // validation
   const validateInputs = useCallback(() => {

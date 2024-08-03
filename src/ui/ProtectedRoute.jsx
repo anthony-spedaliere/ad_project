@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
+  setIsDeleted,
   setUserEmail,
   setUserId,
   setUserUsername,
 } from "../store/slices/userSlice";
 import { useGetUsername } from "../authentication/useGetUsername";
+import { useGetIsUserDeleted } from "../authentication/useGetIsUserDeleted";
 
 const FullPage = styled.div`
   height: 100vh;
@@ -27,12 +29,18 @@ function ProtectedRoute({ children }) {
   const { isPending, isAuthenticated, isFetching, user } = useUser();
   const { data: usernameData } = useGetUsername(user?.id);
 
+  // Check if user is deleted
+  const { isDeleted, isPending: isPendingIsUserDeleted } = useGetIsUserDeleted(
+    user?.id
+  );
+
   // 2. if there is no authenticated user, redirect to the /login page
   useEffect(
     function () {
-      if (!isPending && !isAuthenticated && !isFetching) navigate("/login");
+      if ((!isPending && !isAuthenticated && !isFetching) || isDeleted)
+        navigate("/login");
     },
-    [isAuthenticated, isPending, navigate, isFetching]
+    [isAuthenticated, isPending, navigate, isFetching, isDeleted]
   );
 
   // add user info to the global state on login
@@ -45,7 +53,7 @@ function ProtectedRoute({ children }) {
   }, [isAuthenticated, user, dispatch, usernameData]);
 
   // 3. while loading, show spinner
-  if (isPending)
+  if (isPending && isPendingIsUserDeleted)
     return (
       <FullPage>
         <Spinner />;
@@ -53,7 +61,7 @@ function ProtectedRoute({ children }) {
     );
 
   // 4. if there is a user, render the app
-  if (isAuthenticated) return children;
+  if (isAuthenticated && !isDeleted) return children;
 }
 
 export default ProtectedRoute;

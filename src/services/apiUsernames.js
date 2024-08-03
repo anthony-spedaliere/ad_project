@@ -47,3 +47,22 @@ export async function updateUsername(userId, newUsername) {
     throw err;
   }
 }
+
+export async function getIsUserDeleted(userId) {
+  try {
+    let { data: isDeleted, error } = await supabase
+      .from("usernames")
+      .select("is_deleted")
+      .eq("user", userId);
+
+    if (error) {
+      console.error("Error occurred: ", error.message);
+      throw new Error(error.message);
+    }
+
+    return { isDeleted, error };
+  } catch (err) {
+    console.error("Unexpected error: ", err.message);
+    throw err;
+  }
+}
