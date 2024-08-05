@@ -15,12 +15,12 @@ export function EditDraftSaveModal({
       cancelText="Cancel"
       bgColor="var(--background-color)"
       textColor="var(--brand-color)"
-      okBgColor="var(--red-color)"
+      okBgColor="var(--brand-color)"
       okTextColor="var(--background-color)"
       cancelTextColor="var(--background-color)"
       headerBgColor="var(--background-color)"
-      headerTextColor="var(--red-color)"
-      defaultBgColor="var(--brand-color)"
+      headerTextColor="var(--brand-color)"
+      defaultBgColor="var(--red-color)"
     >
       Please confirm you want to save changes.
     </CustomModal>
@@ -89,7 +89,7 @@ export function EditDraftCancelModal({
 }) {
   return (
     <CustomModal
-      title="Edit Draft"
+      title="Leave Edit Draft"
       open={isCancelModalVisible}
       onOk={handleCancelConfirm}
       onCancel={handleCancelCancel}
