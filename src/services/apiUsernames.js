@@ -66,3 +66,24 @@ export async function getIsUserDeleted(userId) {
     throw err;
   }
 }
+
+// set the is_deleted column in the usernames data table to true
+export async function updateIsUserDeletedToTrue(userId) {
+  try {
+    const { data, error } = await supabase
+      .from("usernames")
+      .update({ is_deleted: true })
+      .eq("user", userId)
+      .select();
+
+    if (error) {
+      console.error("Error occurred: ", error.message);
+      throw new Error(error.message);
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Unexpected error: ", err.message);
+    throw err;
+  }
+}

@@ -45,12 +45,12 @@ function ProtectedRoute({ children }) {
 
   // add user info to the global state on login
   useEffect(() => {
-    if (isAuthenticated && user?.id && usernameData) {
+    if (isAuthenticated && user?.id && usernameData && !isDeleted) {
       dispatch(setUserId(user.id));
       dispatch(setUserEmail(user?.email));
       dispatch(setUserUsername(usernameData[0].username));
     }
-  }, [isAuthenticated, user, dispatch, usernameData]);
+  }, [isAuthenticated, user, dispatch, usernameData, isDeleted]);
 
   // 3. while loading, show spinner
   if (isPending && isPendingIsUserDeleted)
