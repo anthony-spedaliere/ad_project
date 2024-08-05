@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { useLogout } from "../authentication/useLogout";
+import { useUpdateUserDeletedToTrue } from "../authentication/useUpdateUserDeletedToTrue";
+import { useUser } from "../authentication/useUser";
+import toast from "react-hot-toast";
+
+// styles
 import StyledButton from "../ui/StyledButton";
 import styled from "styled-components";
 import CustomModal from "../ui/CustomModal";
@@ -17,6 +23,9 @@ const Container = styled.div`
 
 function DeleteAccountForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { logout } = useLogout();
+  const { id } = useUser();
+  const { deleteUser, isPending } = useUpdateUserDeletedToTrue();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -27,7 +36,14 @@ function DeleteAccountForm() {
   };
 
   const handleConfirm = () => {
-    // add delete logic here
+    deleteUser(id, {
+      onSuccess: () => {
+        logout();
+      },
+      onError: (error) => {
+        toast.error(`There was an error deleting the draft: ${error.message}`);
+      },
+    });
     setIsModalVisible(false);
   };
 
@@ -40,6 +56,7 @@ function DeleteAccountForm() {
     >
       <Container $bgColor="var(--background-color-dark)" $height="8rem">
         <StyledButton
+          disabled={isPending}
           $flex="1"
           $marginRight="2rem"
           $marginLeft="2rem"
