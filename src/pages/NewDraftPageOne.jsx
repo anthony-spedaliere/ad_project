@@ -82,9 +82,8 @@ function NewDraftPageOne() {
   const [draftBeingEditedId, setDraftBeingEditedId] = useState(
     draftInEditing.draft_id
   );
-  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
-  const { submitNewDraft, isPending: submitNewDraftIsPending } =
-    useSubmitNewDraft();
+  const { deleteDraft } = useDeleteDraft();
+  const { submitNewDraft } = useSubmitNewDraft();
 
   // error handling function
   const validateInputs = useCallback(() => {
@@ -180,10 +179,9 @@ function NewDraftPageOne() {
         dispatch(resetDraftForm());
 
         navigate("/dashboard/my-drafts");
+        dispatch(setIsEditing(false));
       },
     });
-
-    dispatch(setIsEditing(false));
   };
 
   //=====================================================================
