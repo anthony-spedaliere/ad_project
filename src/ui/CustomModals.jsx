@@ -116,7 +116,7 @@ export function DeleteDraftModal({
 }) {
   return (
     <CustomModal
-      title="Edit Draft"
+      title="Delete Draft"
       open={isDeleteDraftModalVisible}
       onOk={handleDeleteDraftModalConfirm}
       onCancel={handleDeleteDraftModalCancel}

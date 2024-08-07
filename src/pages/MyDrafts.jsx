@@ -40,6 +40,7 @@ import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
 import { setCurrDraftInEditing } from "../store/slices/draftSlice";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { DeleteDraftModal } from "../ui/CustomModals";
+import toast from "react-hot-toast";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -75,7 +76,12 @@ function MyDrafts() {
 
   const handleDeleteDraftConfirm = () => {
     handleDeleteDraftCancel();
-    deleteDraft(selectedDraftId);
+    deleteDraft(selectedDraftId, {
+      onSuccess: () => {
+        navigate("/dashboard/my-drafts", { replace: true });
+        toast.success("Draft successfully deleted.");
+      },
+    });
   };
 
   //=====================================================================

@@ -24,11 +24,51 @@ import {
   formatTime,
 } from "../utils/helperFunctions";
 
+import { DeleteDraftModal } from "../ui/CustomModals";
+import { useState } from "react";
+import { useDeleteDraft } from "../authentication/useDeleteDraft";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 function DraftHistory() {
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useCompletedDrafts(userId);
 
-  if (isPending) {
+  // modal state
+  const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
+    useState(false);
+
+  const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
+
+  const [selectedDraftId, setSelectedDraftId] = useState(null);
+
+  const navigate = useNavigate();
+
+  //=====================================================================
+
+  // Save Modal functions
+  const showDeleteDraftModal = (draftId) => {
+    setSelectedDraftId(draftId);
+    setIsDeleteDraftSaveModalVisible(true);
+  };
+
+  const handleDeleteDraftCancel = () => {
+    setIsDeleteDraftSaveModalVisible(false);
+  };
+
+  const handleDeleteDraftConfirm = () => {
+    handleDeleteDraftCancel();
+    deleteDraft(selectedDraftId, {
+      onSuccess: () => {
+        navigate("/dashboard/draft-history", { replace: true });
+        toast.success("Draft successfully deleted.");
+      },
+    });
+  };
+
+  //=====================================================================
+
+  if (isPending || deleteDraftIsPending) {
     return (
       <DashboardContentContainer>
         <CenteredMessage>
@@ -88,12 +128,23 @@ function DraftHistory() {
                   <ActionsContainer>
                     <ActionButton>View Results</ActionButton>
                     <ActionButton>Redraft</ActionButton>
+                    <ActionButton
+                      onClick={() => showDeleteDraftModal(draft.id)}
+                      $customColor="var(--red-color)"
+                    >
+                      Delete
+                    </ActionButton>
                   </ActionsContainer>
                 </TableCell>
               </TableRow>
             ))}
           </tbody>
         </Table>
+        <DeleteDraftModal
+          isDeleteDraftModalVisible={isDeleteDraftModalVisible}
+          handleDeleteDraftModalConfirm={handleDeleteDraftConfirm}
+          handleDeleteDraftModalCancel={handleDeleteDraftCancel}
+        />
       </DraftHistoryContentContainer>
     </DashboardContentContainer>
   );
