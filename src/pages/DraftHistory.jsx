@@ -88,6 +88,9 @@ function DraftHistory() {
                   <ActionsContainer>
                     <ActionButton>View Results</ActionButton>
                     <ActionButton>Redraft</ActionButton>
+                    <ActionButton $customColor="var(--red-color)">
+                      Delete
+                    </ActionButton>
                   </ActionsContainer>
                 </TableCell>
               </TableRow>
