@@ -1,5 +1,5 @@
 // function imports
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useCompletedDrafts } from "../authentication/useCompletedDrafts";
 
 // style imports
@@ -29,8 +29,13 @@ import { useState } from "react";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { setIsEditing } from "../store/slices/newDraftSlice";
+import { useDraftDetails } from "../hooks/useDraftDetails";
 
 function DraftHistory() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const userId = useSelector((state) => state.user.id);
   const { data: drafts, isPending, error } = useCompletedDrafts(userId);
 
@@ -41,8 +46,6 @@ function DraftHistory() {
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
-
-  const navigate = useNavigate();
 
   //=====================================================================
 
@@ -67,6 +70,14 @@ function DraftHistory() {
   };
 
   //=====================================================================
+
+  function handleClickEdit(draftId) {
+    setSelectedDraftId(draftId);
+
+    dispatch(setIsEditing(true));
+  }
+
+  useDraftDetails(selectedDraftId);
 
   if (isPending || deleteDraftIsPending) {
     return (
@@ -127,7 +138,9 @@ function DraftHistory() {
                 <TableCell>
                   <ActionsContainer>
                     <ActionButton>View Results</ActionButton>
-                    <ActionButton>Redraft</ActionButton>
+                    <ActionButton onClick={() => handleClickEdit(draft.id)}>
+                      Redraft
+                    </ActionButton>
                     <ActionButton
                       onClick={() => showDeleteDraftModal(draft.id)}
                       $customColor="var(--red-color)"
