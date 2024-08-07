@@ -82,6 +82,9 @@ function NewDraftPageOne() {
   const [draftBeingEditedId, setDraftBeingEditedId] = useState(
     draftInEditing.draft_id
   );
+  const [isDraftComplete, setIsDraftComplete] = useState(
+    draftInEditing.is_draft_complete
+  );
   const { deleteDraft } = useDeleteDraft();
   const { submitNewDraft } = useSubmitNewDraft();
 
@@ -175,7 +178,9 @@ function NewDraftPageOne() {
       onSuccess: () => {
         handleSaveCancel();
 
-        deleteDraft(draftBeingEditedId);
+        if (!isDraftComplete) {
+          deleteDraft(draftBeingEditedId);
+        }
         dispatch(resetDraftForm());
 
         navigate("/dashboard/my-drafts");
