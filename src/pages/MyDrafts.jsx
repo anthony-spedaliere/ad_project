@@ -23,7 +23,7 @@ import { setIsEditing } from "../store/slices/newDraftSlice";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { DeleteDraftModal } from "../ui/CustomModals";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 
 function MyDrafts() {
@@ -74,10 +74,6 @@ function MyDrafts() {
 
     dispatch(setIsEditing(true));
   }
-
-  useEffect(() => {
-    dispatch(setIsEditing(false));
-  }, [dispatch]);
 
   if (isPending || deleteDraftIsPending) {
     return (

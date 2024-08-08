@@ -25,7 +25,7 @@ import {
 } from "../utils/helperFunctions";
 
 import { DeleteDraftModal } from "../ui/CustomModals";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -78,10 +78,6 @@ function DraftHistory() {
   }
 
   useDraftDetails(selectedDraftId);
-
-  useEffect(() => {
-    dispatch(setIsEditing(false));
-  }, [dispatch]);
 
   if (isPending || deleteDraftIsPending) {
     return (
