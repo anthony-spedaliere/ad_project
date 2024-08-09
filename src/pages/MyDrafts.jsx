@@ -18,7 +18,10 @@ import {
   formatDate,
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
-import { setIsEditing } from "../store/slices/newDraftSlice";
+import {
+  setIsEditing,
+  setIsEditingHistory,
+} from "../store/slices/newDraftSlice";
 
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { DeleteDraftModal } from "../ui/CustomModals";
@@ -74,6 +77,7 @@ function MyDrafts() {
   function handleClickEdit(draftId) {
     setSelectedDraftId(draftId);
     setShouldUseDraftDetails(true);
+    dispatch(setIsEditingHistory(false));
     dispatch(setIsEditing(true));
   }
 

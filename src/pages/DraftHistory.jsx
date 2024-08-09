@@ -29,7 +29,10 @@ import { useEffect, useState } from "react";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { setIsEditing } from "../store/slices/newDraftSlice";
+import {
+  setIsEditing,
+  setIsEditingHistory,
+} from "../store/slices/newDraftSlice";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 
 function DraftHistory() {
@@ -80,6 +83,7 @@ function DraftHistory() {
     setSelectedDraftId(draftId);
     setShouldUseDraftDetails(true);
     dispatch(setIsEditing(true));
+    dispatch(setIsEditingHistory(true));
   }
 
   useEffect(() => {

@@ -66,6 +66,9 @@ function NewDraftPageOne() {
 
   // redux state
   const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
+  const isEditingHistoryState = useSelector(
+    (state) => state.newDraft.isEditingHistory
+  );
   const currentDraftName = useSelector((state) => state.newDraft.draftName); // Get draftName from state
   const currentDraftType = useSelector((state) => state.newDraft.draftType); // get draftType from state
   const draftTimePerPick = useSelector(
@@ -152,7 +155,11 @@ function NewDraftPageOne() {
   const handleCancelConfirm = () => {
     // handleResetDraftForm();
     handleCancelCancel();
-    navigate("/dashboard/my-drafts");
+    if (isEditingHistoryState) {
+      navigate("/dashboard/draft-history");
+    } else {
+      navigate("/dashboard/my-drafts");
+    }
   };
 
   //=====================================================================

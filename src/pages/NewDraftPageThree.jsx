@@ -54,6 +54,9 @@ function NewDraftPageThree() {
 
   // redux state
   const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
+  const isEditingHistoryState = useSelector(
+    (state) => state.newDraft.isEditingHistory
+  );
   const maps = useSelector((state) => state.newDraft.maps);
   const numMaps = useSelector((state) => state.newDraft.numMap);
 
@@ -206,7 +209,11 @@ function NewDraftPageThree() {
   const handleCancelConfirm = () => {
     // handleResetDraftForm();
     handleCancelCancel();
-    navigate("/dashboard/my-drafts");
+    if (isEditingHistoryState) {
+      navigate("/dashboard/draft-history");
+    } else {
+      navigate("/dashboard/my-drafts");
+    }
   };
 
   //=====================================================================

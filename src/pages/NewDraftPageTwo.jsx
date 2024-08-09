@@ -64,6 +64,9 @@ function NewDraftPageTwo() {
 
   // state
   const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
+  const isEditingHistoryState = useSelector(
+    (state) => state.newDraft.isEditingHistory
+  );
   const groupNames = useSelector((state) => state.newDraft.groups);
   const shouldAddGroups = useSelector(
     (state) => state.newDraft.shouldAddGroups
@@ -184,7 +187,11 @@ function NewDraftPageTwo() {
   const handleCancelConfirm = () => {
     // handleResetDraftForm();
     handleCancelCancel();
-    navigate("/dashboard/my-drafts");
+    if (isEditingHistoryState) {
+      navigate("/dashboard/draft-history");
+    } else {
+      navigate("/dashboard/my-drafts");
+    }
   };
 
   //=====================================================================
