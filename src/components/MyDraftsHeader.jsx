@@ -5,7 +5,7 @@ import {
   MyDraftCustomLink,
 } from "../styles/MyDraftStyles";
 import { useDispatch } from "react-redux";
-import { resetDraftForm } from "../store/slices/newDraftSlice";
+import { resetDraftForm, setIsEditing } from "../store/slices/newDraftSlice";
 
 function MyDraftsHeader() {
   const dispatch = useDispatch();
@@ -14,7 +14,10 @@ function MyDraftsHeader() {
     <MyDraftContainer>
       <h1>My Drafts</h1>
       <MyDraftCustomLink
-        onClick={() => dispatch(resetDraftForm())}
+        onClick={() => {
+          dispatch(resetDraftForm());
+          dispatch(setIsEditing(false));
+        }}
         to="/new-draft-one"
         $customColor="var(--blue-color)"
       >

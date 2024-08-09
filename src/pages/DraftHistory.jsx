@@ -25,7 +25,7 @@ import {
 } from "../utils/helperFunctions";
 
 import { DeleteDraftModal } from "../ui/CustomModals";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -37,6 +37,9 @@ function DraftHistory() {
   const navigate = useNavigate();
 
   const userId = useSelector((state) => state.user.id);
+
+  const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
+
   const { data: drafts, isPending, error } = useCompletedDrafts(userId);
 
   // modal state
@@ -46,6 +49,8 @@ function DraftHistory() {
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
+
+  useDraftDetails(selectedDraftId, shouldUseDraftDetails);
 
   //=====================================================================
 
@@ -73,11 +78,13 @@ function DraftHistory() {
 
   function handleClickEdit(draftId) {
     setSelectedDraftId(draftId);
-
+    setShouldUseDraftDetails(true);
     dispatch(setIsEditing(true));
   }
 
-  useDraftDetails(selectedDraftId);
+  useEffect(() => {
+    setShouldUseDraftDetails(false);
+  }, []);
 
   if (isPending || deleteDraftIsPending) {
     return (

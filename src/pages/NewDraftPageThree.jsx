@@ -59,12 +59,7 @@ function NewDraftPageThree() {
 
   // current draft being edited
   const draftInEditing = useSelector((state) => state.draft.currDraftInEditing);
-  const [draftBeingEditedId, setDraftBeingEditedId] = useState(
-    draftInEditing.draft_id
-  );
-  const [isDraftComplete, setIsDraftComplete] = useState(
-    draftInEditing.is_draft_complete
-  );
+
   const { deleteDraft } = useDeleteDraft();
   const { submitNewDraft } = useSubmitNewDraft();
 
@@ -209,10 +204,9 @@ function NewDraftPageThree() {
   };
 
   const handleCancelConfirm = () => {
-    handleResetDraftForm();
+    // handleResetDraftForm();
     handleCancelCancel();
     navigate("/dashboard/my-drafts");
-    dispatch(setIsEditing(false));
   };
 
   //=====================================================================
@@ -232,8 +226,8 @@ function NewDraftPageThree() {
       onSuccess: () => {
         handleSaveCancel();
 
-        if (!isDraftComplete) {
-          deleteDraft(draftBeingEditedId);
+        if (!draftInEditing.is_draft_complete) {
+          deleteDraft(draftInEditing.draft_id);
         }
         dispatch(resetDraftForm());
 

@@ -23,7 +23,7 @@ import { setIsEditing } from "../store/slices/newDraftSlice";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { DeleteDraftModal } from "../ui/CustomModals";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 
 function MyDrafts() {
@@ -36,6 +36,8 @@ function MyDrafts() {
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
 
+  const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
+
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
   const navigate = useNavigate();
 
@@ -43,7 +45,7 @@ function MyDrafts() {
 
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
-  useDraftDetails(selectedDraftId);
+  useDraftDetails(selectedDraftId, shouldUseDraftDetails);
 
   //=====================================================================
 
@@ -71,9 +73,13 @@ function MyDrafts() {
 
   function handleClickEdit(draftId) {
     setSelectedDraftId(draftId);
-
+    setShouldUseDraftDetails(true);
     dispatch(setIsEditing(true));
   }
+
+  useEffect(() => {
+    setShouldUseDraftDetails(false);
+  }, []);
 
   if (isPending || deleteDraftIsPending) {
     return (
