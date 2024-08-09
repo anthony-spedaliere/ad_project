@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { groupData } from "../utils/helperFunctions";
 import {
@@ -20,15 +20,14 @@ import {
 import { setCurrDraftInEditing } from "../store/slices/draftSlice";
 import { useGetDraftDetails } from "../authentication/useGetDraftDetails";
 
-export const useDraftDetails = (selectedDraftId) => {
+export const useDraftDetails = (selectedDraftId, checkState) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isEditingState = useSelector((state) => state.newDraft.isEditing);
   const { draftDetails } = useGetDraftDetails(selectedDraftId);
 
   useEffect(() => {
     // Wait for the draft data to be fetched
-    if (draftDetails && isEditingState) {
+    if (draftDetails && checkState) {
       const groupedData = groupData(draftDetails);
       const draft = Object.values(groupedData)[0];
       dispatch(setCurrDraftInEditing(draft));
@@ -74,5 +73,5 @@ export const useDraftDetails = (selectedDraftId) => {
 
       navigate("/new-draft-one");
     }
-  }, [draftDetails, dispatch, navigate, isEditingState]);
+  }, [draftDetails, dispatch, navigate, checkState]);
 };

@@ -66,6 +66,9 @@ function NewDraftPageOne() {
 
   // redux state
   const isEditingState = useSelector((state) => state.newDraft.isEditing); // state to manage whether in new draft mode or edit draft mode
+  const isEditingHistoryState = useSelector(
+    (state) => state.newDraft.isEditingHistory
+  );
   const currentDraftName = useSelector((state) => state.newDraft.draftName); // Get draftName from state
   const currentDraftType = useSelector((state) => state.newDraft.draftType); // get draftType from state
   const draftTimePerPick = useSelector(
@@ -79,12 +82,7 @@ function NewDraftPageOne() {
 
   // current draft being edited
   const draftInEditing = useSelector((state) => state.draft.currDraftInEditing);
-  const [draftBeingEditedId, setDraftBeingEditedId] = useState(
-    draftInEditing.draft_id
-  );
-  const [isDraftComplete, setIsDraftComplete] = useState(
-    draftInEditing.is_draft_complete
-  );
+
   const { deleteDraft } = useDeleteDraft();
   const { submitNewDraft } = useSubmitNewDraft();
 
@@ -155,10 +153,13 @@ function NewDraftPageOne() {
   };
 
   const handleCancelConfirm = () => {
-    handleResetDraftForm();
+    // handleResetDraftForm();
     handleCancelCancel();
-    navigate("/dashboard/my-drafts");
-    dispatch(setIsEditing(false));
+    if (isEditingHistoryState) {
+      navigate("/dashboard/draft-history");
+    } else {
+      navigate("/dashboard/my-drafts");
+    }
   };
 
   //=====================================================================
@@ -178,8 +179,8 @@ function NewDraftPageOne() {
       onSuccess: () => {
         handleSaveCancel();
 
-        if (!isDraftComplete) {
-          deleteDraft(draftBeingEditedId);
+        if (!draftInEditing.is_draft_complete) {
+          deleteDraft(draftInEditing.draft_id);
         }
         dispatch(resetDraftForm());
 
