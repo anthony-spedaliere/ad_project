@@ -43,6 +43,7 @@ import ErrorFallback from "./ui/ErrorFallback";
 import NewDraftPageOne from "./pages/NewDraftPageOne";
 import NewDraftPageTwo from "./pages/NewDraftPageTwo";
 import NewDraftPageThree from "./pages/NewDraftPageThree";
+import DraftLayout from "./ui/DraftLayout";
 
 //----------------End Imports-----------------
 
@@ -92,6 +93,20 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    element: (
+      <ProtectedRoute>
+        <DraftLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "join-draft",
+        element: <JoinDraftPage />,
+      },
+    ],
+  },
+
   {
     path: "*",
     element: <PageNotFound />,
