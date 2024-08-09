@@ -20,7 +20,7 @@ export async function insertPois(poisArray, mapId) {
 }
 
 export async function getPois(mapId) {
-  let { data: map, error } = await supabase
+  let { data: pois, error } = await supabase
     .from("poi")
     .select("*")
     .eq("map_id", mapId);
@@ -29,5 +29,5 @@ export async function getPois(mapId) {
     console.error("Error getting pois:", error);
   }
 
-  return { map, error };
+  return { pois, error };
 }

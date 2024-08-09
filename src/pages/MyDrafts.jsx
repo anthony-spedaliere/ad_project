@@ -81,6 +81,10 @@ function MyDrafts() {
     dispatch(setIsEditing(true));
   }
 
+  function handleClickStart() {
+    navigate("/join-draft");
+  }
+
   useEffect(() => {
     setShouldUseDraftDetails(false);
   }, []);
@@ -146,7 +150,9 @@ function MyDrafts() {
                 <TableCell>www.draftapex.com/4dsDc!SW%#21</TableCell>
                 <TableCell>
                   <ActionsContainer>
-                    <ActionButton>Start Now</ActionButton>
+                    <ActionButton onClick={handleClickStart}>
+                      Start Now
+                    </ActionButton>
                     <ActionButton onClick={() => handleClickEdit(draft.id)}>
                       Edit
                     </ActionButton>
