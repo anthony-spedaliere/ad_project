@@ -352,8 +352,7 @@ function NewDraftPageTwo() {
         $bgColor="var(--brand-color)"
         height="4rem"
         $flex="1"
-        value={index + 1}
-        // value={teams[index]?.draftPriority || 0}
+        value={teams[index]?.draftPriority || index + 1}
         onChange={(e) =>
           handleTeamDetailChange(
             index,
