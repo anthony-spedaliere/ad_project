@@ -86,6 +86,12 @@ function DraftHistory() {
     dispatch(setIsEditingHistory(true));
   }
 
+  function handleOnViewResults(draftId) {
+    console.log(draftId);
+
+    navigate("/dashboard/draft-results");
+  }
+
   useEffect(() => {
     setShouldUseDraftDetails(false);
   }, []);
@@ -148,7 +154,9 @@ function DraftHistory() {
                 </TableCell>
                 <TableCell>
                   <ActionsContainer>
-                    <ActionButton>View Results</ActionButton>
+                    <ActionButton onClick={() => handleOnViewResults(draft.id)}>
+                      View Results
+                    </ActionButton>
                     <ActionButton onClick={() => handleClickEdit(draft.id)}>
                       Redraft
                     </ActionButton>
