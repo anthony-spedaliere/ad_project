@@ -31,3 +31,15 @@ export async function getPois(mapId) {
 
   return { pois, error };
 }
+
+export async function getPoisWithDraftId(draftId) {
+  const { data: pois, error } = await supabase.rpc("get_poi_by_draft_id", {
+    draft_id_param: draftId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return pois;
+}

@@ -34,6 +34,7 @@ import {
   setIsEditingHistory,
 } from "../store/slices/newDraftSlice";
 import { useDraftDetails } from "../hooks/useDraftDetails";
+import { setDraftResultsId } from "../store/slices/draftResultsSlice";
 
 function DraftHistory() {
   const dispatch = useDispatch();
@@ -87,9 +88,7 @@ function DraftHistory() {
   }
 
   function handleOnViewResults(draftId) {
-    console.log(draftId);
-
-    navigate("/dashboard/draft-results");
+    dispatch(setDraftResultsId(draftId));
   }
 
   useEffect(() => {

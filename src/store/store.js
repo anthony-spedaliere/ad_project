@@ -16,12 +16,14 @@ import userReducer from "./slices/userSlice";
 import persistReducer from "redux-persist/es/persistReducer";
 import newDraftReducer from "./slices/newDraftSlice";
 import draftReducer from "./slices/draftSlice";
+import draftResultsReducer from "./slices/draftResultsSlice";
 
 const rootReducer = combineReducers({
   selectedLink: selectedLinkReducer,
   user: userReducer,
   newDraft: newDraftReducer,
   draft: draftReducer,
+  draftResults: draftResultsReducer,
 });
 
 const persistConfig = {

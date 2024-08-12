@@ -30,3 +30,16 @@ export async function insertTeams(teamArray, groups, draftId) {
 
   return { teams, error };
 }
+
+export async function getTeamsByDraftId(draftId) {
+  let { data: team, error } = await supabase
+    .from("team")
+    .select("*")
+    .eq("draft_id", draftId);
+
+  if (error) {
+    console.error("Error retrieving teams: ", error);
+  }
+
+  return { team, error };
+}
