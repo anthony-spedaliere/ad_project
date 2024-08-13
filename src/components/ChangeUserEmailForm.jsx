@@ -85,7 +85,7 @@ function ChangeUserEmailForm() {
       <p>
         Note: Once submitted, you need to confirm email changes by clicking the
         link that is sent to BOTH your previous email AND your updated email.
-        Make sure to your spam inbox.
+        Make sure to check your spam inbox.
       </p>
       <FormRow label="Email" error={errors?.email?.message}>
         <StyledInput

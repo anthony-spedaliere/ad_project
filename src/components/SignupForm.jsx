@@ -159,7 +159,7 @@ function SignupForm() {
                 type="reset"
                 disabled={isPending}
               >
-                Cancel
+                Clear
               </StyledButton>
             </FormRow>
           </StyledContainer>

@@ -7,12 +7,13 @@ import StyledButton from "../ui/StyledButton";
 import StyledContainer from "../ui/StyledContainer";
 import styled from "styled-components";
 import StyledHeader from "../ui/StyledHeader";
-import StyledCheckbox from "../ui/StyledCheckbox";
 import StyledLink from "../ui/StyledLink";
-import HorizontalLine from "../ui/HorizontalLine";
-import SocialMediaIcons from "../ui/SocialMediaIcons";
 import SignUp from "../ui/SignUp";
 import SpinnerMini from "../ui/SpinnerMini";
+
+// import StyledCheckbox from "../ui/StyledCheckbox";
+// import HorizontalLine from "../ui/HorizontalLine";
+// import SocialMediaIcons from "../ui/SocialMediaIcons";
 
 const FullScreenContainer = styled.div`
   display: flex;
@@ -75,7 +76,7 @@ function LoginForm() {
               disabled={isPending}
             />
 
-            <StyledCheckbox>Remember Me?</StyledCheckbox>
+            {/* <StyledCheckbox>Remember Me?</StyledCheckbox> */}
             <StyledButton disabled={isPending}>
               {!isPending ? "Login" : <SpinnerMini />}
             </StyledButton>
@@ -88,8 +89,8 @@ function LoginForm() {
             >
               Forgot Password?
             </StyledLink>
-            <HorizontalLine />
-            <SocialMediaIcons />
+            {/* <HorizontalLine />
+            <SocialMediaIcons /> */}
             <SignUp />
           </StyledContainer>
         </form>

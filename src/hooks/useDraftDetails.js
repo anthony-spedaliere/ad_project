@@ -69,6 +69,10 @@ export const useDraftDetails = (selectedDraftId, checkState) => {
           });
         });
       });
+
+      // Sort teams by draftPriority
+      teams.sort((a, b) => a.draftPriority - b.draftPriority);
+
       dispatch(setTeams(teams));
 
       navigate("/new-draft-one");

@@ -34,6 +34,7 @@ import {
   setIsEditingHistory,
 } from "../store/slices/newDraftSlice";
 import { useDraftDetails } from "../hooks/useDraftDetails";
+import { setDraftResultsId } from "../store/slices/draftResultsSlice";
 
 function DraftHistory() {
   const dispatch = useDispatch();
@@ -84,6 +85,11 @@ function DraftHistory() {
     setShouldUseDraftDetails(true);
     dispatch(setIsEditing(true));
     dispatch(setIsEditingHistory(true));
+  }
+
+  function handleOnViewResults(draftId) {
+    dispatch(setDraftResultsId(draftId));
+    navigate("/dashboard/draft-results");
   }
 
   useEffect(() => {
@@ -148,7 +154,9 @@ function DraftHistory() {
                 </TableCell>
                 <TableCell>
                   <ActionsContainer>
-                    <ActionButton>View Results</ActionButton>
+                    <ActionButton onClick={() => handleOnViewResults(draft.id)}>
+                      View Results
+                    </ActionButton>
                     <ActionButton onClick={() => handleClickEdit(draft.id)}>
                       Redraft
                     </ActionButton>

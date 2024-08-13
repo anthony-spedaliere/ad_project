@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getPois } from "../services/apiPoi";
 
 export function useGetPois(mapId) {
-  console.log(mapId);
   const {
     data: selectedPois,
     isPending,

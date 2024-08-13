@@ -44,6 +44,7 @@ import NewDraftPageOne from "./pages/NewDraftPageOne";
 import NewDraftPageTwo from "./pages/NewDraftPageTwo";
 import NewDraftPageThree from "./pages/NewDraftPageThree";
 import DraftLayout from "./ui/DraftLayout";
+import DraftResults from "./pages/DraftResults";
 
 //----------------End Imports-----------------
 
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
             path: "my-drafts",
             element: <MyDrafts />,
           },
+          { path: "draft-results", element: <DraftResults /> },
           { path: "draft-history", element: <DraftHistory /> },
           { path: "settings", element: <SettingsPage /> },
         ],
