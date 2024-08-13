@@ -89,6 +89,7 @@ function DraftHistory() {
 
   function handleOnViewResults(draftId) {
     dispatch(setDraftResultsId(draftId));
+    navigate("/dashboard/draft-results");
   }
 
   useEffect(() => {

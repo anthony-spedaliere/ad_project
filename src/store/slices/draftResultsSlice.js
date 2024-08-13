@@ -6,6 +6,7 @@ const draftResultsSlice = createSlice({
     draftResultsId: null,
     pois: null,
     teams: null,
+    maps: null,
   },
   reducers: {
     setDraftResultsId: (state, action) => {
@@ -17,9 +18,12 @@ const draftResultsSlice = createSlice({
     setTeams: (state, action) => {
       state.teams = action.payload;
     },
+    setMaps: (state, action) => {
+      state.maps = action.payload;
+    },
   },
 });
 
-export const { setDraftResultsId, setPois, setTeams } =
+export const { setDraftResultsId, setPois, setTeams, setMaps } =
   draftResultsSlice.actions;
 export default draftResultsSlice.reducer;
