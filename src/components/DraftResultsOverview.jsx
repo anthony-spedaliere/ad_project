@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import Spinner from "../ui/Spinner";
 
 const Container = styled.div`
   padding: 20px;
@@ -44,10 +45,27 @@ const RoundSection = styled.div`
   margin-bottom: 1.5rem;
 `;
 
+const FullPage = styled.div`
+  height: 100vh;
+  background-color: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 function DraftResultsOverview() {
   const poisResults = useSelector((state) => state.draftResults.pois);
   const teamsResults = useSelector((state) => state.draftResults.teams);
   const mapResults = useSelector((state) => state.draftResults.maps);
+
+  // Ensure data is not null or undefined
+  if (!poisResults || !teamsResults || !mapResults) {
+    return (
+      <FullPage>
+        <Spinner />
+      </FullPage>
+    ); // or handle loading state appropriately
+  }
 
   // Create the combined array
   const combined = teamsResults.map((team) => {
