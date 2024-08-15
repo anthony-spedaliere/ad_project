@@ -76,7 +76,7 @@ const router = createBrowserRouter([
             path: "my-drafts",
             element: <MyDrafts />,
           },
-          { path: "draft-results", element: <DraftResults /> },
+          { path: "draft-results/:draftId", element: <DraftResults /> },
           { path: "draft-history", element: <DraftHistory /> },
           { path: "settings", element: <SettingsPage /> },
         ],
