@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { useGetTeamsByDraftId } from "../authentication/useGetTeamsByDraftId";
 import DraftResultsOverview from "../components/DraftResultsOverview";
 import { useGetMaps } from "../authentication/useGetMapsNames";
+import { useParams } from "react-router-dom";
 
 const FullPage = styled.div`
   height: 100vh;
@@ -19,16 +20,12 @@ const FullPage = styled.div`
 function DraftResults() {
   const dispatch = useDispatch();
 
-  const draftResultsId = useSelector(
-    (state) => state.draftResults.draftResultsId
-  );
+  // retrieve draftId from the URL path parameter
+  const { draftId } = useParams();
 
-  const { pois, isPending: getPoisPending } =
-    useGetPoisWithDraftId(draftResultsId);
-  const { teams, isPending: getTeamsPending } =
-    useGetTeamsByDraftId(draftResultsId);
-  const { selectedMaps, isPending: getMapsPending } =
-    useGetMaps(draftResultsId);
+  const { pois, isPending: getPoisPending } = useGetPoisWithDraftId(draftId);
+  const { teams, isPending: getTeamsPending } = useGetTeamsByDraftId(draftId);
+  const { selectedMaps, isPending: getMapsPending } = useGetMaps(draftId);
 
   useEffect(() => {
     if (pois) {
