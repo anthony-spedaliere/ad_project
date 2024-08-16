@@ -21,6 +21,15 @@ const Container = styled.div`
   border: none;
 `;
 
+export const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+  background-color: var(--background-color);
+  max-width: 90rem;
+  margin: 0 auto;
+`;
+
 function ChangePasswordForm() {
   const {
     register,
