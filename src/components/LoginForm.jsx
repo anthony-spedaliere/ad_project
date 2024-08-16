@@ -82,7 +82,7 @@ function LoginForm() {
             </StyledButton>
 
             <StyledLink
-              to="/signup"
+              to="/forgot-password"
               customColor="var(--background-color)"
               fontWeight="700"
               marginLeft={"auto"}

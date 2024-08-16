@@ -26,25 +26,22 @@ import DraftHistory from "./pages/DraftHistory";
 import SettingsPage from "./pages/SettingsPage";
 import DashboardPage from "./pages/DashboardPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import CreateNewDraftPage from "./pages/CreateNewDraftPage";
 import JoinDraftPage from "./pages/JoinDraftPage";
+import NewDraftPageOne from "./pages/NewDraftPageOne";
+import NewDraftPageTwo from "./pages/NewDraftPageTwo";
+import NewDraftPageThree from "./pages/NewDraftPageThree";
+import DraftResults from "./pages/DraftResults";
+import ResetPassword from "./pages/ResetPassword";
 import DraftPage from "./pages/DraftPage";
-import LoginForm from "./components/LoginForm";
 
 // ui
 import ProtectedRoute from "./ui/ProtectedRoute";
 import AppLayout from "./ui/AppLayout";
+import DraftLayout from "./ui/DraftLayout";
 
 // page not found
 import PageNotFound from "./ui/PageNotFound";
-
-// error page
-import ErrorFallback from "./ui/ErrorFallback";
-import NewDraftPageOne from "./pages/NewDraftPageOne";
-import NewDraftPageTwo from "./pages/NewDraftPageTwo";
-import NewDraftPageThree from "./pages/NewDraftPageThree";
-import DraftLayout from "./ui/DraftLayout";
-import DraftResults from "./pages/DraftResults";
+import ChangePasswordForm from "./components/ChangePasswordForm";
 
 //----------------End Imports-----------------
 
@@ -60,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignupPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
   },
   {
     element: (
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
           { path: "draft-results/:draftId", element: <DraftResults /> },
           { path: "draft-history", element: <DraftHistory /> },
           { path: "settings", element: <SettingsPage /> },
+          { path: "reset-password", element: <ChangePasswordForm /> },
         ],
       },
       {
