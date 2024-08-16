@@ -100,15 +100,22 @@ function NewDraftPageOne() {
       newErrors.draftTimePerPick = "Draft Time Per Pick is required.";
     }
 
-    if (!draftDate) {
-      newErrors.draftDate = "Draft Date is required.";
+    if (!draftDate || !draftTime) {
+      newErrors.draftDate = "Draft Date and Time are required.";
+    } else {
+      const selectedDateTime = new Date(`${draftDate}T${draftTime}`);
+      const now = new Date();
+
+      if (selectedDateTime <= now) {
+        newErrors.draftDate = "Draft Date and Time must be in the future.";
+      }
     }
 
     setErrors(newErrors);
 
     // If there are no errors, return true, otherwise false
     return Object.keys(newErrors).length === 0;
-  }, [currentDraftName, draftDate, draftTimePerPick]);
+  }, [currentDraftName, draftDate, draftTime, draftTimePerPick]);
 
   // Exit Modal functions
   const showModal = () => {
