@@ -81,8 +81,8 @@ function MyDrafts() {
     dispatch(setIsEditing(true));
   }
 
-  function handleClickStart() {
-    navigate("/join-draft");
+  function handleClickStart(uniqueDraftId) {
+    navigate(`/join-draft/${uniqueDraftId}`);
   }
 
   useEffect(() => {
@@ -126,7 +126,7 @@ function MyDrafts() {
           <thead>
             <TableRow>
               <TableHeader>Draft Details</TableHeader>
-              <TableHeader>Draft Link</TableHeader>
+              <TableHeader>Draft Invite Links</TableHeader>
               <TableHeader>Actions</TableHeader>
             </TableRow>
           </thead>
@@ -147,10 +147,16 @@ function MyDrafts() {
                   <br />
                   {`${draft.number_of_teams} teams`}
                 </TableCell>
-                <TableCell>www.draftapex.com/4dsDc!SW%#21</TableCell>
                 <TableCell>
                   <ActionsContainer>
-                    <ActionButton onClick={handleClickStart}>
+                    <ActionButton>Team Invite Links</ActionButton>
+                  </ActionsContainer>
+                </TableCell>
+                <TableCell>
+                  <ActionsContainer>
+                    <ActionButton
+                      onClick={() => handleClickStart(draft.unique_draft_url)}
+                    >
                       Start Now
                     </ActionButton>
                     <ActionButton onClick={() => handleClickEdit(draft.id)}>
