@@ -85,6 +85,10 @@ function MyDrafts() {
     navigate(`/join-draft/${uniqueDraftId}`);
   }
 
+  function handleClickTeamInvites(uniqueDraftId) {
+    navigate(`/invite-links/${uniqueDraftId}`);
+  }
+
   useEffect(() => {
     setShouldUseDraftDetails(false);
   }, []);
@@ -149,7 +153,13 @@ function MyDrafts() {
                 </TableCell>
                 <TableCell>
                   <ActionsContainer>
-                    <ActionButton>Team Invite Links</ActionButton>
+                    <ActionButton
+                      onClick={() =>
+                        handleClickTeamInvites(draft.unique_draft_url)
+                      }
+                    >
+                      Team Invite Links
+                    </ActionButton>
                   </ActionsContainer>
                 </TableCell>
                 <TableCell>

@@ -42,6 +42,7 @@ import DraftLayout from "./ui/DraftLayout";
 // page not found
 import PageNotFound from "./ui/PageNotFound";
 import ChangePasswordForm from "./components/ChangePasswordForm";
+import TeamInviteLinks from "./pages/TeamInviteLinks";
 
 //----------------End Imports-----------------
 
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
           { path: "settings", element: <SettingsPage /> },
           { path: "reset-password", element: <ChangePasswordForm /> },
         ],
+      },
+      {
+        path: "invite-links/:draftId",
+        element: <TeamInviteLinks />,
       },
       {
         path: "new-draft-one",
