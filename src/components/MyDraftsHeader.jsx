@@ -6,13 +6,16 @@ import {
 } from "../styles/MyDraftStyles";
 import { useDispatch } from "react-redux";
 import { resetDraftForm, setIsEditing } from "../store/slices/newDraftSlice";
+import StyledHeader from "../ui/StyledHeader";
 
 function MyDraftsHeader() {
   const dispatch = useDispatch();
 
   return (
     <MyDraftContainer>
-      <h1>My Drafts</h1>
+      <StyledHeader $fontSize="4rem" $mgBottom="4rem">
+        My Drafts
+      </StyledHeader>
       <MyDraftCustomLink
         onClick={() => {
           dispatch(resetDraftForm());
