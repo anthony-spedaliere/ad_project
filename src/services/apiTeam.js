@@ -43,3 +43,18 @@ export async function getTeamsByDraftId(draftId) {
 
   return { team, error };
 }
+
+export async function getDraftsJoined(teamOwnerId) {
+  try {
+    let { data: draftsJoined, error } = await supabase.rpc(
+      "get_drafts_by_team_owner",
+      {
+        team_owner_uuid: teamOwnerId,
+      }
+    );
+    return { draftsJoined, error };
+  } catch (err) {
+    console.error("Error fetching joined drafts: ", err);
+    return err;
+  }
+}

@@ -28,9 +28,11 @@ import { DeleteDraftModal } from "../ui/CustomModals";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
+import { useGetDraftsJoined } from "../authentication/useGetDraftsJoined";
 
 function MyDrafts() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // modal state
   const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
@@ -42,7 +44,11 @@ function MyDrafts() {
   const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
 
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
-  const navigate = useNavigate();
+  const {
+    draftsJoined,
+    isPending: draftsJoinedIsPending,
+    error: draftsJoinedError,
+  } = useGetDraftsJoined(userId);
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 
@@ -93,7 +99,7 @@ function MyDrafts() {
     setShouldUseDraftDetails(false);
   }, []);
 
-  if (isPending || deleteDraftIsPending) {
+  if (isPending || deleteDraftIsPending || draftsJoinedIsPending) {
     return (
       <DashboardContentContainer>
         <CenteredMessage>
@@ -103,7 +109,7 @@ function MyDrafts() {
     );
   }
 
-  if (error) {
+  if (error || draftsJoinedError) {
     return (
       <DashboardContentContainer>
         <h1>Error loading drafts</h1>
@@ -124,13 +130,13 @@ function MyDrafts() {
 
   return (
     <>
-      <MyDraftsHeader />
+      <MyDraftsHeader isMyDrafts={true} headerTitle="My Drafts" />
       <DashboardContentContainer>
         <Table>
           <thead>
             <TableRow>
-              <TableHeader>Draft Details</TableHeader>
-              <TableHeader>Draft Invite Links</TableHeader>
+              <TableHeader> Details </TableHeader>
+              <TableHeader>Invite Links</TableHeader>
               <TableHeader>Actions</TableHeader>
             </TableRow>
           </thead>
@@ -189,6 +195,52 @@ function MyDrafts() {
           handleDeleteDraftModalConfirm={handleDeleteDraftConfirm}
           handleDeleteDraftModalCancel={handleDeleteDraftCancel}
         />
+      </DashboardContentContainer>
+
+      <MyDraftsHeader
+        isMyDrafts={false}
+        headerTitle="Drafts I joined"
+        marginTop="6rem"
+      />
+      <DashboardContentContainer>
+        <Table>
+          <thead>
+            <TableRow>
+              <TableHeader>Details </TableHeader>
+
+              <TableHeader>Actions</TableHeader>
+            </TableRow>
+          </thead>
+          <tbody>
+            {draftsJoined.draftsJoined.map((draft) => (
+              <TableRow key={draft.id}>
+                <TableCell>
+                  {draft.name} <br />
+                  {formatDate(draft.draft_date)}
+                  <br />
+                  {formatTime(draft.draft_time)}
+                  <br />
+                  {capitalizeFirstLetter(draft.draft_type)} Draft
+                  <br />
+                  {`${formatMinutes(
+                    draft.draft_time_per_pick
+                  )} minute(s) per pick`}
+                  <br />
+                  {`${draft.number_of_teams} teams`}
+                </TableCell>
+
+                <TableCell>
+                  <ActionsContainer>
+                    {/* <ActionButton>Join</ActionButton> */}
+                    <ActionButton $customColor="var(--red-color)">
+                      Leave
+                    </ActionButton>
+                  </ActionsContainer>
+                </TableCell>
+              </TableRow>
+            ))}
+          </tbody>
+        </Table>
       </DashboardContentContainer>
     </>
   );

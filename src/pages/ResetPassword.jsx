@@ -20,10 +20,8 @@ function ResetPassword() {
   const [accessToken, setAccessToken] = useState(null);
   const {
     register,
-    formState,
     getValues,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
 
@@ -38,8 +36,6 @@ function ResetPassword() {
 
     fetchSession();
   }, []);
-
-  console.log(accessToken);
 
   function onSubmit() {}
 

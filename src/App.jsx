@@ -31,6 +31,7 @@ import NewDraftPageOne from "./pages/NewDraftPageOne";
 import NewDraftPageTwo from "./pages/NewDraftPageTwo";
 import NewDraftPageThree from "./pages/NewDraftPageThree";
 import DraftResults from "./pages/DraftResults";
+import TeamInviteLinks from "./pages/TeamInviteLinks";
 import ResetPassword from "./pages/ResetPassword";
 import DraftPage from "./pages/DraftPage";
 
@@ -42,7 +43,6 @@ import DraftLayout from "./ui/DraftLayout";
 // page not found
 import PageNotFound from "./ui/PageNotFound";
 import ChangePasswordForm from "./components/ChangePasswordForm";
-import TeamInviteLinks from "./pages/TeamInviteLinks";
 
 //----------------End Imports-----------------
 
