@@ -82,7 +82,7 @@ function JoinedDraftsData() {
                   <TableCell>
                     <ActionsContainer>
                       <ActionButton $customColor="var(--red-color)">
-                        Leave
+                        Leave Draft
                       </ActionButton>
                     </ActionsContainer>
                   </TableCell>
