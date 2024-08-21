@@ -103,8 +103,10 @@ export async function deleteAccount(userId) {
 }
 
 export async function passwordRecovery(email) {
+  const redirectUrl = import.meta.env.VITE_PASSWORD_RECOVERY_REDIRECT_URL;
+
   let { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: "http://localhost:5173/dashboard/reset-password",
+    redirectTo: redirectUrl,
   });
 
   if (error) {

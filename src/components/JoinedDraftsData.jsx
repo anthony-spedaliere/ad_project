@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetDraftsJoined } from "../authentication/useGetDraftsJoined";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
 import {
@@ -15,16 +15,23 @@ import {
   formatTime,
   formatDate,
 } from "../utils/helperFunctions";
+import { useEffect } from "react";
+import { setJoinedDrafts } from "../store/slices/joinedDraftsSlice";
 
 function JoinedDraftsData() {
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
+  const dispatch = useDispatch();
 
   const {
     data: joinedDraftsData,
     isPending,
     error,
   } = useGetDraftsJoined(userId);
+
+  useEffect(() => {
+    dispatch(setJoinedDrafts(joinedDraftsData));
+  }, [dispatch, joinedDraftsData]);
 
   if (isPending) {
     return (

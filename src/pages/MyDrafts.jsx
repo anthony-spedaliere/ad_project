@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 import JoinedDraftsData from "../components/JoinedDraftsData";
+import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -86,8 +87,9 @@ function MyDrafts() {
     navigate(`/join-draft/${uniqueDraftId}`);
   }
 
-  function handleClickTeamInvites(uniqueDraftId) {
+  function handleClickTeamInvites(uniqueDraftId, draftId) {
     navigate(`/invite-links/${uniqueDraftId}`);
+    dispatch(setdraftIdTeamInviteLink(draftId));
   }
 
   useEffect(() => {
@@ -111,17 +113,6 @@ function MyDrafts() {
       </DashboardContentContainer>
     );
   }
-
-  // if (drafts.length === 0) {
-  //   return (
-  //     <>
-  //       <MyDraftsHeader />
-  //       <DashboardContentContainer>
-  //         <CenteredMessage>No drafts</CenteredMessage>
-  //       </DashboardContentContainer>
-  //     </>
-  //   );
-  // }
 
   return (
     <>
@@ -159,7 +150,10 @@ function MyDrafts() {
                     <ActionsContainer>
                       <ActionButton
                         onClick={() =>
-                          handleClickTeamInvites(draft.unique_draft_url)
+                          handleClickTeamInvites(
+                            draft.unique_draft_url,
+                            draft.id
+                          )
                         }
                       >
                         Team Invite Links
