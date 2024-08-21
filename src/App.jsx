@@ -31,6 +31,7 @@ import NewDraftPageOne from "./pages/NewDraftPageOne";
 import NewDraftPageTwo from "./pages/NewDraftPageTwo";
 import NewDraftPageThree from "./pages/NewDraftPageThree";
 import DraftResults from "./pages/DraftResults";
+import TeamInviteLinks from "./pages/TeamInviteLinks";
 import ResetPassword from "./pages/ResetPassword";
 import DraftPage from "./pages/DraftPage";
 
@@ -42,6 +43,7 @@ import DraftLayout from "./ui/DraftLayout";
 // page not found
 import PageNotFound from "./ui/PageNotFound";
 import ChangePasswordForm from "./components/ChangePasswordForm";
+import AcceptInvite from "./pages/AcceptInvite";
 
 //----------------End Imports-----------------
 
@@ -81,7 +83,12 @@ const router = createBrowserRouter([
           { path: "draft-history", element: <DraftHistory /> },
           { path: "settings", element: <SettingsPage /> },
           { path: "reset-password", element: <ChangePasswordForm /> },
+          { path: "accept-invite", element: <AcceptInvite /> },
         ],
+      },
+      {
+        path: "invite-links/:uniqueDraftId",
+        element: <TeamInviteLinks />,
       },
       {
         path: "new-draft-one",

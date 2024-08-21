@@ -9,6 +9,7 @@ function SettingsPage() {
   return (
     <DashboardSettingsContentContainer>
       <StyledHeader $fontSize="4rem">User Settings</StyledHeader>
+
       <ChangeUserEmailForm />
       <ChangeUserUsernameForm />
       <ChangePasswordForm />

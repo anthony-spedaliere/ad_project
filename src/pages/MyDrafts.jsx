@@ -28,9 +28,12 @@ import { DeleteDraftModal } from "../ui/CustomModals";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
+import JoinedDraftsData from "../components/JoinedDraftsData";
+import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // modal state
   const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
@@ -42,7 +45,6 @@ function MyDrafts() {
   const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
 
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
-  const navigate = useNavigate();
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 
@@ -85,6 +87,11 @@ function MyDrafts() {
     navigate(`/join-draft/${uniqueDraftId}`);
   }
 
+  function handleClickTeamInvites(uniqueDraftId, draftId) {
+    navigate(`/invite-links/${uniqueDraftId}`);
+    dispatch(setdraftIdTeamInviteLink(draftId));
+  }
+
   useEffect(() => {
     setShouldUseDraftDetails(false);
   }, []);
@@ -107,79 +114,82 @@ function MyDrafts() {
     );
   }
 
-  if (drafts.length === 0) {
-    return (
-      <>
-        <MyDraftsHeader />
-        <DashboardContentContainer>
-          <CenteredMessage>No drafts</CenteredMessage>
-        </DashboardContentContainer>
-      </>
-    );
-  }
-
   return (
     <>
-      <MyDraftsHeader />
+      <MyDraftsHeader isMyDrafts={true} headerTitle="My Drafts" />
       <DashboardContentContainer>
-        <Table>
-          <thead>
-            <TableRow>
-              <TableHeader>Draft Details</TableHeader>
-              <TableHeader>Draft Invite Links</TableHeader>
-              <TableHeader>Actions</TableHeader>
-            </TableRow>
-          </thead>
-          <tbody>
-            {drafts.map((draft) => (
-              <TableRow key={draft.id}>
-                <TableCell>
-                  {draft.name} <br />
-                  {formatDate(draft.draft_date)}
-                  <br />
-                  {formatTime(draft.draft_time)}
-                  <br />
-                  {capitalizeFirstLetter(draft.draft_type)} Draft
-                  <br />
-                  {`${formatMinutes(
-                    draft.draft_time_per_pick
-                  )} minute(s) per pick`}
-                  <br />
-                  {`${draft.number_of_teams} teams`}
-                </TableCell>
-                <TableCell>
-                  <ActionsContainer>
-                    <ActionButton>Team Invite Links</ActionButton>
-                  </ActionsContainer>
-                </TableCell>
-                <TableCell>
-                  <ActionsContainer>
-                    <ActionButton
-                      onClick={() => handleClickStart(draft.unique_draft_url)}
-                    >
-                      Start Now
-                    </ActionButton>
-                    <ActionButton onClick={() => handleClickEdit(draft.id)}>
-                      Edit
-                    </ActionButton>
-                    <ActionButton
-                      onClick={() => showDeleteDraftModal(draft.id)}
-                      $customColor="var(--red-color)"
-                    >
-                      Delete
-                    </ActionButton>
-                  </ActionsContainer>
-                </TableCell>
+        {drafts.length === 0 ? (
+          <h2>No drafts</h2>
+        ) : (
+          <Table>
+            <thead>
+              <TableRow>
+                <TableHeader> Details </TableHeader>
+                <TableHeader>Invite Links</TableHeader>
+                <TableHeader>Actions</TableHeader>
               </TableRow>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {drafts.map((draft) => (
+                <TableRow key={draft.id}>
+                  <TableCell>
+                    {draft.name} <br />
+                    {formatDate(draft.draft_date)}
+                    <br />
+                    {formatTime(draft.draft_time)}
+                    <br />
+                    {capitalizeFirstLetter(draft.draft_type)} Draft
+                    <br />
+                    {`${formatMinutes(
+                      draft.draft_time_per_pick
+                    )} minute(s) per pick`}
+                    <br />
+                    {`${draft.number_of_teams} teams`}
+                  </TableCell>
+                  <TableCell>
+                    <ActionsContainer>
+                      <ActionButton
+                        onClick={() =>
+                          handleClickTeamInvites(
+                            draft.unique_draft_url,
+                            draft.id
+                          )
+                        }
+                      >
+                        Team Invite Links
+                      </ActionButton>
+                    </ActionsContainer>
+                  </TableCell>
+                  <TableCell>
+                    <ActionsContainer>
+                      <ActionButton
+                        onClick={() => handleClickStart(draft.unique_draft_url)}
+                      >
+                        Start Now
+                      </ActionButton>
+                      <ActionButton onClick={() => handleClickEdit(draft.id)}>
+                        Edit
+                      </ActionButton>
+                      <ActionButton
+                        onClick={() => showDeleteDraftModal(draft.id)}
+                        $customColor="var(--red-color)"
+                      >
+                        Delete
+                      </ActionButton>
+                    </ActionsContainer>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </tbody>
+          </Table>
+        )}
         <DeleteDraftModal
           isDeleteDraftModalVisible={isDeleteDraftModalVisible}
           handleDeleteDraftModalConfirm={handleDeleteDraftConfirm}
           handleDeleteDraftModalCancel={handleDeleteDraftCancel}
         />
       </DashboardContentContainer>
+      <JoinedDraftsData />
     </>
   );
 }

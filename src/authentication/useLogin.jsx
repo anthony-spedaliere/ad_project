@@ -13,7 +13,7 @@ export function useLogin() {
       navigate("/dashboard/my-drafts", { replace: true });
     },
     onError: (err) => {
-      console.log("ERROR", err);
+      console.error("ERROR", err);
     },
   });
 

@@ -24,7 +24,7 @@ export async function signup({ email, password, username }) {
     .insert({ user: data.user.id, username });
 
   if (profileError) {
-    console.log("Profile creation error: ", profileError.message);
+    console.error("Profile creation error: ", profileError.message);
     throw new Error(profileError.message);
   }
 
@@ -103,8 +103,10 @@ export async function deleteAccount(userId) {
 }
 
 export async function passwordRecovery(email) {
+  const redirectUrl = import.meta.env.VITE_PASSWORD_RECOVERY_REDIRECT_URL;
+
   let { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: "http://localhost:5173/dashboard/reset-password",
+    redirectTo: redirectUrl,
   });
 
   if (error) {
