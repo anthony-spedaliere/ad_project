@@ -24,7 +24,7 @@ export const CenteredMessage = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: #c9c7f2;
+  color: var(--brand-color);
 `;
 
 export const ActionsContainer = styled.div`

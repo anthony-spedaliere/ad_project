@@ -55,3 +55,16 @@ export async function getDraftsJoined(teamOwnerId) {
 
   return data;
 }
+
+export async function updateTeamOwner(userId, uniqTeamId) {
+  const { data, error } = await supabase
+    .from("team")
+    .update({ team_owner: userId })
+    .eq("unique_team_id", uniqTeamId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
