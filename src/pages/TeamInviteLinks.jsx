@@ -103,10 +103,10 @@ function TeamInviteLinks() {
             return (
               <DataRow key={team.id}>
                 <DataCell>{team.team_name}</DataCell>
-                <DataCell>{inviteLink}</DataCell>
                 <DataCell>
-                  {team.team_owner ? "Accepted" : "Unsent/Pending"}
+                  {team.team_owner ? "Invite Accepted" : inviteLink}
                 </DataCell>
+                <DataCell>{team.team_owner ? "Accepted" : "Pending"}</DataCell>
               </DataRow>
             );
           })}

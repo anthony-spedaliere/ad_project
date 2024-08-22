@@ -68,3 +68,18 @@ export async function updateTeamOwner(userId, uniqTeamId) {
 
   return data;
 }
+
+export async function updateTeamOwnerAndRegenUuid(userId, uniqueTeamId) {
+  let { data, error } = await supabase.rpc(
+    "update_team_owner_and_regenerate_uuid",
+    {
+      uniqueteamid: uniqueTeamId, // Match the parameter names expected by the function
+      userid: userId,
+    }
+  );
+  if (error) {
+    console.error("RPC Error:", error);
+    throw new Error(error.message);
+  }
+  return data;
+}
