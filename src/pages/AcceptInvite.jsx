@@ -23,9 +23,6 @@ function AcceptInvite() {
   const userId = useSelector((state) => state.user.id);
 
   function handleAccept() {
-    console.log(uniqueTeamId);
-    console.log(userId);
-
     setTeamOwner({ userId, uniqTeamId: uniqueTeamId });
   }
 
