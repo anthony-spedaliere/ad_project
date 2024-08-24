@@ -14,6 +14,20 @@ export async function getDraft(draftId) {
   return { draft, error };
 }
 
+export async function getDraftByUniqueId(uniqueDraftId) {
+  let { data: draft, error } = await supabase
+    .from("draft")
+    .select("*")
+    .eq("unique_draft_url", uniqueDraftId);
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return { draft, error };
+}
+
 export async function getDraftDetails(draftId) {
   const { data, error } = await supabase.rpc("get_draft_data", {
     draft_id_param: draftId,

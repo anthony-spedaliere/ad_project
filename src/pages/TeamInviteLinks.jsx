@@ -5,6 +5,8 @@ import Spinner from "../ui/Spinner";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
+import { FaCopy } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Container = styled.div`
   padding: 20px;
@@ -39,12 +41,39 @@ const DataCell = styled.td`
   text-align: left;
 `;
 
+const CopyButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--blue-color); /* Customize the color as needed */
+  margin-left: 10px;
+
+  &:hover {
+    color: #357ab7; /* Customize the hover color as needed */
+  }
+`;
+
 const FullPage = styled.div`
   height: 100vh;
   background-color: var(--background-color);
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const InstructionsBox = styled.div`
+  border: 2px solid var(--background-color);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: var(--background-color-light);
+
+  -webkit-text-fill-color: var(--brand-color);
+  color: #111827 !important;
+`;
+
+const InstructionsList = styled.ol`
+  padding-left: 20px;
 `;
 
 function TeamInviteLinks() {
@@ -55,6 +84,23 @@ function TeamInviteLinks() {
   );
 
   const { teams, isPending, error } = useGetTeamsByDraftId(draftId);
+
+  const handleCopyClick = (link) => {
+    const instructions = `How to Join the Draft:
+
+1. Log in to your Draft Apex account. If you don’t have an account, please visit: https://www.draftapex.com/signup to create a new one.
+
+2. After logging in, paste and open the invite link below in your browser to join the draft.
+
+${link}
+
+Thank you!
+    `;
+
+    navigator.clipboard.writeText(instructions).then(() => {
+      toast.success("Link copied to clipboard.");
+    });
+  };
 
   if (isPending) {
     return (
@@ -84,12 +130,30 @@ function TeamInviteLinks() {
 
   return (
     <Container>
+      <Subtitle>Invite Instructions</Subtitle>
+      <InstructionsBox>
+        <InstructionsList>
+          <li>
+            Copy the invite email contents using the blue icon found in the
+            Links data cell.
+          </li>
+          <li>Paste in an email.</li>
+          <li>Send the invite link to the relevant team members.</li>
+          <li>Track the invite status in the table below.</li>
+          <li>
+            If a recipient accepts the invite that status will change from
+            &quot;Pending&quot; to &quot;Accepted&quot;.
+          </li>
+        </InstructionsList>
+      </InstructionsBox>
+
       <Subtitle>Invite Links</Subtitle>
+
       <Table>
         <thead>
           <HeaderRow>
             <HeaderCell>Teams</HeaderCell>
-            <HeaderCell>Links</HeaderCell>
+            <HeaderCell>Invite Email Contents</HeaderCell>
             <HeaderCell>Status</HeaderCell>
           </HeaderRow>
         </thead>
@@ -99,12 +163,25 @@ function TeamInviteLinks() {
               /%20/g,
               "+"
             );
-            const inviteLink = `http://localhost:5173/dashboard/accept-invite?team=${encodedTeamName}&teamId=${team.unique_team_id}&draftId=${team.draft_id}&uniqueDraftId=${uniqueDraftId}`;
+            const inviteLink = `http://localhost:5173/dashboard/accept-invite?team=${encodedTeamName}&teamId=${team.unique_team_id}&tid=${team.id}&draftId=${team.draft_id}&uniqueDraftId=${uniqueDraftId}`;
+
             return (
               <DataRow key={team.id}>
                 <DataCell>{team.team_name}</DataCell>
                 <DataCell>
-                  {team.team_owner ? "Invite Accepted" : inviteLink}
+                  {team.team_owner ? (
+                    "Invite Accepted"
+                  ) : (
+                    <>
+                      Email contents
+                      <CopyButton
+                        title="Copy"
+                        onClick={() => handleCopyClick(inviteLink)}
+                      >
+                        <FaCopy />
+                      </CopyButton>
+                    </>
+                  )}
                 </DataCell>
                 <DataCell>{team.team_owner ? "Accepted" : "Pending"}</DataCell>
               </DataRow>

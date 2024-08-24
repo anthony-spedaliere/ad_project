@@ -4,6 +4,10 @@ import styled from "styled-components";
 import { useUpdateTeamOwner } from "../authentication/useUpdateTeamOwner";
 import { useSelector } from "react-redux";
 import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamOwnerAndRegenUuid";
+import { useGetDraftByUniqueId } from "../authentication/useGetDraftByUniqueId";
+import Spinner from "../ui/Spinner";
+import { useGetTeamById } from "../authentication/useGetTeamById";
+import { useUpdateInviteAccepted } from "../authentication/useUpdateInviteAccepted";
 
 export const CenteredMessage = styled.div`
   display: flex;
@@ -21,30 +25,113 @@ const ButtonsContainer = styled.div`
   margin-top: 1rem;
 `;
 
+const FullPage = styled.div`
+  height: 100vh;
+  background-color: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DraftOverview = styled.div`
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background-color: var(--background-color-light);
+  border-radius: 8px;
+  color: var(--brand-color);
+`;
+
+const DraftOverviewParagraph = styled.p`
+  margin: 1rem 0rem 1rem 0rem;
+`;
+
 function AcceptInvite() {
   const [searchParams] = useSearchParams();
+
   const uniqueTeamId = searchParams.get("teamId");
+  const uniqueDraftId = searchParams.get("uniqueDraftId");
   const teamName = searchParams.get("team");
+  const tid = searchParams.get("tid");
   const decodedTeamName = decodeURIComponent(teamName);
+
   const { setTeamOwner, isPending, error } = useUpdateTeamOwner();
   const {
     mutate: updateTeamOwnerReject,
     isPending: isPendingReject,
     error: errorReject,
   } = useUpdateTeamOwnerAndRegenUuid();
+
+  const { selectedDraftByUniqueId, isPending: isPendingGetUniqueDraftId } =
+    useGetDraftByUniqueId(uniqueDraftId);
+
+  const { setInviteAccepted, isPending: isPendingInviteAccepted } =
+    useUpdateInviteAccepted();
+
+  const { selectedTeam, isPending: isPendingGetSelectedTeam } =
+    useGetTeamById(tid);
+
   const userId = useSelector((state) => state.user.id);
 
   function handleAccept() {
     setTeamOwner({ userId, uniqTeamId: uniqueTeamId });
+    setInviteAccepted({ isAccepted: true, uniqTeamId: uniqueTeamId });
   }
 
   function handleReject() {
     updateTeamOwnerReject({ userId, uniqueTeamId });
   }
 
+  if (isPendingGetUniqueDraftId || isPendingGetSelectedTeam) {
+    return (
+      <FullPage>
+        <Spinner />
+      </FullPage>
+    );
+  }
+
+  const draft = selectedDraftByUniqueId.draft[0];
+  const idCheck = selectedTeam.team[0].unique_team_id === uniqueTeamId;
+
+  if (!idCheck || selectedTeam.team[0].invite_accepted) {
+    return (
+      <CenteredMessage>
+        <h1>Link expired. Please contact draft owner for new link.</h1>
+      </CenteredMessage>
+    );
+  }
+
   return (
     <CenteredMessage>
       <h1>Draft Invitation: {decodedTeamName} </h1>
+
+      {draft && (
+        <DraftOverview>
+          <h2>Draft Overview</h2>
+          <DraftOverviewParagraph>
+            <strong>Draft Name:</strong> {draft.name}
+          </DraftOverviewParagraph>
+          <DraftOverviewParagraph>
+            <strong>Draft Date:</strong> {draft.draft_date}
+          </DraftOverviewParagraph>
+          <DraftOverviewParagraph>
+            <strong>Draft Time:</strong> {draft.draft_time}
+          </DraftOverviewParagraph>
+          <DraftOverviewParagraph>
+            <strong>Draft Type:</strong> {draft.draft_type}
+          </DraftOverviewParagraph>
+          <DraftOverviewParagraph>
+            <strong>Time Per Pick (sec.):</strong> {draft.draft_time_per_pick}
+          </DraftOverviewParagraph>
+          <DraftOverviewParagraph>
+            <strong>Number of teams:</strong> {draft.number_of_teams}
+          </DraftOverviewParagraph>
+          <DraftOverviewParagraph>
+            <strong>Number of maps:</strong> {draft.number_of_maps}
+          </DraftOverviewParagraph>
+        </DraftOverview>
+      )}
+
       <h1>Join draft? </h1>
 
       <ButtonsContainer>

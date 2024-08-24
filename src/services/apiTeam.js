@@ -31,6 +31,19 @@ export async function insertTeams(teamArray, groups, draftId) {
   return { teams, error };
 }
 
+export async function getTeamById(teamId) {
+  let { data: team, error } = await supabase
+    .from("team")
+    .select("*")
+    .eq("id", teamId);
+
+  if (error) {
+    console.error("Error retrieving team: ", error);
+  }
+
+  return { team, error };
+}
+
 export async function getTeamsByDraftId(draftId) {
   let { data: team, error } = await supabase
     .from("team")
@@ -60,6 +73,19 @@ export async function updateTeamOwner(userId, uniqTeamId) {
   const { data, error } = await supabase
     .from("team")
     .update({ team_owner: userId })
+    .eq("unique_team_id", uniqTeamId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function updateInviteAccepted(isAccepted, uniqTeamId) {
+  const { data, error } = await supabase
+    .from("team")
+    .update({ invite_accepted: isAccepted })
     .eq("unique_team_id", uniqTeamId);
 
   if (error) {
