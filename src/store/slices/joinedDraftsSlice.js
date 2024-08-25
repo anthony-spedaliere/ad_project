@@ -12,5 +12,6 @@ const joinedDraftsSlice = createSlice({
   },
 });
 
-export const { setJoinedDrafts } = joinedDraftsSlice.actions;
+export const { setJoinedDrafts, setLeaveDraftUniqueTeamId } =
+  joinedDraftsSlice.actions;
 export default joinedDraftsSlice.reducer;

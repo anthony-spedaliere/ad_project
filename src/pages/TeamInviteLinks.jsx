@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { FaCopy } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { RxQuestionMarkCircled } from "react-icons/rx";
+import StyledButton from "../ui/StyledButton";
 
 const Container = styled.div`
   padding: 20px;
@@ -134,8 +136,8 @@ Thank you!
       <InstructionsBox>
         <InstructionsList>
           <li>
-            Copy the invite email contents using the blue icon found in the
-            Links data cell.
+            Copy the email contents using the blue icon found in the Invite
+            Email data cell.
           </li>
           <li>Paste in an email.</li>
           <li>Send the invite link to the relevant team members.</li>
@@ -153,8 +155,11 @@ Thank you!
         <thead>
           <HeaderRow>
             <HeaderCell>Teams</HeaderCell>
-            <HeaderCell>Invite Email Contents</HeaderCell>
+            <HeaderCell>Invite Email</HeaderCell>
             <HeaderCell>Status</HeaderCell>
+            <HeaderCell>
+              Remove User <RxQuestionMarkCircled />
+            </HeaderCell>
           </HeaderRow>
         </thead>
         <tbody>
@@ -173,7 +178,7 @@ Thank you!
                     "Invite Accepted"
                   ) : (
                     <>
-                      Email contents
+                      Invite Email
                       <CopyButton
                         title="Copy"
                         onClick={() => handleCopyClick(inviteLink)}
@@ -184,6 +189,18 @@ Thank you!
                   )}
                 </DataCell>
                 <DataCell>{team.team_owner ? "Accepted" : "Pending"}</DataCell>
+                <DataCell>
+                  <StyledButton
+                    $bgColor="var(--brand-color)"
+                    $textColor="var(--background-color)"
+                    $hoverBgColor="var(--brand-color-dark)"
+                    $fontSize="1.2rem"
+                    height="3rem"
+                    $padding=".5rem"
+                  >
+                    Remove
+                  </StyledButton>
+                </DataCell>
               </DataRow>
             );
           })}

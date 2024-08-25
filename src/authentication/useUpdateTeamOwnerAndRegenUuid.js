@@ -12,6 +12,7 @@ export function useUpdateTeamOwnerAndRegenUuid() {
     onSuccess: () => {
       toast.success("Thank you for responding.");
       navigate("/dashboard/my-drafts");
+      window.location.reload(); // This will refresh the page
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);
