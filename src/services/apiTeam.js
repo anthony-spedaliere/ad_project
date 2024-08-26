@@ -31,6 +31,19 @@ export async function insertTeams(teamArray, groups, draftId) {
   return { teams, error };
 }
 
+export async function getTeamById(teamId) {
+  let { data: team, error } = await supabase
+    .from("team")
+    .select("*")
+    .eq("id", teamId);
+
+  if (error) {
+    console.error("Error retrieving team: ", error);
+  }
+
+  return { team, error };
+}
+
 export async function getTeamsByDraftId(draftId) {
   let { data: team, error } = await supabase
     .from("team")
@@ -54,4 +67,47 @@ export async function getDraftsJoined(teamOwnerId) {
   }
 
   return data;
+}
+
+export async function updateTeamOwner(userId, uniqTeamId) {
+  const { data, error } = await supabase
+    .from("team")
+    .update({ team_owner: userId })
+    .eq("unique_team_id", uniqTeamId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function updateTeamOwnerAndRegenUuid(userId, uniqueTeamId) {
+  let { data, error } = await supabase.rpc(
+    "update_team_owner_and_regenerate_uuid",
+    {
+      uniqueteamid: uniqueTeamId, // Match the parameter names expected by the function
+      userid: userId,
+    }
+  );
+  if (error) {
+    console.error("RPC Error:", error);
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+export async function getUniqueTeamId(userId, draftId) {
+  let { data: team, error } = await supabase
+    .from("team")
+    .select("*")
+    .eq("team_owner", userId)
+    .eq("draft_id", draftId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error retrieving team: ", error);
+  }
+
+  return { team, error };
 }

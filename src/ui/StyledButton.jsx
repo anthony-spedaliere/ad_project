@@ -14,7 +14,7 @@ const StyledButton = styled.button`
   border-radius: ${(props) => props.borderRadius || "2rem"};
   border: none;
   color: ${(props) => props.$textColor || "var(--brand-color)"};
-  font-size: 2.6rem;
+  font-size: ${(props) => props.$fontSize || "2.6rem"};
   cursor: pointer;
   transition: background-color 0.3s ease;
   padding: ${(props) => props.$padding || "0"};

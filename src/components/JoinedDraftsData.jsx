@@ -15,13 +15,21 @@ import {
   formatTime,
   formatDate,
 } from "../utils/helperFunctions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setJoinedDrafts } from "../store/slices/joinedDraftsSlice";
+import { useGetUniqueTeamId } from "../authentication/useGetUniqueTeamId";
+import { LeaveDraftModal } from "../ui/CustomModals";
+import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamOwnerAndRegenUuid";
+import toast from "react-hot-toast";
 
 function JoinedDraftsData() {
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
   const dispatch = useDispatch();
+
+  // modal state
+  const [isLeaveDraftModalVisible, setIsLeaveDraftSaveModalVisible] =
+    useState(false);
 
   const {
     data: joinedDraftsData,
@@ -29,9 +37,52 @@ function JoinedDraftsData() {
     error,
   } = useGetDraftsJoined(userId);
 
+  const [selectedDraftId, setSelectedDraftId] = useState(null);
+
+  const { selectedTeam } = useGetUniqueTeamId({
+    userId: userId,
+    draftId: selectedDraftId,
+  });
+
+  const { mutate: updateTeamOwnerReject } = useUpdateTeamOwnerAndRegenUuid();
+
   useEffect(() => {
     dispatch(setJoinedDrafts(joinedDraftsData));
   }, [dispatch, joinedDraftsData]);
+
+  // Leave Draft Modal Functions
+
+  const showLeaveDraftModal = () => {
+    setIsLeaveDraftSaveModalVisible(true);
+  };
+
+  const handleLeaveDraftCancel = () => {
+    setIsLeaveDraftSaveModalVisible(false);
+  };
+
+  const handleLeaveDraftConfirm = () => {
+    handleLeaveDraftCancel();
+
+    updateTeamOwnerReject(
+      {
+        userId: userId,
+        uniqueTeamId: selectedTeam.team.unique_team_id,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Successfully left draft.");
+        },
+        onError: (error) => {
+          toast.error(`Error: ${error.message}`);
+        },
+      }
+    );
+  };
+
+  const handleLeaveDraftClick = (draftId) => {
+    setSelectedDraftId(draftId);
+    showLeaveDraftModal();
+  };
 
   if (isPending) {
     return (
@@ -70,8 +121,8 @@ function JoinedDraftsData() {
               </TableRow>
             </thead>
             <tbody>
-              {joinedDraftsData.map((draft) => (
-                <TableRow key={draft.id}>
+              {joinedDraftsData.map((draft, index) => (
+                <TableRow key={`${draft.id}-${index}`}>
                   <TableCell>
                     {draft.name} <br />
                     {formatDate(draft.draft_date)}
@@ -88,7 +139,10 @@ function JoinedDraftsData() {
                   </TableCell>
                   <TableCell>
                     <ActionsContainer>
-                      <ActionButton $customColor="var(--red-color)">
+                      <ActionButton
+                        $customColor="var(--red-color)"
+                        onClick={() => handleLeaveDraftClick(draft.id)}
+                      >
                         Leave Draft
                       </ActionButton>
                     </ActionsContainer>
@@ -98,6 +152,11 @@ function JoinedDraftsData() {
             </tbody>
           </Table>
         )}
+        <LeaveDraftModal
+          isLeaveDraftModalVisible={isLeaveDraftModalVisible}
+          handleLeaveDraftModalConfirm={handleLeaveDraftConfirm}
+          handleLeaveDraftModalCancel={handleLeaveDraftCancel}
+        />
       </DashboardContentContainer>
     </>
   );

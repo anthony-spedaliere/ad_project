@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUncompletedDraftsForUser } from "../services/apiDrafts";
 
 export function useUncompletedDrafts(userId) {
-  const { data, error, isPending } = useQuery({
+  const { data, error, isPending, refetch } = useQuery({
     queryKey: ["uncompletedDrafts", userId],
     queryFn: () =>
       getUncompletedDraftsForUser({ queryKey: ["uncompletedDrafts", userId] }),
@@ -15,5 +15,5 @@ export function useUncompletedDrafts(userId) {
     throw new Error(error.message);
   }
 
-  return { data, error, isPending };
+  return { data, error, isPending, refetch };
 }
