@@ -8,6 +8,7 @@ import { useGetDraftByUniqueId } from "../authentication/useGetDraftByUniqueId";
 import Spinner from "../ui/Spinner";
 import { useGetTeamById } from "../authentication/useGetTeamById";
 import toast from "react-hot-toast";
+import { useGetTeamsByDraftId } from "../authentication/useGetTeamsByDraftId";
 
 export const CenteredMessage = styled.div`
   display: flex;
@@ -54,6 +55,7 @@ function AcceptInvite() {
   const uniqueDraftId = searchParams.get("uniqueDraftId");
   const teamName = searchParams.get("team");
   const tid = searchParams.get("tid");
+  const draftId = searchParams.get("draftId");
   const decodedTeamName = decodeURIComponent(teamName);
 
   const { setTeamOwner, isPending } = useUpdateTeamOwner();
@@ -66,10 +68,22 @@ function AcceptInvite() {
   const { selectedTeam, isPending: isPendingGetSelectedTeam } =
     useGetTeamById(tid);
 
+  const { teams } = useGetTeamsByDraftId(draftId);
+
   const userId = useSelector((state) => state.user.id);
 
   function handleAccept() {
-    setTeamOwner({ userId, uniqTeamId: uniqueTeamId });
+    const userAlreadyTeamOwner = teams.team.some(
+      (team) => team.team_owner === userId
+    );
+
+    if (!userAlreadyTeamOwner) {
+      setTeamOwner({ userId, uniqTeamId: uniqueTeamId });
+    } else {
+      toast.error(
+        "You have already joined this draft. You may only join a draft once."
+      );
+    }
   }
 
   function handleReject() {
