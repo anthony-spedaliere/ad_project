@@ -9,6 +9,9 @@ import { FaCopy } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { RxQuestionMarkCircled } from "react-icons/rx";
 import StyledButton from "../ui/StyledButton";
+import { useState } from "react";
+import { RemoveTeamModal } from "../ui/CustomModals";
+import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamOwnerAndRegenUuid";
 
 const Container = styled.div`
   padding: 20px;
@@ -80,6 +83,16 @@ const InstructionsList = styled.ol`
 
 function TeamInviteLinks() {
   const { uniqueDraftId } = useParams();
+  // Get current draft ID and user ID from Redux state
+  const userId = useSelector((state) => state.user.id);
+
+  // modal state
+  const [isRemoveTeamModalVisible, setIsRemoveTeamSaveModalVisible] =
+    useState(false);
+
+  const [uniqueTeamId, setUniqueTeamId] = useState(null);
+
+  const { mutate: updateTeamOwnerReject } = useUpdateTeamOwnerAndRegenUuid();
 
   const draftId = useSelector(
     (state) => state.inviteTeamLinks.draftIdTeamInviteLink
@@ -102,6 +115,29 @@ Thank you!
     navigator.clipboard.writeText(instructions).then(() => {
       toast.success("Link copied to clipboard.");
     });
+  };
+
+  // Leave Draft Modal Functions
+
+  const showRemoveTeamModal = (uniqueDraftId) => {
+    setUniqueTeamId(uniqueDraftId);
+    setIsRemoveTeamSaveModalVisible(true);
+  };
+
+  const handleRemoveTeamCancel = () => {
+    setIsRemoveTeamSaveModalVisible(false);
+  };
+
+  const handleRemoveTeamConfirm = () => {
+    updateTeamOwnerReject(
+      {
+        userId: userId,
+        uniqueTeamId: uniqueTeamId,
+      },
+      { onSuccess: () => toast.success("Successfully removed user.") }
+    );
+
+    handleRemoveTeamCancel();
   };
 
   if (isPending) {
@@ -146,6 +182,7 @@ Thank you!
             If a recipient accepts the invite that status will change from
             &quot;Pending&quot; to &quot;Accepted&quot;.
           </li>
+          <li>Manage users with the remove button.</li>
         </InstructionsList>
       </InstructionsBox>
 
@@ -197,6 +234,7 @@ Thank you!
                     $fontSize="1.2rem"
                     height="3rem"
                     $padding=".5rem"
+                    onClick={() => showRemoveTeamModal(team.unique_team_id)}
                   >
                     Remove
                   </StyledButton>
@@ -206,6 +244,11 @@ Thank you!
           })}
         </tbody>
       </Table>
+      <RemoveTeamModal
+        isRemoveTeamModalVisible={isRemoveTeamModalVisible}
+        handleRemoveTeamModalConfirm={handleRemoveTeamConfirm}
+        handleRemoveTeamModalCancel={handleRemoveTeamCancel}
+      />
     </Container>
   );
 }

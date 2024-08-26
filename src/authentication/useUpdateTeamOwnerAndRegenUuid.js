@@ -1,21 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTeamOwnerAndRegenUuid } from "../services/apiTeam";
-import { useNavigate } from "react-router-dom";
 
 export function useUpdateTeamOwnerAndRegenUuid() {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: ({ userId, uniqueTeamId }) =>
       updateTeamOwnerAndRegenUuid(userId, uniqueTeamId),
     onSuccess: () => {
-      toast.success("Thank you for responding.");
-      navigate("/dashboard/my-drafts");
-      window.location.reload(); // This will refresh the page
-    },
-    onError: (error) => {
-      toast.error(`Error: ${error.message}`);
+      queryClient.invalidateQueries("teamsDraftResults");
     },
   });
 

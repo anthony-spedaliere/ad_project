@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import StyledButton from "../ui/StyledButton";
 import styled from "styled-components";
 import { useUpdateTeamOwner } from "../authentication/useUpdateTeamOwner";
@@ -7,7 +7,7 @@ import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamO
 import { useGetDraftByUniqueId } from "../authentication/useGetDraftByUniqueId";
 import Spinner from "../ui/Spinner";
 import { useGetTeamById } from "../authentication/useGetTeamById";
-import { useUpdateInviteAccepted } from "../authentication/useUpdateInviteAccepted";
+import toast from "react-hot-toast";
 
 export const CenteredMessage = styled.div`
   display: flex;
@@ -48,6 +48,7 @@ const DraftOverviewParagraph = styled.p`
 
 function AcceptInvite() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const uniqueTeamId = searchParams.get("teamId");
   const uniqueDraftId = searchParams.get("uniqueDraftId");
@@ -55,18 +56,12 @@ function AcceptInvite() {
   const tid = searchParams.get("tid");
   const decodedTeamName = decodeURIComponent(teamName);
 
-  const { setTeamOwner, isPending, error } = useUpdateTeamOwner();
-  const {
-    mutate: updateTeamOwnerReject,
-    isPending: isPendingReject,
-    error: errorReject,
-  } = useUpdateTeamOwnerAndRegenUuid();
+  const { setTeamOwner, isPending } = useUpdateTeamOwner();
+  const { mutate: updateTeamOwnerReject, isPending: isPendingReject } =
+    useUpdateTeamOwnerAndRegenUuid();
 
   const { selectedDraftByUniqueId, isPending: isPendingGetUniqueDraftId } =
     useGetDraftByUniqueId(uniqueDraftId);
-
-  const { setInviteAccepted, isPending: isPendingInviteAccepted } =
-    useUpdateInviteAccepted();
 
   const { selectedTeam, isPending: isPendingGetSelectedTeam } =
     useGetTeamById(tid);
@@ -75,11 +70,22 @@ function AcceptInvite() {
 
   function handleAccept() {
     setTeamOwner({ userId, uniqTeamId: uniqueTeamId });
-    setInviteAccepted({ isAccepted: true, uniqTeamId: uniqueTeamId });
   }
 
   function handleReject() {
-    updateTeamOwnerReject({ userId, uniqueTeamId });
+    updateTeamOwnerReject(
+      { userId, uniqueTeamId },
+      {
+        onSuccess: () => {
+          window.location.reload();
+          navigate("/dashboard/my-drafts");
+          toast.success("Invite accepted.");
+        },
+        onError: (error) => {
+          toast.error(`Error: ${error.message}`);
+        },
+      }
+    );
   }
 
   if (isPendingGetUniqueDraftId || isPendingGetSelectedTeam) {
@@ -93,7 +99,7 @@ function AcceptInvite() {
   const draft = selectedDraftByUniqueId.draft[0];
   const idCheck = selectedTeam.team[0].unique_team_id === uniqueTeamId;
 
-  if (!idCheck || selectedTeam.team[0].invite_accepted) {
+  if (!idCheck || selectedTeam.team[0].team_owner) {
     return (
       <CenteredMessage>
         <h1>Link expired. Please contact draft owner for new link.</h1>

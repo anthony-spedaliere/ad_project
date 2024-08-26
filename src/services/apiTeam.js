@@ -82,22 +82,6 @@ export async function updateTeamOwner(userId, uniqTeamId) {
   return data;
 }
 
-export async function updateInviteAccepted(isAccepted, uniqTeamId) {
-  console.log("isAccepted: ", isAccepted);
-  console.log("uniqTeamId: ", uniqTeamId);
-
-  const { data, error } = await supabase
-    .from("team")
-    .update({ invite_accepted: isAccepted })
-    .eq("unique_team_id", uniqTeamId);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-}
-
 export async function updateTeamOwnerAndRegenUuid(userId, uniqueTeamId) {
   let { data, error } = await supabase.rpc(
     "update_team_owner_and_regenerate_uuid",

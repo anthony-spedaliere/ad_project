@@ -162,3 +162,30 @@ export function LeaveDraftModal({
     </CustomModal>
   );
 }
+
+export function RemoveTeamModal({
+  isRemoveTeamModalVisible,
+  handleRemoveTeamModalConfirm,
+  handleRemoveTeamModalCancel,
+}) {
+  return (
+    <CustomModal
+      title="Remove User"
+      open={isRemoveTeamModalVisible}
+      onOk={handleRemoveTeamModalConfirm}
+      onCancel={handleRemoveTeamModalCancel}
+      okText="Confirm"
+      cancelText="Cancel"
+      bgColor="var(--background-color)"
+      textColor="var(--brand-color)"
+      okBgColor="var(--red-color)"
+      okTextColor="var(--background-color)"
+      cancelTextColor="var(--background-color)"
+      headerBgColor="var(--background-color)"
+      headerTextColor="var(--red-color)"
+      defaultBgColor="var(--brand-color)"
+    >
+      Are you sure you want to remove user from draft?
+    </CustomModal>
+  );
+}

@@ -20,7 +20,7 @@ import { setJoinedDrafts } from "../store/slices/joinedDraftsSlice";
 import { useGetUniqueTeamId } from "../authentication/useGetUniqueTeamId";
 import { LeaveDraftModal } from "../ui/CustomModals";
 import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamOwnerAndRegenUuid";
-import { useUpdateInviteAccepted } from "../authentication/useUpdateInviteAccepted";
+import toast from "react-hot-toast";
 
 function JoinedDraftsData() {
   // Get current draft ID and user ID from Redux state
@@ -44,8 +44,6 @@ function JoinedDraftsData() {
     draftId: selectedDraftId,
   });
 
-  const { setInviteAccepted } = useUpdateInviteAccepted();
-
   const { mutate: updateTeamOwnerReject } = useUpdateTeamOwnerAndRegenUuid();
 
   useEffect(() => {
@@ -65,15 +63,20 @@ function JoinedDraftsData() {
   const handleLeaveDraftConfirm = () => {
     handleLeaveDraftCancel();
 
-    setInviteAccepted({
-      isAccepted: false,
-      uniqTeamId: selectedTeam.team.unique_team_id,
-    });
-
-    updateTeamOwnerReject({
-      userId: userId,
-      uniqueTeamId: selectedTeam.team.unique_team_id,
-    });
+    updateTeamOwnerReject(
+      {
+        userId: userId,
+        uniqueTeamId: selectedTeam.team.unique_team_id,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Successfully left draft.");
+        },
+        onError: (error) => {
+          toast.error(`Error: ${error.message}`);
+        },
+      }
+    );
   };
 
   const handleLeaveDraftClick = (draftId) => {
@@ -118,8 +121,8 @@ function JoinedDraftsData() {
               </TableRow>
             </thead>
             <tbody>
-              {joinedDraftsData.map((draft) => (
-                <TableRow key={draft.id}>
+              {joinedDraftsData.map((draft, index) => (
+                <TableRow key={`${draft.id}-${index}`}>
                   <TableCell>
                     {draft.name} <br />
                     {formatDate(draft.draft_date)}
