@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Spinner from "../ui/Spinner";
+import { IoReturnUpBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   padding: 20px;
@@ -52,10 +54,32 @@ const FullPage = styled.div`
   justify-content: center;
 `;
 
+export const BackButton = styled.button`
+  color: ${(props) => props.$customColor || "var(--red-color)"};
+  text-decoration: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    color: var(--color-grey-400);
+  }
+`;
+
 function DraftResultsOverview() {
   const poisResults = useSelector((state) => state.draftResults.pois);
   const teamsResults = useSelector((state) => state.draftResults.teams);
   const mapResults = useSelector((state) => state.draftResults.maps);
+  const navigate = useNavigate();
+
+  function handleBack() {
+    navigate("/dashboard/draft-history");
+  }
 
   // Ensure data is not null or undefined
   if (!poisResults || !teamsResults || !mapResults) {
@@ -102,6 +126,10 @@ function DraftResultsOverview() {
 
   return (
     <Container>
+      <BackButton onClick={handleBack} $customColor="var(--blue-color)">
+        <IoReturnUpBack />
+        Back
+      </BackButton>
       <Title>Draft Results</Title>
       <Subtitle>Overview</Subtitle>
       <Table>
