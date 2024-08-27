@@ -24,7 +24,11 @@ import {
 } from "../store/slices/newDraftSlice";
 
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
-import { DeleteDraftModal, EditDraftModal } from "../ui/CustomModals";
+import {
+  DeleteDraftModal,
+  EditDraftModal,
+  StartDraftSaveModal,
+} from "../ui/CustomModals";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
@@ -42,6 +46,10 @@ function MyDrafts() {
   // edit modal state
   const [isEditDraftModalVisible, setIsEditDraftModalVisible] = useState(false);
 
+  // start modal state
+  const [isStartDraftModalVisible, setIsStartDraftModalVisible] =
+    useState(false);
+
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
 
@@ -50,6 +58,7 @@ function MyDrafts() {
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
+  const [selectedUniqueDraftId, setSelectedUniqueDraftId] = useState(null);
 
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
@@ -83,7 +92,7 @@ function MyDrafts() {
 
   // Edit Modal functions
   const showEditDraftModal = (draftId) => {
-    setSelectedDraftId(draftId);
+    setSelectedUniqueDraftId(draftId);
     setIsEditDraftModalVisible(true);
   };
 
@@ -97,6 +106,25 @@ function MyDrafts() {
     setShouldUseDraftDetails(true);
     dispatch(setIsEditingHistory(false));
     dispatch(setIsEditing(true));
+  };
+
+  //=====================================================================
+
+  //=====================================================================
+
+  // Start Modal functions
+  const showStartDraftModal = (uniqueDraftId) => {
+    setSelectedUniqueDraftId(uniqueDraftId);
+    setIsStartDraftModalVisible(true);
+  };
+
+  const handleStartDraftCancel = () => {
+    setIsStartDraftModalVisible(false);
+  };
+
+  const handleStartDraftConfirm = () => {
+    handleStartDraftCancel();
+    navigate(`/join-draft/${selectedUniqueDraftId}`);
   };
 
   //=====================================================================
@@ -181,7 +209,9 @@ function MyDrafts() {
                   <TableCell>
                     <ActionsContainer>
                       <ActionButton
-                        onClick={() => handleClickStart(draft.unique_draft_url)}
+                        onClick={() =>
+                          showStartDraftModal(draft.unique_draft_url)
+                        }
                       >
                         Start Now
                       </ActionButton>
@@ -213,6 +243,11 @@ function MyDrafts() {
         isEditDraftModalVisible={isEditDraftModalVisible}
         handleEditDraftModalConfirm={handleEditDraftConfirm}
         handleEditDraftModalCancel={handleEditDraftCancel}
+      />
+      <StartDraftSaveModal
+        isStartModalVisible={isStartDraftModalVisible}
+        handleStartConfirm={handleStartDraftConfirm}
+        handleStartCancel={handleStartDraftCancel}
       />
       <JoinedDraftsData />
     </>
