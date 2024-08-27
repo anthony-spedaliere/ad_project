@@ -87,6 +87,14 @@ export const BackButton = styled.button`
   }
 `;
 
+const SubtitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-top: ${(props) => props.$mgTop || "0"};
+`;
+
 function DraftResultsOverview() {
   const poisResults = useSelector((state) => state.draftResults.pois);
   const teamsResults = useSelector((state) => state.draftResults.teams);
@@ -185,10 +193,10 @@ function DraftResultsOverview() {
         Back
       </BackButton>
       <Title>Draft Results</Title>
-      <Subtitle>
-        Overview{" "}
+      <SubtitleContainer>
         <ExportButton onClick={exportToExcel}>Export to Excel</ExportButton>
-      </Subtitle>
+      </SubtitleContainer>
+      <Subtitle>Overview</Subtitle>
 
       <Table>
         <thead>
