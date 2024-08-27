@@ -4,7 +4,7 @@ import { CenteredMessage } from "../styles/DraftHistoryStyles";
 import Spinner from "../ui/Spinner";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaCopy } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { RxQuestionMarkCircled } from "react-icons/rx";
@@ -12,6 +12,7 @@ import StyledButton from "../ui/StyledButton";
 import { useState } from "react";
 import { RemoveTeamModal } from "../ui/CustomModals";
 import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamOwnerAndRegenUuid";
+import { IoReturnUpBack } from "react-icons/io5";
 
 const Container = styled.div`
   padding: 20px;
@@ -81,10 +82,30 @@ const InstructionsList = styled.ol`
   padding-left: 20px;
 `;
 
+export const BackButton = styled.button`
+  color: ${(props) => props.$customColor || "var(--red-color)"};
+  text-decoration: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: ${(props) => props.$mgBottom || "0rem"};
+
+  &:hover {
+    color: var(--color-grey-400);
+  }
+`;
+
 function TeamInviteLinks() {
   const { uniqueDraftId } = useParams();
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
+
+  const navigate = useNavigate();
 
   // modal state
   const [isRemoveTeamModalVisible, setIsRemoveTeamSaveModalVisible] =
@@ -116,6 +137,10 @@ Thank you!
       toast.success("Link copied to clipboard.");
     });
   };
+
+  function handleBack() {
+    navigate("/dashboard/my-drafts");
+  }
 
   // Leave Draft Modal Functions
 
@@ -168,6 +193,14 @@ Thank you!
 
   return (
     <Container>
+      <BackButton
+        onClick={handleBack}
+        $customColor="var(--blue-color)"
+        $mgBottom="2rem"
+      >
+        <IoReturnUpBack />
+        Back
+      </BackButton>
       <Subtitle>Invite Instructions</Subtitle>
       <InstructionsBox>
         <InstructionsList>
@@ -210,7 +243,11 @@ Thank you!
             return (
               <DataRow key={team.id}>
                 <DataCell>{team.team_name}</DataCell>
-                <DataCell>
+                <DataCell
+                  style={{
+                    color: team.team_owner ? "var(--blue-color)" : "inherit",
+                  }}
+                >
                   {team.team_owner ? (
                     "Invite Accepted"
                   ) : (
@@ -225,15 +262,22 @@ Thank you!
                     </>
                   )}
                 </DataCell>
-                <DataCell>{team.team_owner ? "Accepted" : "Pending"}</DataCell>
+                <DataCell
+                  style={{
+                    color: team.team_owner ? "var(--blue-color)" : "inherit",
+                  }}
+                >
+                  {team.team_owner ? "Accepted" : "Pending"}
+                </DataCell>
                 <DataCell>
                   <StyledButton
-                    $bgColor="var(--brand-color)"
+                    $bgColor="var(--red-color)"
                     $textColor="var(--background-color)"
                     $hoverBgColor="var(--brand-color-dark)"
                     $fontSize="1.2rem"
                     height="3rem"
                     $padding=".5rem"
+                    disabled={!team.team_owner}
                     onClick={() => showRemoveTeamModal(team.unique_team_id)}
                   >
                     Remove

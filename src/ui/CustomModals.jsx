@@ -136,6 +136,60 @@ export function DeleteDraftModal({
   );
 }
 
+export function EditDraftModal({
+  isEditDraftModalVisible,
+  handleEditDraftModalConfirm,
+  handleEditDraftModalCancel,
+}) {
+  return (
+    <CustomModal
+      title="Edit Draft"
+      open={isEditDraftModalVisible}
+      onOk={handleEditDraftModalConfirm}
+      onCancel={handleEditDraftModalCancel}
+      okText="Confirm"
+      cancelText="Cancel"
+      bgColor="var(--background-color)"
+      textColor="var(--brand-color)"
+      okBgColor="var(--brand-color)"
+      okTextColor="var(--background-color)"
+      cancelTextColor="var(--background-color)"
+      headerBgColor="var(--background-color)"
+      headerTextColor="var(--brand-color)"
+      defaultBgColor="var(--brand-color)"
+    >
+      Are you sure you want to edit this draft? It cannot be undone.
+    </CustomModal>
+  );
+}
+
+export function RedraftDraftModal({
+  isRedraftDraftModalVisible,
+  handleRedraftDraftModalConfirm,
+  handleRedraftDraftModalCancel,
+}) {
+  return (
+    <CustomModal
+      title="Redraft Draft"
+      open={isRedraftDraftModalVisible}
+      onOk={handleRedraftDraftModalConfirm}
+      onCancel={handleRedraftDraftModalCancel}
+      okText="Confirm"
+      cancelText="Cancel"
+      bgColor="var(--background-color)"
+      textColor="var(--brand-color)"
+      okBgColor="var(--brand-color)"
+      okTextColor="var(--background-color)"
+      cancelTextColor="var(--background-color)"
+      headerBgColor="var(--background-color)"
+      headerTextColor="var(--brand-color)"
+      defaultBgColor="var(--brand-color)"
+    >
+      Are you sure you want to redraft this draft?
+    </CustomModal>
+  );
+}
+
 export function LeaveDraftModal({
   isLeaveDraftModalVisible,
   handleLeaveDraftModalConfirm,

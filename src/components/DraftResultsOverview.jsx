@@ -1,5 +1,8 @@
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { IoReturnUpBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { utils, writeFile } from "xlsx";
 import Spinner from "../ui/Spinner";
 
 const Container = styled.div`
@@ -52,10 +55,55 @@ const FullPage = styled.div`
   justify-content: center;
 `;
 
+const ExportButton = styled.button`
+  padding: 10px 20px;
+  background-color: var(--blue-color);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #2e38c9;
+  }
+`;
+
+export const BackButton = styled.button`
+  color: ${(props) => props.$customColor || "var(--red-color)"};
+  text-decoration: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: ${(props) => props.$mgBottom || "0rem"};
+
+  &:hover {
+    color: var(--color-grey-400);
+  }
+`;
+
+const SubtitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-top: ${(props) => props.$mgTop || "0"};
+`;
+
 function DraftResultsOverview() {
   const poisResults = useSelector((state) => state.draftResults.pois);
   const teamsResults = useSelector((state) => state.draftResults.teams);
   const mapResults = useSelector((state) => state.draftResults.maps);
+  const navigate = useNavigate();
+
+  function handleBack() {
+    navigate("/dashboard/draft-history");
+  }
 
   // Ensure data is not null or undefined
   if (!poisResults || !teamsResults || !mapResults) {
@@ -63,7 +111,7 @@ function DraftResultsOverview() {
       <FullPage>
         <Spinner />
       </FullPage>
-    ); // or handle loading state appropriately
+    );
   }
 
   // Create the combined array
@@ -93,17 +141,63 @@ function DraftResultsOverview() {
   // Group POIs by rounds, excluding rounds with value zero
   const poisByRound = poisResults.reduce((acc, poi) => {
     if (poi.round_drafted > 0) {
-      // Exclude rounds with value zero
       acc[poi.round_drafted] = acc[poi.round_drafted] || [];
       acc[poi.round_drafted].push(poi);
     }
     return acc;
   }, {});
 
+  function exportToExcel() {
+    const overviewData = combined.map((item) => {
+      const row = {
+        Team: `${item.draft_priority}. ${item.team_name}`,
+      };
+      uniqueMapNames.forEach((mapName) => {
+        const poiForMap = item.poi_and_map.find(([name]) => name === mapName);
+        row[`${mapName} POI`] = poiForMap ? poiForMap[1] : "-";
+      });
+      return row;
+    });
+
+    const roundData = [];
+    Object.entries(poisByRound).forEach(([round, pois]) => {
+      pois.forEach((poi) => {
+        const team = teamsResults.find((team) => team.id === poi.drafted_by);
+        const map = mapResults.find((map) => map.id === poi.map_id);
+        if (team && map) {
+          roundData.push({
+            Round: round,
+            Pick: poi.number_picked,
+            Team: team.team_name,
+            POI: poi.poi_name,
+            Map: map.map_name,
+          });
+        }
+      });
+    });
+
+    const ws1 = utils.json_to_sheet(overviewData);
+    const ws2 = utils.json_to_sheet(roundData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws1, "Overview");
+    utils.book_append_sheet(wb, ws2, "Round-by-Round");
+
+    writeFile(wb, "DraftResults.xlsx");
+  }
+
   return (
     <Container>
+      <BackButton onClick={handleBack} $customColor="var(--blue-color)">
+        <IoReturnUpBack />
+        Back
+      </BackButton>
       <Title>Draft Results</Title>
+      <SubtitleContainer>
+        <ExportButton onClick={exportToExcel}>Export to Excel</ExportButton>
+      </SubtitleContainer>
       <Subtitle>Overview</Subtitle>
+
       <Table>
         <thead>
           <HeaderRow>
@@ -146,7 +240,6 @@ function DraftResultsOverview() {
               );
               const map = mapResults.find((map) => map.id === poi.map_id);
 
-              // Ensure team exists before accessing its properties
               if (team && map) {
                 return (
                   <p key={poi.id}>

@@ -24,7 +24,7 @@ import {
   formatTime,
 } from "../utils/helperFunctions";
 
-import { DeleteDraftModal } from "../ui/CustomModals";
+import { DeleteDraftModal, RedraftDraftModal } from "../ui/CustomModals";
 import { useEffect, useState } from "react";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { useNavigate } from "react-router-dom";
@@ -46,8 +46,12 @@ function DraftHistory() {
 
   const { data: drafts, isPending, error } = useCompletedDrafts(userId);
 
-  // modal state
+  // delete modal state
   const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
+    useState(false);
+
+  // redraft modal state
+  const [isRedraftDraftModalVisible, setIsRedraftDraftSaveModalVisible] =
     useState(false);
 
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
@@ -58,7 +62,7 @@ function DraftHistory() {
 
   //=====================================================================
 
-  // Save Modal functions
+  // Delete Modal functions
   const showDeleteDraftModal = (draftId) => {
     setSelectedDraftId(draftId);
     setIsDeleteDraftSaveModalVisible(true);
@@ -80,12 +84,28 @@ function DraftHistory() {
 
   //=====================================================================
 
-  function handleClickEdit(draftId) {
+  //=====================================================================
+
+  // Redraft Modal functions
+  const showRedraftDraftModal = (draftId) => {
     setSelectedDraftId(draftId);
+    setIsRedraftDraftSaveModalVisible(true);
+  };
+
+  const handleRedraftDraftCancel = () => {
+    setIsRedraftDraftSaveModalVisible(false);
+  };
+
+  const handleRedraftDraftConfirm = () => {
+    handleRedraftDraftCancel();
+
+    setSelectedDraftId(selectedDraftId);
     setShouldUseDraftDetails(true);
     dispatch(setIsEditing(true));
     dispatch(setIsEditingHistory(true));
-  }
+  };
+
+  //=====================================================================
 
   function handleOnViewResults(draftId) {
     dispatch(setDraftResultsId(draftId));
@@ -157,7 +177,12 @@ function DraftHistory() {
                     <ActionButton onClick={() => handleOnViewResults(draft.id)}>
                       View Results
                     </ActionButton>
-                    <ActionButton onClick={() => handleClickEdit(draft.id)}>
+                    {/* <ActionButton onClick={() => handleClickEdit(draft.id)}>
+                      Redraft
+                    </ActionButton> */}
+                    <ActionButton
+                      onClick={() => showRedraftDraftModal(draft.id)}
+                    >
                       Redraft
                     </ActionButton>
                     <ActionButton
@@ -176,6 +201,11 @@ function DraftHistory() {
           isDeleteDraftModalVisible={isDeleteDraftModalVisible}
           handleDeleteDraftModalConfirm={handleDeleteDraftConfirm}
           handleDeleteDraftModalCancel={handleDeleteDraftCancel}
+        />
+        <RedraftDraftModal
+          isRedraftDraftModalVisible={isRedraftDraftModalVisible}
+          handleRedraftDraftModalConfirm={handleRedraftDraftConfirm}
+          handleRedraftDraftModalCancel={handleRedraftDraftCancel}
         />
       </DraftHistoryContentContainer>
     </DashboardContentContainer>

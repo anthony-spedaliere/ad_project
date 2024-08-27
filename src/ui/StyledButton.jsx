@@ -26,6 +26,15 @@ const StyledButton = styled.button`
   &:focus {
     outline: none;
   }
+
+  &:disabled {
+    background-color: var(--color-grey-300);
+    color: var(--color-grey-700);
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+    box-shadow: none;
+  }
 `;
 
 const Button = ({ children, ...props }) => {
