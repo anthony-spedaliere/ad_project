@@ -65,6 +65,7 @@ export const BackButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: ${(props) => props.$mgBottom || "0rem"};
 
   &:hover {
     color: var(--color-grey-400);
