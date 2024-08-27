@@ -1,8 +1,9 @@
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import Spinner from "../ui/Spinner";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { utils, writeFile } from "xlsx";
+import Spinner from "../ui/Spinner";
 
 const Container = styled.div`
   padding: 20px;
@@ -54,6 +55,20 @@ const FullPage = styled.div`
   justify-content: center;
 `;
 
+const ExportButton = styled.button`
+  padding: 10px 20px;
+  background-color: var(--blue-color);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #2e38c9;
+  }
+`;
+
 export const BackButton = styled.button`
   color: ${(props) => props.$customColor || "var(--red-color)"};
   text-decoration: none;
@@ -88,7 +103,7 @@ function DraftResultsOverview() {
       <FullPage>
         <Spinner />
       </FullPage>
-    ); // or handle loading state appropriately
+    );
   }
 
   // Create the combined array
@@ -118,12 +133,50 @@ function DraftResultsOverview() {
   // Group POIs by rounds, excluding rounds with value zero
   const poisByRound = poisResults.reduce((acc, poi) => {
     if (poi.round_drafted > 0) {
-      // Exclude rounds with value zero
       acc[poi.round_drafted] = acc[poi.round_drafted] || [];
       acc[poi.round_drafted].push(poi);
     }
     return acc;
   }, {});
+
+  function exportToExcel() {
+    const overviewData = combined.map((item) => {
+      const row = {
+        Team: `${item.draft_priority}. ${item.team_name}`,
+      };
+      uniqueMapNames.forEach((mapName) => {
+        const poiForMap = item.poi_and_map.find(([name]) => name === mapName);
+        row[`${mapName} POI`] = poiForMap ? poiForMap[1] : "-";
+      });
+      return row;
+    });
+
+    const roundData = [];
+    Object.entries(poisByRound).forEach(([round, pois]) => {
+      pois.forEach((poi) => {
+        const team = teamsResults.find((team) => team.id === poi.drafted_by);
+        const map = mapResults.find((map) => map.id === poi.map_id);
+        if (team && map) {
+          roundData.push({
+            Round: round,
+            Pick: poi.number_picked,
+            Team: team.team_name,
+            POI: poi.poi_name,
+            Map: map.map_name,
+          });
+        }
+      });
+    });
+
+    const ws1 = utils.json_to_sheet(overviewData);
+    const ws2 = utils.json_to_sheet(roundData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws1, "Overview");
+    utils.book_append_sheet(wb, ws2, "Round-by-Round");
+
+    writeFile(wb, "DraftResults.xlsx");
+  }
 
   return (
     <Container>
@@ -132,7 +185,11 @@ function DraftResultsOverview() {
         Back
       </BackButton>
       <Title>Draft Results</Title>
-      <Subtitle>Overview</Subtitle>
+      <Subtitle>
+        Overview{" "}
+        <ExportButton onClick={exportToExcel}>Export to Excel</ExportButton>
+      </Subtitle>
+
       <Table>
         <thead>
           <HeaderRow>
@@ -175,7 +232,6 @@ function DraftResultsOverview() {
               );
               const map = mapResults.find((map) => map.id === poi.map_id);
 
-              // Ensure team exists before accessing its properties
               if (team && map) {
                 return (
                   <p key={poi.id}>
