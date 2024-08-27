@@ -243,7 +243,11 @@ Thank you!
             return (
               <DataRow key={team.id}>
                 <DataCell>{team.team_name}</DataCell>
-                <DataCell>
+                <DataCell
+                  style={{
+                    color: team.team_owner ? "var(--blue-color)" : "inherit",
+                  }}
+                >
                   {team.team_owner ? (
                     "Invite Accepted"
                   ) : (
@@ -258,15 +262,22 @@ Thank you!
                     </>
                   )}
                 </DataCell>
-                <DataCell>{team.team_owner ? "Accepted" : "Pending"}</DataCell>
+                <DataCell
+                  style={{
+                    color: team.team_owner ? "var(--blue-color)" : "inherit",
+                  }}
+                >
+                  {team.team_owner ? "Accepted" : "Pending"}
+                </DataCell>
                 <DataCell>
                   <StyledButton
-                    $bgColor="var(--brand-color)"
+                    $bgColor="var(--red-color)"
                     $textColor="var(--background-color)"
                     $hoverBgColor="var(--brand-color-dark)"
                     $fontSize="1.2rem"
                     height="3rem"
                     $padding=".5rem"
+                    disabled={!team.team_owner}
                     onClick={() => showRemoveTeamModal(team.unique_team_id)}
                   >
                     Remove
