@@ -24,7 +24,7 @@ import {
 } from "../store/slices/newDraftSlice";
 
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
-import { DeleteDraftModal } from "../ui/CustomModals";
+import { DeleteDraftModal, EditDraftModal } from "../ui/CustomModals";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
@@ -35,9 +35,12 @@ function MyDrafts() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // modal state
+  // delete modal state
   const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
     useState(false);
+
+  // edit modal state
+  const [isEditDraftModalVisible, setIsEditDraftModalVisible] = useState(false);
 
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
@@ -76,12 +79,27 @@ function MyDrafts() {
 
   //=====================================================================
 
-  function handleClickEdit(draftId) {
+  //=====================================================================
+
+  // Edit Modal functions
+  const showEditDraftModal = (draftId) => {
     setSelectedDraftId(draftId);
+    setIsEditDraftModalVisible(true);
+  };
+
+  const handleEditDraftCancel = () => {
+    setIsEditDraftModalVisible(false);
+  };
+
+  const handleEditDraftConfirm = () => {
+    handleEditDraftCancel();
+    setSelectedDraftId(selectedDraftId);
     setShouldUseDraftDetails(true);
     dispatch(setIsEditingHistory(false));
     dispatch(setIsEditing(true));
-  }
+  };
+
+  //=====================================================================
 
   function handleClickStart(uniqueDraftId) {
     navigate(`/join-draft/${uniqueDraftId}`);
@@ -167,7 +185,9 @@ function MyDrafts() {
                       >
                         Start Now
                       </ActionButton>
-                      <ActionButton onClick={() => handleClickEdit(draft.id)}>
+                      <ActionButton
+                        onClick={() => showEditDraftModal(draft.id)}
+                      >
                         Edit
                       </ActionButton>
                       <ActionButton
@@ -189,6 +209,11 @@ function MyDrafts() {
           handleDeleteDraftModalCancel={handleDeleteDraftCancel}
         />
       </DashboardContentContainer>
+      <EditDraftModal
+        isEditDraftModalVisible={isEditDraftModalVisible}
+        handleEditDraftModalConfirm={handleEditDraftConfirm}
+        handleEditDraftModalCancel={handleEditDraftCancel}
+      />
       <JoinedDraftsData />
     </>
   );

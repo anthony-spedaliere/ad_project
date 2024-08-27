@@ -107,13 +107,6 @@ function DraftHistory() {
 
   //=====================================================================
 
-  function handleClickEdit(draftId) {
-    setSelectedDraftId(draftId);
-    setShouldUseDraftDetails(true);
-    dispatch(setIsEditing(true));
-    dispatch(setIsEditingHistory(true));
-  }
-
   function handleOnViewResults(draftId) {
     dispatch(setDraftResultsId(draftId));
     navigate(`/dashboard/draft-results/${draftId}`);
