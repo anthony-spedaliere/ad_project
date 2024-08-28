@@ -19,6 +19,7 @@ import draftReducer from "./slices/draftSlice";
 import draftResultsReducer from "./slices/draftResultsSlice";
 import joinedDraftsReducer from "./slices/joinedDraftsSlice";
 import inviteTeamLinkReducer from "./slices/inviteTeamLinkSlice";
+import liveDraftReducer from "./slices/liveDraftSlice";
 
 const rootReducer = combineReducers({
   selectedLink: selectedLinkReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   draftResults: draftResultsReducer,
   joinedDrafts: joinedDraftsReducer,
   inviteTeamLinks: inviteTeamLinkReducer,
+  liveDraft: liveDraftReducer,
 });
 
 const persistConfig = {

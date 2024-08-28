@@ -124,14 +124,10 @@ function MyDrafts() {
 
   const handleStartDraftConfirm = () => {
     handleStartDraftCancel();
-    navigate(`/join-draft/${selectedUniqueDraftId}`);
+    navigate(`/join-draft`);
   };
 
   //=====================================================================
-
-  function handleClickStart(uniqueDraftId) {
-    navigate(`/join-draft/${uniqueDraftId}`);
-  }
 
   function handleClickTeamInvites(uniqueDraftId, draftId) {
     navigate(`/invite-links/${uniqueDraftId}`);

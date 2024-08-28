@@ -112,7 +112,7 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "join-draft/:uniqueDraftId",
+        path: "join-draft",
         element: <JoinDraftPage />,
       },
     ],
