@@ -28,6 +28,8 @@ export const capitalizeFirstLetter = (string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
 export const groupData = (sampleData) => {
+  console.log("Inside group data.");
+
   return sampleData.reduce((acc, item) => {
     // Create a unique key for each draft
     const draftKey = `${item.draft_name}`;

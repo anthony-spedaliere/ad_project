@@ -92,7 +92,7 @@ function MyDrafts() {
 
   // Edit Modal functions
   const showEditDraftModal = (draftId) => {
-    setSelectedUniqueDraftId(draftId);
+    setSelectedDraftId(draftId);
     setIsEditDraftModalVisible(true);
   };
 
@@ -101,8 +101,9 @@ function MyDrafts() {
   };
 
   const handleEditDraftConfirm = () => {
+    console.log("inside edit draft confirm");
+
     handleEditDraftCancel();
-    setSelectedDraftId(selectedDraftId);
     setShouldUseDraftDetails(true);
     dispatch(setIsEditingHistory(false));
     dispatch(setIsEditing(true));
