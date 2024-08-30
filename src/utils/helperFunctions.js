@@ -42,6 +42,7 @@ export const groupData = (sampleData) => {
         draft_time_per_pick: item.draft_time_per_pick,
         draft_date: item.draft_date,
         draft_time: item.draft_time,
+        start_time: item.start_clock,
         send_email: item.send_email,
         number_of_groups: item.number_of_groups,
         number_of_teams: item.number_of_teams,

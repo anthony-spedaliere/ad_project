@@ -31,7 +31,6 @@ export const useDraftDetails = (selectedDraftId, checkState) => {
       const groupedData = groupData(draftDetails);
       const draft = Object.values(groupedData)[0];
       dispatch(setCurrDraftInEditing(draft));
-      console.log(groupedData);
 
       // // set global state
       dispatch(setDraftName(draft.draft_name));

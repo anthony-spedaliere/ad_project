@@ -479,7 +479,7 @@ function NewDraftPageTwo() {
         </form>
         <ButtonContainer $marginTop="4rem" $justifyContent="space-between">
           <StyledButton
-            $bgColor="var(--brand-color)"
+            $bgColor="var(--blue-color)"
             $textColor="var(--background-color)"
             $hoverBgColor="var(--brand-color-dark)"
             height="4rem"
@@ -491,7 +491,7 @@ function NewDraftPageTwo() {
             </CustomSpan>
           </StyledButton>
           <StyledButton
-            $bgColor="var(--brand-color)"
+            $bgColor="var(--blue-color)"
             $textColor="var(--background-color)"
             $hoverBgColor="var(--brand-color-dark)"
             height="4rem"

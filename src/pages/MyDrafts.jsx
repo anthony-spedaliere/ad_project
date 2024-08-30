@@ -16,6 +16,7 @@ import {
   formatMinutes,
   formatTime,
   formatDate,
+  groupData,
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import {
@@ -34,6 +35,8 @@ import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 import JoinedDraftsData from "../components/JoinedDraftsData";
 import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
+import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
+import { setLiveDraft } from "../store/slices/liveDraftSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -61,7 +64,16 @@ function MyDrafts() {
 
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
+  const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
+
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
+
+  useEffect(() => {
+    if (liveDraftDetails) {
+      const groupedData = groupData(liveDraftDetails);
+      dispatch(setLiveDraft(groupedData));
+    }
+  }, [dispatch, liveDraftDetails]);
 
   //=====================================================================
 
@@ -111,7 +123,8 @@ function MyDrafts() {
   //=====================================================================
 
   // Start Modal functions
-  const showStartDraftModal = () => {
+  const showStartDraftModal = (draftId) => {
+    setSelectedDraftId(draftId);
     setIsStartDraftModalVisible(true);
   };
 
@@ -201,7 +214,9 @@ function MyDrafts() {
                   </TableCell>
                   <TableCell>
                     <ActionsContainer>
-                      <ActionButton onClick={() => showStartDraftModal()}>
+                      <ActionButton
+                        onClick={() => showStartDraftModal(draft.id)}
+                      >
                         Start Now
                       </ActionButton>
                       <ActionButton
