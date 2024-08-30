@@ -28,7 +28,6 @@ export const useDraftDetails = (selectedDraftId, checkState) => {
   useEffect(() => {
     // Wait for the draft data to be fetched
     if (draftDetails && checkState) {
-      console.log("Inside useEffect before groupData called.");
       const groupedData = groupData(draftDetails);
       const draft = Object.values(groupedData)[0];
       dispatch(setCurrDraftInEditing(draft));

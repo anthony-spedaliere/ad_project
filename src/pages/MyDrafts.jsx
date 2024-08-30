@@ -58,7 +58,6 @@ function MyDrafts() {
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
-  const [selectedUniqueDraftId, setSelectedUniqueDraftId] = useState(null);
 
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
@@ -101,8 +100,6 @@ function MyDrafts() {
   };
 
   const handleEditDraftConfirm = () => {
-    console.log("inside edit draft confirm");
-
     handleEditDraftCancel();
     setShouldUseDraftDetails(true);
     dispatch(setIsEditingHistory(false));
@@ -114,8 +111,7 @@ function MyDrafts() {
   //=====================================================================
 
   // Start Modal functions
-  const showStartDraftModal = (uniqueDraftId) => {
-    setSelectedUniqueDraftId(uniqueDraftId);
+  const showStartDraftModal = () => {
     setIsStartDraftModalVisible(true);
   };
 
@@ -205,11 +201,7 @@ function MyDrafts() {
                   </TableCell>
                   <TableCell>
                     <ActionsContainer>
-                      <ActionButton
-                        onClick={() =>
-                          showStartDraftModal(draft.unique_draft_url)
-                        }
-                      >
+                      <ActionButton onClick={() => showStartDraftModal()}>
                         Start Now
                       </ActionButton>
                       <ActionButton
