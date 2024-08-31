@@ -1,0 +1,52 @@
+import styled from "styled-components";
+
+const Card = styled.div`
+  height: 15rem;
+  width: 15rem;
+  background-color: var(--brand-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
+`;
+
+const DraftPriority = styled.div`
+  color: var(--background-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+const TeamName = styled.div`
+  font-size: 2rem;
+  color: var(--background-color);
+`;
+
+export const JoinButton = styled.button`
+  color: var(--background-color);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--blue-color);
+  }
+`;
+
+function TeamCard({ draftPriority, teamName }) {
+  return (
+    <Card>
+      <DraftPriority>Spot {draftPriority}</DraftPriority>
+      <TeamName>{teamName}</TeamName>
+      <JoinButton>Join Draft</JoinButton>
+    </Card>
+  );
+}
+
+export default TeamCard;

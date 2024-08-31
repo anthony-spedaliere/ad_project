@@ -36,7 +36,11 @@ import { useDraftDetails } from "../hooks/useDraftDetails";
 import JoinedDraftsData from "../components/JoinedDraftsData";
 import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
-import { setLiveDraft } from "../store/slices/liveDraftSlice";
+import {
+  setAdmin,
+  setLiveDraft,
+  setParticipant,
+} from "../store/slices/liveDraftSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -72,8 +76,10 @@ function MyDrafts() {
     if (liveDraftDetails) {
       const groupedData = groupData(liveDraftDetails);
       dispatch(setLiveDraft(groupedData));
+      dispatch(setAdmin(groupedData.draft.admin));
+      dispatch(setParticipant(userId));
     }
-  }, [dispatch, liveDraftDetails]);
+  }, [dispatch, liveDraftDetails, userId]);
 
   //=====================================================================
 

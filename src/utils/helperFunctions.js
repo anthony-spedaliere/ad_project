@@ -30,7 +30,7 @@ export const capitalizeFirstLetter = (string) =>
 export const groupData = (sampleData) => {
   return sampleData.reduce((acc, item) => {
     // Create a unique key for each draft
-    const draftKey = `${item.draft_name}`;
+    const draftKey = "draft";
 
     // Initialize the draft entry if it doesn't exist
     if (!acc[draftKey]) {
@@ -96,6 +96,7 @@ export const groupData = (sampleData) => {
           draft_priority: item.draft_priority,
           team_group_id: item.team_group_id,
           team_draft_id: item.team_draft_id,
+          team_owner: item.team_owner,
         };
       }
     }
