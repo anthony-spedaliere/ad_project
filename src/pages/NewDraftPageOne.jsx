@@ -407,7 +407,7 @@ function NewDraftPageOne() {
         </form>
         <ButtonContainer>
           <StyledButton
-            $bgColor="var(--brand-color)"
+            $bgColor="var(--blue-color)"
             $textColor="var(--background-color)"
             $hoverBgColor="var(--brand-color-dark)"
             height="4rem"

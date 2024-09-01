@@ -16,6 +16,7 @@ import {
   formatMinutes,
   formatTime,
   formatDate,
+  groupData,
 } from "../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import {
@@ -34,6 +35,12 @@ import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 import JoinedDraftsData from "../components/JoinedDraftsData";
 import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
+import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
+import {
+  setAdmin,
+  setLiveDraft,
+  setParticipant,
+} from "../store/slices/liveDraftSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -58,11 +65,21 @@ function MyDrafts() {
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
-  const [selectedUniqueDraftId, setSelectedUniqueDraftId] = useState(null);
 
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
+  const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
+
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
+
+  useEffect(() => {
+    if (liveDraftDetails) {
+      const groupedData = groupData(liveDraftDetails);
+      dispatch(setLiveDraft(groupedData));
+      dispatch(setAdmin(groupedData.draft.admin));
+      dispatch(setParticipant(userId));
+    }
+  }, [dispatch, liveDraftDetails, userId]);
 
   //=====================================================================
 
@@ -92,7 +109,7 @@ function MyDrafts() {
 
   // Edit Modal functions
   const showEditDraftModal = (draftId) => {
-    setSelectedUniqueDraftId(draftId);
+    setSelectedDraftId(draftId);
     setIsEditDraftModalVisible(true);
   };
 
@@ -102,7 +119,6 @@ function MyDrafts() {
 
   const handleEditDraftConfirm = () => {
     handleEditDraftCancel();
-    setSelectedDraftId(selectedDraftId);
     setShouldUseDraftDetails(true);
     dispatch(setIsEditingHistory(false));
     dispatch(setIsEditing(true));
@@ -113,8 +129,8 @@ function MyDrafts() {
   //=====================================================================
 
   // Start Modal functions
-  const showStartDraftModal = (uniqueDraftId) => {
-    setSelectedUniqueDraftId(uniqueDraftId);
+  const showStartDraftModal = (draftId) => {
+    setSelectedDraftId(draftId);
     setIsStartDraftModalVisible(true);
   };
 
@@ -205,9 +221,7 @@ function MyDrafts() {
                   <TableCell>
                     <ActionsContainer>
                       <ActionButton
-                        onClick={() =>
-                          showStartDraftModal(draft.unique_draft_url)
-                        }
+                        onClick={() => showStartDraftModal(draft.id)}
                       >
                         Start Now
                       </ActionButton>

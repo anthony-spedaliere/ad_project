@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useGetPoisWithDraftId } from "../authentication/useGetPoisWithDraftId";
 import { setMaps, setPois, setTeams } from "../store/slices/draftResultsSlice";
 import { useEffect } from "react";

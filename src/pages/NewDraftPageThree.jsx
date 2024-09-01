@@ -484,7 +484,7 @@ function NewDraftPageThree() {
         </form>
         <ButtonContainer $marginTop="4rem" $justifyContent="space-between">
           <StyledButton
-            $bgColor="var(--brand-color)"
+            $bgColor="var(--blue-color)"
             $textColor="var(--background-color)"
             $hoverBgColor="var(--brand-color-dark)"
             height="4rem"
@@ -497,7 +497,7 @@ function NewDraftPageThree() {
           </StyledButton>
           {!isEditingState ? (
             <StyledButton
-              $bgColor="var(--brand-color)"
+              $bgColor="var(--green-color)"
               $textColor="var(--background-color)"
               $hoverBgColor="var(--brand-color-dark)"
               height="4rem"

@@ -120,3 +120,15 @@ export async function deleteDraft(draftId) {
     console.error("Error deleting draft:", error);
   }
 }
+
+export async function getLiveDraft(draftId) {
+  const { data, error } = await supabase.rpc("get_live_draft_data", {
+    draft_id_param: draftId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
