@@ -87,6 +87,8 @@ function JoinDraftPage() {
             key={team.team_id}
             draftPriority={team.draft_priority}
             teamName={team.team_name}
+            participant={participant}
+            teamOwner={team.team_owner}
           />
         ))}
       </TeamsContainer>

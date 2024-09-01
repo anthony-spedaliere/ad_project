@@ -39,12 +39,16 @@ export const JoinButton = styled.button`
   }
 `;
 
-function TeamCard({ draftPriority, teamName }) {
+function TeamCard({ draftPriority, teamName, participant, teamOwner }) {
   return (
     <Card>
       <DraftPriority>Spot {draftPriority}</DraftPriority>
       <TeamName>{teamName}</TeamName>
-      <JoinButton>Join Draft</JoinButton>
+      {teamOwner === participant ? (
+        <JoinButton>Join Draft</JoinButton>
+      ) : (
+        <p></p>
+      )}
     </Card>
   );
 }
