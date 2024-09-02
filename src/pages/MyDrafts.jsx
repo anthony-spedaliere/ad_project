@@ -159,6 +159,12 @@ function MyDrafts() {
     dispatch(setdraftIdTeamInviteLink(draftId));
   }
 
+  function handleEnterLiveDraft(admin) {
+    if (admin === userId) {
+      navigate(`/join-draft`);
+    }
+  }
+
   useEffect(() => {
     setShouldUseDraftDetails(false);
   }, []);
@@ -229,12 +235,20 @@ function MyDrafts() {
                   </TableCell>
                   <TableCell>
                     <ActionsContainer>
-                      <ActionButton
-                        onClick={() => showStartDraftModal(draft.id)}
-                        disabled={isPendingDraftHasStarted}
-                      >
-                        Start Now
-                      </ActionButton>
+                      {draft.draft_has_started ? (
+                        <ActionButton
+                          onClick={() => handleEnterLiveDraft(draft.admin)}
+                        >
+                          Join Draft - Live!
+                        </ActionButton>
+                      ) : (
+                        <ActionButton
+                          onClick={() => showStartDraftModal(draft.id)}
+                          disabled={isPendingDraftHasStarted}
+                        >
+                          Start Now
+                        </ActionButton>
+                      )}
                       <ActionButton
                         onClick={() => showEditDraftModal(draft.id)}
                       >

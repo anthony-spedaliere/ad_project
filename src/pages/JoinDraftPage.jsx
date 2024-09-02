@@ -70,8 +70,6 @@ function JoinDraftPage() {
     .flatMap((group) => Object.values(group.teams))
     .sort((a, b) => a.draft_priority - b.draft_priority);
 
-  console.log(liveDraftInfo);
-
   return (
     <>
       <Header>

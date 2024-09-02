@@ -146,3 +146,17 @@ export async function updateDraftHasStarted(hasDraftStarted, draftId) {
 
   return data;
 }
+
+export async function getDraftHasStarted(draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .select("draft_has_started")
+    .eq("id", draftId);
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return data;
+}

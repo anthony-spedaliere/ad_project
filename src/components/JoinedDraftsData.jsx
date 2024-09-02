@@ -14,18 +14,31 @@ import {
   formatMinutes,
   formatTime,
   formatDate,
+  groupData,
 } from "../utils/helperFunctions";
 import { useEffect, useState } from "react";
 import { setJoinedDrafts } from "../store/slices/joinedDraftsSlice";
 import { useGetUniqueTeamId } from "../authentication/useGetUniqueTeamId";
-import { LeaveDraftModal } from "../ui/CustomModals";
+import { LeaveDraftModal, StartLiveDraftModal } from "../ui/CustomModals";
 import { useUpdateTeamOwnerAndRegenUuid } from "../authentication/useUpdateTeamOwnerAndRegenUuid";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
+import {
+  setAdmin,
+  setLiveDraft,
+  setParticipant,
+} from "../store/slices/liveDraftSlice";
 
 function JoinedDraftsData() {
   // Get current draft ID and user ID from Redux state
   const userId = useSelector((state) => state.user.id);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // start modal state
+  const [isStartDraftModalVisible, setIsStartDraftModalVisible] =
+    useState(false);
 
   // modal state
   const [isLeaveDraftModalVisible, setIsLeaveDraftSaveModalVisible] =
@@ -45,6 +58,17 @@ function JoinedDraftsData() {
   });
 
   const { mutate: updateTeamOwnerReject } = useUpdateTeamOwnerAndRegenUuid();
+
+  const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
+
+  useEffect(() => {
+    if (liveDraftDetails) {
+      const groupedData = groupData(liveDraftDetails);
+      dispatch(setLiveDraft(groupedData));
+      dispatch(setAdmin(groupedData.draft.admin));
+      dispatch(setParticipant(userId));
+    }
+  }, [dispatch, liveDraftDetails, selectedDraftId, userId]);
 
   useEffect(() => {
     dispatch(setJoinedDrafts(joinedDraftsData));
@@ -83,6 +107,31 @@ function JoinedDraftsData() {
     setSelectedDraftId(draftId);
     showLeaveDraftModal();
   };
+
+  // function handleEnterLiveDraft(draftId) {
+  //   setSelectedDraftId(draftId);
+  //   navigate(`/join-draft`);
+  // }
+
+  //=====================================================================
+
+  // Start Modal functions
+  const showStartDraftModal = (draftId) => {
+    setSelectedDraftId(draftId);
+    setIsStartDraftModalVisible(true);
+  };
+
+  const handleStartDraftCancel = () => {
+    setIsStartDraftModalVisible(false);
+  };
+
+  const handleStartDraftConfirm = () => {
+    handleStartDraftCancel();
+
+    navigate(`/join-draft`);
+  };
+
+  //=====================================================================
 
   if (isPending) {
     return (
@@ -139,6 +188,15 @@ function JoinedDraftsData() {
                   </TableCell>
                   <TableCell>
                     <ActionsContainer>
+                      {draft.draft_has_started ? (
+                        <ActionButton
+                          onClick={() => showStartDraftModal(draft.id)}
+                        >
+                          Join Draft - Live!
+                        </ActionButton>
+                      ) : (
+                        <></>
+                      )}
                       <ActionButton
                         $customColor="var(--red-color)"
                         onClick={() => handleLeaveDraftClick(draft.id)}
@@ -156,6 +214,11 @@ function JoinedDraftsData() {
           isLeaveDraftModalVisible={isLeaveDraftModalVisible}
           handleLeaveDraftModalConfirm={handleLeaveDraftConfirm}
           handleLeaveDraftModalCancel={handleLeaveDraftCancel}
+        />
+        <StartLiveDraftModal
+          isStartModalVisible={isStartDraftModalVisible}
+          handleStartConfirm={handleStartDraftConfirm}
+          handleStartCancel={handleStartDraftCancel}
         />
       </DashboardContentContainer>
     </>
