@@ -132,3 +132,17 @@ export async function getLiveDraft(draftId) {
 
   return data;
 }
+
+export async function updateDraftHasStarted(hasDraftStarted, draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .update({ draft_has_started: hasDraftStarted })
+    .eq("id", draftId)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}

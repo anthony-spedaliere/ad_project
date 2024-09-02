@@ -41,6 +41,7 @@ import {
   setLiveDraft,
   setParticipant,
 } from "../store/slices/liveDraftSlice";
+import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasStarted";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -69,6 +70,9 @@ function MyDrafts() {
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
   const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
+
+  const { setUpdateDraftHasStarted, isPending: isPendingDraftHasStarted } =
+    useUpdateDraftHasStarted();
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
 
@@ -140,6 +144,11 @@ function MyDrafts() {
 
   const handleStartDraftConfirm = () => {
     handleStartDraftCancel();
+
+    setUpdateDraftHasStarted({
+      hasDraftStarted: true,
+      draftId: selectedDraftId,
+    });
     navigate(`/join-draft`);
   };
 
@@ -222,6 +231,7 @@ function MyDrafts() {
                     <ActionsContainer>
                       <ActionButton
                         onClick={() => showStartDraftModal(draft.id)}
+                        disabled={isPendingDraftHasStarted}
                       >
                         Start Now
                       </ActionButton>
