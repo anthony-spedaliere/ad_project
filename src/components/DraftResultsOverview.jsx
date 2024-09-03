@@ -188,7 +188,7 @@ function DraftResultsOverview() {
 
   return (
     <Container>
-      <BackButton onClick={handleBack} $customColor="var(--blue-color)">
+      <BackButton onClick={handleBack} $customColor="var(--color-grey-100)">
         <IoReturnUpBack />
         Back
       </BackButton>

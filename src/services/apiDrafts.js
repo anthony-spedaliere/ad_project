@@ -132,3 +132,46 @@ export async function getLiveDraft(draftId) {
 
   return data;
 }
+
+export async function updateDraftHasStarted(hasDraftStarted, draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .update({ draft_has_started: hasDraftStarted })
+    .eq("id", draftId)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function getDraftHasStarted(draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .select("draft_has_started")
+    .eq("id", draftId);
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return data;
+}
+
+export async function updateStartClock(startTime, draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .update({ start_clock: startTime })
+    .eq("id", draftId)
+    .select();
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return data;
+}

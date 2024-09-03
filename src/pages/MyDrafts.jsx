@@ -41,6 +41,9 @@ import {
   setLiveDraft,
   setParticipant,
 } from "../store/slices/liveDraftSlice";
+import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasStarted";
+import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
+import dayjs from "dayjs";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -69,6 +72,11 @@ function MyDrafts() {
   const { deleteDraft, isPending: deleteDraftIsPending } = useDeleteDraft();
 
   const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
+
+  const { setUpdateDraftHasStarted, isPending: isPendingDraftHasStarted } =
+    useUpdateDraftHasStarted();
+
+  const { setStartClock } = useUpdateStartClock();
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
 
@@ -139,7 +147,15 @@ function MyDrafts() {
   };
 
   const handleStartDraftConfirm = () => {
+    const now = dayjs();
+
     handleStartDraftCancel();
+    setStartClock({ startTime: now, draftId: selectedDraftId });
+
+    setUpdateDraftHasStarted({
+      hasDraftStarted: true,
+      draftId: selectedDraftId,
+    });
     navigate(`/join-draft`);
   };
 
@@ -148,6 +164,12 @@ function MyDrafts() {
   function handleClickTeamInvites(uniqueDraftId, draftId) {
     navigate(`/invite-links/${uniqueDraftId}`);
     dispatch(setdraftIdTeamInviteLink(draftId));
+  }
+
+  function handleEnterLiveDraft(admin) {
+    if (admin === userId) {
+      navigate(`/join-draft`);
+    }
   }
 
   useEffect(() => {
@@ -220,11 +242,20 @@ function MyDrafts() {
                   </TableCell>
                   <TableCell>
                     <ActionsContainer>
-                      <ActionButton
-                        onClick={() => showStartDraftModal(draft.id)}
-                      >
-                        Start Now
-                      </ActionButton>
+                      {draft.draft_has_started ? (
+                        <ActionButton
+                          onClick={() => handleEnterLiveDraft(draft.admin)}
+                        >
+                          Join Draft - Live!
+                        </ActionButton>
+                      ) : (
+                        <ActionButton
+                          onClick={() => showStartDraftModal(draft.id)}
+                          disabled={isPendingDraftHasStarted}
+                        >
+                          Start Now
+                        </ActionButton>
+                      )}
                       <ActionButton
                         onClick={() => showEditDraftModal(draft.id)}
                       >

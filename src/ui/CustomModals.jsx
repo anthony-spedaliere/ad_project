@@ -54,6 +54,33 @@ export function StartDraftSaveModal({
   );
 }
 
+export function StartLiveDraftModal({
+  isStartModalVisible,
+  handleStartConfirm,
+  handleStartCancel,
+}) {
+  return (
+    <CustomModal
+      title="Join Draft"
+      open={isStartModalVisible}
+      onOk={handleStartConfirm}
+      onCancel={handleStartCancel}
+      okText="Confirm"
+      cancelText="Cancel"
+      bgColor="var(--background-color)"
+      textColor="var(--brand-color)"
+      okBgColor="var(--blue-color)"
+      okTextColor="var(--background-color)"
+      cancelTextColor="var(--background-color)"
+      headerBgColor="var(--background-color)"
+      headerTextColor="var(--brand-color)"
+      defaultBgColor="var(--brand-color)"
+    >
+      Please confirm you want to join this live draft.
+    </CustomModal>
+  );
+}
+
 export function LeaveDraftCreationModal({
   isModalVisible,
   handleConfirm,

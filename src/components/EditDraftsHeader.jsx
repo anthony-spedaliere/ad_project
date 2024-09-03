@@ -11,7 +11,7 @@ function NewDraftPageHeader({ showCancelModal, showSaveModal }) {
       <ButtonHeaderContainer>
         <NewDraftButton onClick={showCancelModal}>Cancel</NewDraftButton>
         <NewDraftButton
-          $customColor="var(--color-grey-0)"
+          $customColor="var(--color-grey-100)"
           onClick={showSaveModal}
         >
           Save

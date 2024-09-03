@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import TeamCard from "../components/TeamCard";
+import CountdownBox from "../components/CountdownBox";
 
 const Header = styled.header`
   display: flex;
@@ -14,20 +15,6 @@ const Header = styled.header`
 const Title = styled.h1`
   font-size: 4rem;
   color: var(--brand-color);
-`;
-
-const CountdownBox = styled.div`
-  background-color: var(--brand-color);
-  min-height: 15rem;
-  min-width: 15rem;
-  padding: 0.5rem;
-  color: var(--background-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  margin-left: 2rem;
-  border-radius: 1rem;
 `;
 
 const HeaderContent = styled.div`
@@ -70,14 +57,12 @@ function JoinDraftPage() {
     .flatMap((group) => Object.values(group.teams))
     .sort((a, b) => a.draft_priority - b.draft_priority);
 
-  console.log(liveDraftInfo);
-
   return (
     <>
       <Header>
         <HeaderContent>
+          <CountdownBox draftId={liveDraftInfo?.draft?.draft_id} />
           <Title>{liveDraftInfo?.draft?.draft_name}</Title>
-          <CountdownBox>Starts In 0:00</CountdownBox>
         </HeaderContent>
         <LeaveDraftButton>Leave Draft</LeaveDraftButton>
       </Header>
