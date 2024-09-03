@@ -484,9 +484,9 @@ function NewDraftPageThree() {
         </form>
         <ButtonContainer $marginTop="4rem" $justifyContent="space-between">
           <StyledButton
-            $bgColor="var(--blue-color)"
+            $bgColor="var(--color-grey-100)"
             $textColor="var(--background-color)"
-            $hoverBgColor="var(--brand-color-dark)"
+            $hoverBgColor="var(--color-grey-400)"
             height="4rem"
             width="20rem"
             onClick={handleClickPrev}

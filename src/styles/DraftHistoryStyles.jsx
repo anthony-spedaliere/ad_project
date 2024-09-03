@@ -6,7 +6,7 @@ export const DraftHistoryContentContainer = styled.div`
 
 export const ActionButton = styled.button`
   background: none;
-  color: ${(props) => props.$customColor || "var(--blue-color)"};
+  color: ${(props) => props.$customColor || "var(--color-grey-100)"};
   font-size: 2rem;
   border: none;
   cursor: pointer;

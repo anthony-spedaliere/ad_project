@@ -195,7 +195,7 @@ Thank you!
     <Container>
       <BackButton
         onClick={handleBack}
-        $customColor="var(--blue-color)"
+        $customColor="var(--color-grey-100)"
         $mgBottom="2rem"
       >
         <IoReturnUpBack />

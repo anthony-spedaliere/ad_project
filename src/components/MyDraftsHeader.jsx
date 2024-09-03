@@ -23,7 +23,7 @@ function MyDraftsHeader({ isMyDrafts, headerTitle, marginTop }) {
             dispatch(setIsEditing(false));
           }}
           to="/new-draft-one"
-          $customColor="var(--blue-color)"
+          $customColor="var(--color-grey-300)"
         >
           <CustomSpan>
             <FaPlus />
