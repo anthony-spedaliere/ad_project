@@ -42,6 +42,8 @@ import {
   setParticipant,
 } from "../store/slices/liveDraftSlice";
 import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasStarted";
+import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
+import dayjs from "dayjs";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -73,6 +75,8 @@ function MyDrafts() {
 
   const { setUpdateDraftHasStarted, isPending: isPendingDraftHasStarted } =
     useUpdateDraftHasStarted();
+
+  const { setStartClock } = useUpdateStartClock();
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
 
@@ -143,7 +147,10 @@ function MyDrafts() {
   };
 
   const handleStartDraftConfirm = () => {
+    const now = dayjs();
+
     handleStartDraftCancel();
+    setStartClock({ startTime: now, draftId: selectedDraftId });
 
     setUpdateDraftHasStarted({
       hasDraftStarted: true,
