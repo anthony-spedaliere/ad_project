@@ -6,15 +6,25 @@ import styled from "styled-components";
 const CountdownBoxStyle = styled.div`
   background-color: var(--brand-color);
   min-height: 13rem;
-  min-width: 13rem;
+  min-width: 16rem;
   padding: 0.5rem;
   color: var(--background-color);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  margin-right: 2rem;
+  margin-left: 2rem;
   border-radius: 1rem;
+`;
+
+const TimeRemaining = styled.div`
+  font-size: 3rem;
+`;
+
+const Countdown = styled.div`
+  font-size: 5rem;
+  font-weight: 700;
 `;
 
 function CountdownBox({ draftId }) {
@@ -63,13 +73,22 @@ function CountdownBox({ draftId }) {
     return <div>Loading...</div>;
   }
 
+  const minutes = Math.floor(remainingTime / 60);
+  const seconds = remainingTime % 60;
+
+  // Format seconds to always have two digits
+  const formattedSeconds = seconds.toString().padStart(2, "0");
+
   return (
     <CountdownBoxStyle>
       {remainingTime > 0 ? (
-        <span>
-          Time remaining: <br /> {Math.floor(remainingTime / 60)} :{" "}
-          {remainingTime % 60}
-        </span>
+        <>
+          <TimeRemaining>Starting in:</TimeRemaining>
+
+          <Countdown>
+            {minutes}:{formattedSeconds}
+          </Countdown>
+        </>
       ) : (
         <span>Draft has started!</span>
       )}

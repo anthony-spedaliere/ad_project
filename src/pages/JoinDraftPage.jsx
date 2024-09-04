@@ -61,8 +61,8 @@ function JoinDraftPage() {
     <>
       <Header>
         <HeaderContent>
-          <CountdownBox draftId={liveDraftInfo?.draft?.draft_id} />
           <Title>{liveDraftInfo?.draft?.draft_name}</Title>
+          <CountdownBox draftId={liveDraftInfo?.draft?.draft_id} />
         </HeaderContent>
         <LeaveDraftButton>Leave Draft</LeaveDraftButton>
       </Header>
