@@ -27,7 +27,7 @@ const Countdown = styled.div`
   font-weight: 700;
 `;
 
-const DraftStartingHeader = styled.h1``;
+const DraftStartingHeader = styled.h2``;
 
 function CountdownBox({ draftId }) {
   const [remainingTime, setRemainingTime] = useState(null);
@@ -92,7 +92,7 @@ function CountdownBox({ draftId }) {
           </Countdown>
         </>
       ) : (
-        <DraftStartingHeader>Draft has started!</DraftStartingHeader>
+        <DraftStartingHeader>Draft started!</DraftStartingHeader>
       )}
     </CountdownBoxStyle>
   );

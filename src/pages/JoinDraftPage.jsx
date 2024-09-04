@@ -40,6 +40,24 @@ const LeaveDraftButton = styled.button`
   }
 `;
 
+const AdminJoinDraftButton = styled.button`
+  color: ${(props) => props.$customColor || "var(--blue-color)"};
+  text-decoration: underline;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: ${(props) => props.$mgBottom || "0rem"};
+
+  &:hover {
+    color: var(--color-grey-400);
+  }
+`;
+
 const TeamsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -76,6 +94,11 @@ function JoinDraftPage() {
             teamOwner={team.team_owner}
           />
         ))}
+        {admin ? (
+          <AdminJoinDraftButton>Join Draft As Admin</AdminJoinDraftButton>
+        ) : (
+          <></>
+        )}
       </TeamsContainer>
     </>
   );
