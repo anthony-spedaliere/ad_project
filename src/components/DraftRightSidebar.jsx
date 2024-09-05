@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const StyledSidebar = styled.aside`
+  grid-area: right;
   background-color: var(--background-color-light);
   padding: 3.2rem 2.4rem;
   border-left: 1px solid var(--background-color);
