@@ -32,7 +32,6 @@ import NewDraftPageTwo from "./pages/NewDraftPageTwo";
 import NewDraftPageThree from "./pages/NewDraftPageThree";
 import DraftResults from "./pages/DraftResults";
 import TeamInviteLinks from "./pages/TeamInviteLinks";
-import ResetPassword from "./pages/ResetPassword";
 import DraftPage from "./pages/DraftPage";
 
 // ui
@@ -114,6 +113,10 @@ const router = createBrowserRouter([
       {
         path: "join-draft",
         element: <JoinDraftPage />,
+      },
+      {
+        path: "draft",
+        element: <DraftPage />,
       },
     ],
   },
