@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Card = styled.div`
@@ -40,12 +41,18 @@ export const JoinButton = styled.button`
 `;
 
 function TeamCard({ draftPriority, teamName, participant, teamOwner }) {
+  const navigate = useNavigate();
+
+  function handleJoinDraft() {
+    navigate("/draft");
+  }
+
   return (
     <Card>
       <DraftPriority>Spot {draftPriority}</DraftPriority>
       <TeamName>{teamName}</TeamName>
       {teamOwner === participant ? (
-        <JoinButton>Join Draft</JoinButton>
+        <JoinButton onClick={handleJoinDraft}>Join Draft</JoinButton>
       ) : (
         <p></p>
       )}

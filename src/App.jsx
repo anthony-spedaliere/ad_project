@@ -32,7 +32,6 @@ import NewDraftPageTwo from "./pages/NewDraftPageTwo";
 import NewDraftPageThree from "./pages/NewDraftPageThree";
 import DraftResults from "./pages/DraftResults";
 import TeamInviteLinks from "./pages/TeamInviteLinks";
-import ResetPassword from "./pages/ResetPassword";
 import DraftPage from "./pages/DraftPage";
 
 // ui
@@ -44,6 +43,7 @@ import DraftLayout from "./ui/DraftLayout";
 import PageNotFound from "./ui/PageNotFound";
 import ChangePasswordForm from "./components/ChangePasswordForm";
 import AcceptInvite from "./pages/AcceptInvite";
+import PoiPoolPage from "./pages/PoiPoolPage";
 
 //----------------End Imports-----------------
 
@@ -114,6 +114,11 @@ const router = createBrowserRouter([
       {
         path: "join-draft",
         element: <JoinDraftPage />,
+      },
+      {
+        path: "draft",
+        element: <DraftPage />,
+        children: [{ path: "poi-pool", element: <PoiPoolPage /> }],
       },
     ],
   },
