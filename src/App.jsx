@@ -43,6 +43,7 @@ import DraftLayout from "./ui/DraftLayout";
 import PageNotFound from "./ui/PageNotFound";
 import ChangePasswordForm from "./components/ChangePasswordForm";
 import AcceptInvite from "./pages/AcceptInvite";
+import PoiPoolPage from "./pages/PoiPoolPage";
 
 //----------------End Imports-----------------
 
@@ -117,6 +118,7 @@ const router = createBrowserRouter([
       {
         path: "draft",
         element: <DraftPage />,
+        children: [{ path: "poi-pool", element: <PoiPoolPage /> }],
       },
     ],
   },

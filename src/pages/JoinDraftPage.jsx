@@ -94,7 +94,7 @@ function JoinDraftPage() {
     .sort((a, b) => a.draft_priority - b.draft_priority);
 
   function handleJoinDraft() {
-    navigate("/draft");
+    navigate("/draft/poi-pool");
   }
 
   return (
