@@ -53,7 +53,7 @@ function DraftHeader() {
         />
 
         <StyledCheckbox textColor="var(--brand-color)" marginBottom="0rem">
-          Show Drafted
+          Hide Drafted
         </StyledCheckbox>
       </HeaderBottom>
     </StyledHeader>
