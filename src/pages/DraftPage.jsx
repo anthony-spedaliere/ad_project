@@ -6,22 +6,36 @@ import DraftPageFooter from "../components/DraftPageFooter";
 import DraftHeader from "../components/DraftHeader";
 
 // Styled Components
-const DraftMain = styled.main`
+const ScrollableMain = styled.main`
   background-color: var(--background-color);
-  padding: 4rem 4.8rem 6.4rem;
-  overflow: auto;
+  padding: 1rem;
   grid-area: main;
   box-sizing: border-box;
-  min-width: 120rem;
-  min-height: 100rem;
-`;
-
-const Container = styled.div`
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  max-width: 140rem;
-  margin: 0 auto;
   gap: 3.2rem;
+  height: 100%;
+  width: 100%;
+
+  /* Custom scrollbar styles for WebKit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background-color-light);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--background-color-dark);
+    border-radius: 10px;
+    border: 3px solid var(--background-color-light);
+  }
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--background-color-dark) var(--background-color-light);
 `;
 
 const StyledADraftLayout = styled.div`
@@ -32,7 +46,7 @@ const StyledADraftLayout = styled.div`
     "left header right"
     "left main right"
     "footer footer footer";
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
 `;
 
@@ -42,11 +56,9 @@ function DraftPage() {
       <StyledADraftLayout>
         <DraftLeftSidebar />
         <DraftHeader />
-        <DraftMain>
-          <Container>
-            <Outlet />
-          </Container>
-        </DraftMain>
+        <ScrollableMain>
+          <Outlet />
+        </ScrollableMain>
         <DraftRightSidebar />
         <DraftPageFooter />
       </StyledADraftLayout>

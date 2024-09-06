@@ -7,6 +7,7 @@ const StyledHeader = styled.header`
   text-align: center;
   z-index: 1;
   grid-area: header;
+  min-height: 18rem;
 `;
 
 function DraftHeader() {
