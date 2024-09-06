@@ -360,7 +360,7 @@ function NewDraftPageOne() {
                   </RadioLabel>
                 </RadioGroup>
               </FormRow>
-              <h4>Learn More</h4>
+              {/* <h4>Learn More</h4> */}
             </div>
 
             <FormRow

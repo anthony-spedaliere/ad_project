@@ -4,7 +4,6 @@ const StyledCheckboxLabel = styled.label`
   display: block;
   position: relative;
   padding-left: 35px;
-  margin-bottom: 12px;
   cursor: pointer;
   font-size: 2rem;
   -webkit-user-select: none;
