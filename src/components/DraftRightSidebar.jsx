@@ -72,29 +72,11 @@ function DraftRightSidebar() {
         </Header>
         <Body>
           <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
-          <h1>Body 1</h1>
         </Body>
       </Section>
       <Section>
         <Header>My Picks</Header>
         <Body>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
-          <h1>Body 2</h1>
           <h1>Body 2</h1>
         </Body>
       </Section>
