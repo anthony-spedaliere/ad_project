@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  liveDraft: null,
+  admin: null,
+  participant: null,
+  teamsHaveJoined: [],
+};
+
 const liveDraftSlice = createSlice({
   name: "liveDraft",
-  initialState: {
-    liveDraft: null,
-    admin: null,
-    participant: null,
-  },
+  initialState,
   reducers: {
     setLiveDraft: (state, action) => {
       state.liveDraft = action.payload;
@@ -17,9 +20,22 @@ const liveDraftSlice = createSlice({
     setParticipant: (state, action) => {
       state.participant = action.payload;
     },
+    setTeamsHaveJoined: (state, action) => {
+      if (Array.isArray(state.teamsHaveJoined)) {
+        state.teamsHaveJoined = [...state.teamsHaveJoined, action.payload];
+      } else {
+        state.teamsHaveJoined = [action.payload];
+      }
+    },
+    resetLiveDraftState: () => initialState,
   },
 });
 
-export const { setLiveDraft, setAdmin, setParticipant } =
-  liveDraftSlice.actions;
+export const {
+  setLiveDraft,
+  setAdmin,
+  setParticipant,
+  setTeamsHaveJoined,
+  resetLiveDraftState,
+} = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;

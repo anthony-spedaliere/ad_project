@@ -297,3 +297,30 @@ export function RemoveTeamModal({
     </CustomModal>
   );
 }
+
+export function LeaveLiveDraft({
+  isLeaveLiveDraftModalVisible,
+  handleLeaveLiveDraftModalConfirm,
+  handleLeaveLiveDraftModalCancel,
+}) {
+  return (
+    <CustomModal
+      title="Leave Live Draft"
+      open={isLeaveLiveDraftModalVisible}
+      onOk={handleLeaveLiveDraftModalConfirm}
+      onCancel={handleLeaveLiveDraftModalCancel}
+      okText="Confirm"
+      cancelText="Cancel"
+      bgColor="var(--background-color)"
+      textColor="var(--brand-color)"
+      okBgColor="var(--red-color)"
+      okTextColor="var(--background-color)"
+      cancelTextColor="var(--background-color)"
+      headerBgColor="var(--background-color)"
+      headerTextColor="var(--red-color)"
+      defaultBgColor="var(--brand-color)"
+    >
+      Are you sure you want to leave the draft?
+    </CustomModal>
+  );
+}

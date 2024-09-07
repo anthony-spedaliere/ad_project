@@ -111,3 +111,17 @@ export async function getUniqueTeamId(userId, draftId) {
 
   return { team, error };
 }
+
+export async function updateHasJoined(hasJoined, teamOwner) {
+  const { data, error } = await supabase
+    .from("team")
+    .update({ has_joined: hasJoined })
+    .eq("team_owner", teamOwner)
+    .select();
+
+  if (error) {
+    console.error("Error retrieving team: ", error);
+  }
+
+  return { data, error };
+}
