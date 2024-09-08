@@ -67,7 +67,6 @@ function DraftPage() {
         filter: `draft_id=eq.${93}`,
       },
       (payload) => {
-        console.log(payload.new);
         dispatch(setTeamsHaveJoined(payload.new));
       }
     )

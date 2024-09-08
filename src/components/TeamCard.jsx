@@ -47,7 +47,7 @@ function TeamCard({ draftPriority, teamName, participant, teamOwner }) {
 
   function handleJoinDraft() {
     setHasJoined({ hasJoined: true, teamOwner: participant });
-    navigate("/draft", { replace: true });
+    navigate("/draft");
   }
 
   return (

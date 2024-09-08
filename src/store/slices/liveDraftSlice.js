@@ -28,6 +28,9 @@ const liveDraftSlice = createSlice({
       }
     },
     resetLiveDraftState: () => initialState,
+    resetTeamsHaveJoined: (state) => {
+      state.teamsHaveJoined = [];
+    },
   },
 });
 
@@ -37,5 +40,6 @@ export const {
   setParticipant,
   setTeamsHaveJoined,
   resetLiveDraftState,
+  resetTeamsHaveJoined,
 } = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;
