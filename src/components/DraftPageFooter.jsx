@@ -1,4 +1,10 @@
 import styled from "styled-components";
+import { LeaveLiveDraft } from "../ui/CustomModals";
+import { useState } from "react";
+import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import supabase from "../services/supabase";
 
 const StyledFooter = styled.footer`
   grid-area: footer;
@@ -28,9 +34,41 @@ const LeaveDraftButton = styled.button`
 `;
 
 function DraftPageFooter() {
+  const navigate = useNavigate();
+  // Get current draft ID and user ID from Redux state
+  const userId = useSelector((state) => state.user.id);
+  const [isLiveDraftModalVisible, setIsLiveDraftModalVisible] = useState(false);
+  const { setHasJoined, isPending } = useUpdateHasJoined();
+
+  //=====================================================================
+
+  // Edit Modal functions
+  const showLeaveLiveDraftModal = () => {
+    setIsLiveDraftModalVisible(true);
+  };
+
+  const handleLeaveLiveDraftCancel = () => {
+    setIsLiveDraftModalVisible(false);
+  };
+
+  const handleLeaveLiveDraftConfirm = () => {
+    setHasJoined({ hasJoined: false, teamOwner: userId });
+    handleLeaveLiveDraftCancel();
+    navigate("/join-draft");
+  };
+
+  //=====================================================================
+
   return (
     <StyledFooter>
-      <LeaveDraftButton>Leave Draft</LeaveDraftButton>
+      <LeaveDraftButton onClick={showLeaveLiveDraftModal} disabled={isPending}>
+        Leave Draft
+      </LeaveDraftButton>
+      <LeaveLiveDraft
+        isLeaveLiveDraftModalVisible={isLiveDraftModalVisible}
+        handleLeaveLiveDraftModalConfirm={handleLeaveLiveDraftConfirm}
+        handleLeaveLiveDraftModalCancel={handleLeaveLiveDraftCancel}
+      />
     </StyledFooter>
   );
 }

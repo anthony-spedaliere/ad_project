@@ -1,6 +1,6 @@
 import supabase from "./supabase";
 
-export async function insertPois(poisArray, mapId) {
+export async function insertPois(poisArray, mapId, draftId) {
   const { data: pois, error } = await supabase
     .from("poi")
     .insert(
@@ -8,6 +8,7 @@ export async function insertPois(poisArray, mapId) {
         poi_name: poi.name,
         poi_number: poi.points,
         map_id: mapId,
+        draft_id: draftId,
       }))
     )
     .select();

@@ -44,6 +44,7 @@ import {
 import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasStarted";
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
 import dayjs from "dayjs";
+import supabase from "../services/supabase";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -79,6 +80,13 @@ function MyDrafts() {
   const { setStartClock } = useUpdateStartClock();
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
+
+  // unsubscribe from all channels
+  async function unsubscribe() {
+    await supabase.removeAllChannels();
+  }
+
+  unsubscribe();
 
   useEffect(() => {
     if (liveDraftDetails) {

@@ -1,8 +1,11 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import TeamCard from "../components/TeamCard";
 import CountdownBox from "../components/CountdownBox";
 import { useNavigate } from "react-router-dom";
+import { IoReturnUpBack } from "react-icons/io5";
+import supabase from "../services/supabase";
+import { setTeamsHaveJoined } from "../store/slices/liveDraftSlice";
 
 const Main = styled.main`
   background-color: var(--background-color);
@@ -39,6 +42,24 @@ const HeaderContent = styled.div`
 `;
 
 const LeaveDraftButton = styled.button`
+  color: ${(props) => props.$customColor || "var(--red-color)"};
+  text-decoration: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: ${(props) => props.$mgBottom || "0rem"};
+
+  &:hover {
+    color: var(--color-grey-400);
+  }
+`;
+
+export const BackButton = styled.button`
   color: ${(props) => props.$customColor || "var(--red-color)"};
   text-decoration: none;
   font-size: 2rem;
@@ -97,6 +118,28 @@ function JoinDraftPage() {
     navigate("/draft/poi-pool");
   }
 
+  function handleBack() {
+    navigate("/dashboard/my-drafts");
+  }
+
+  const dispatch = useDispatch();
+
+  const channelUpdates = supabase
+    .channel("has-joined-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "team",
+        filter: `draft_id=eq.${liveDraftInfo?.draft?.draft_id}`,
+      },
+      (payload) => {
+        dispatch(setTeamsHaveJoined(payload.new));
+      }
+    )
+    .subscribe();
+
   return (
     <Main>
       <Container>
@@ -105,7 +148,14 @@ function JoinDraftPage() {
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
             <CountdownBox draftId={liveDraftInfo?.draft?.draft_id} />
           </HeaderContent>
-          <LeaveDraftButton>Leave Draft</LeaveDraftButton>
+          <BackButton
+            onClick={handleBack}
+            $customColor="var(--color-grey-100)"
+            $mgBottom="2rem"
+          >
+            <IoReturnUpBack />
+            Back to Dashboard
+          </BackButton>
         </Header>
         <TeamsContainer>
           {teams.map((team) => (

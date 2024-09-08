@@ -127,7 +127,6 @@ function JoinedDraftsData() {
 
   const handleStartDraftConfirm = () => {
     handleStartDraftCancel();
-
     navigate(`/join-draft`);
   };
 

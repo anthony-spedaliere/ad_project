@@ -51,7 +51,7 @@ export function useSubmitNewDraft() {
         // insert pois
         await Promise.all(
           mapsResponse.maps.map((map, index) =>
-            insertPois(draftData.maps[index].pois, map.id)
+            insertPois(draftData.maps[index].pois, map.id, draftId)
           )
         );
 

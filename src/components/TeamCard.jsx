@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
 
 const Card = styled.div`
   height: 15rem;
@@ -42,8 +43,10 @@ export const JoinButton = styled.button`
 
 function TeamCard({ draftPriority, teamName, participant, teamOwner }) {
   const navigate = useNavigate();
+  const { setHasJoined, isPending } = useUpdateHasJoined();
 
   function handleJoinDraft() {
+    setHasJoined({ hasJoined: true, teamOwner: participant });
     navigate("/draft");
   }
 
@@ -52,7 +55,9 @@ function TeamCard({ draftPriority, teamName, participant, teamOwner }) {
       <DraftPriority>Spot {draftPriority}</DraftPriority>
       <TeamName>{teamName}</TeamName>
       {teamOwner === participant ? (
-        <JoinButton onClick={handleJoinDraft}>Join Draft</JoinButton>
+        <JoinButton onClick={handleJoinDraft} disabled={isPending}>
+          Join Draft
+        </JoinButton>
       ) : (
         <p></p>
       )}

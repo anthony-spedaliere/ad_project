@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import supabase from "../services/supabase";
 import styled from "styled-components";
+import SpinnerMini from "../ui/SpinnerMini";
 
 const CountdownBoxStyle = styled.div`
   background-color: var(--brand-color);
@@ -72,7 +73,14 @@ function CountdownBox({ draftId }) {
   }, [remainingTime]);
 
   if (remainingTime === null) {
-    return <div>Loading...</div>;
+    return (
+      <CountdownBoxStyle>
+        <TimeRemaining>Starting in:</TimeRemaining>
+        <Countdown>
+          <SpinnerMini />
+        </Countdown>
+      </CountdownBoxStyle>
+    );
   }
 
   const minutes = Math.floor(remainingTime / 60);
