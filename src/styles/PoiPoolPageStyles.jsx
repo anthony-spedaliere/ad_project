@@ -4,7 +4,7 @@ export const TableContainer = styled.div`
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  background-color: var(--background-color);
+  background-color: var(--brand-color);
   border-radius: 8px;
 `;
 
@@ -31,7 +31,9 @@ export const TableBody = styled.tbody`
   background-color: var(--table-body-bg);
 `;
 
-export const DataRow = styled.tr``;
+export const DataRow = styled.tr`
+  color: var(--background-color);
+`;
 
 export const DataCell = styled.td`
   padding: 10px;
