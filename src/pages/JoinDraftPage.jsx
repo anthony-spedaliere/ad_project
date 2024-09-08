@@ -1,9 +1,11 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import TeamCard from "../components/TeamCard";
 import CountdownBox from "../components/CountdownBox";
 import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
+import supabase from "../services/supabase";
+import { setTeamsHaveJoined } from "../store/slices/liveDraftSlice";
 
 const Main = styled.main`
   background-color: var(--background-color);
@@ -119,6 +121,24 @@ function JoinDraftPage() {
   function handleBack() {
     navigate("/dashboard/my-drafts");
   }
+
+  const dispatch = useDispatch();
+
+  const channelUpdates = supabase
+    .channel("has-joined-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "team",
+        filter: `draft_id=eq.${liveDraftInfo?.draft?.draft_id}`,
+      },
+      (payload) => {
+        dispatch(setTeamsHaveJoined(payload.new));
+      }
+    )
+    .subscribe();
 
   return (
     <Main>

@@ -4,9 +4,6 @@ import DraftRightSidebar from "../components/DraftRightSidebar";
 import { Outlet } from "react-router-dom";
 import DraftPageFooter from "../components/DraftPageFooter";
 import DraftHeader from "../components/DraftHeader";
-import supabase from "../services/supabase";
-import { useDispatch } from "react-redux";
-import { setTeamsHaveJoined } from "../store/slices/liveDraftSlice";
 
 // Styled Components
 const ScrollableMain = styled.main`
@@ -54,24 +51,6 @@ const StyledADraftLayout = styled.div`
 `;
 
 function DraftPage() {
-  const dispatch = useDispatch();
-
-  const channelUpdates = supabase
-    .channel("has-joined-updates")
-    .on(
-      "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "team",
-        filter: `draft_id=eq.${93}`,
-      },
-      (payload) => {
-        dispatch(setTeamsHaveJoined(payload.new));
-      }
-    )
-    .subscribe();
-
   return (
     <>
       <StyledADraftLayout>
