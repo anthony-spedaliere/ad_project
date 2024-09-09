@@ -5,6 +5,7 @@ const initialState = {
   admin: null,
   participant: null,
   teamsHaveJoined: [],
+  selectedFavorites: [],
 };
 
 const liveDraftSlice = createSlice({
@@ -27,6 +28,9 @@ const liveDraftSlice = createSlice({
         state.teamsHaveJoined = [action.payload];
       }
     },
+    setSelectedFavorites: (state, action) => {
+      state.selectedFavorites = action.payload;
+    },
     resetLiveDraftState: () => initialState,
     resetTeamsHaveJoined: (state) => {
       state.teamsHaveJoined = [];
@@ -41,5 +45,6 @@ export const {
   setTeamsHaveJoined,
   resetLiveDraftState,
   resetTeamsHaveJoined,
+  setSelectedFavorites,
 } = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;
