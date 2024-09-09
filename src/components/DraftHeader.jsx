@@ -42,9 +42,7 @@ function DraftHeader() {
       </HeaderTop>
       <HeaderBottom>
         <StyledSelect $width="auto">
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+          <option value="option1">Map Name 1</option>
         </StyledSelect>
         <StyledInput
           height="4rem"
