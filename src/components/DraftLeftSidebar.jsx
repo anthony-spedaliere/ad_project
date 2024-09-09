@@ -57,14 +57,14 @@ const Section = styled.div`
   &:last-child {
     background-color: var(--background-color);
     color: var(--brand-color);
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
   }
 
   &:nth-child(2) {
     background-color: var(--brand-color);
     color: var(--background-color-dark);
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
   }
 `;
@@ -79,6 +79,7 @@ const ScrollableContent = styled.div`
 const TimerSection = styled.div`
   display: flex;
   justify-content: space-between;
+  height: 7rem;
   font-size: 3rem;
   font-weight: bold;
   margin: 0rem 1rem;
@@ -110,7 +111,7 @@ function DraftLeftSidebar() {
             </RoundAndPickContainer>
           </TimerSection>
           <Section size="4rem">User Status</Section>
-          <Section size="7rem">Draft Status</Section>
+          <Section size="7rem">Draft Starting Soon!</Section>
         </FixedTopArea>
         <ScrollableContent>
           <h1>Left Sidebar</h1>
