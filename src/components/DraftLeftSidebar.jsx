@@ -93,8 +93,65 @@ const RoundAndPickContainer = styled.div`
   font-size: 1.5rem;
 `;
 
+const RoundHeader = styled.h2`
+  margin-bottom: 0.5rem;
+`;
+
+const TeamList = styled.ul`
+  list-style-type: none;
+  padding-left: 0;
+`;
+
+const TeamListItem = styled.li`
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+`;
+
 function DraftLeftSidebar() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraft);
+
+  const renderRounds = () => {
+    const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
+    const groups = liveDraftInfo?.draft?.groups || {};
+
+    let rounds = [];
+    let pickNumber = 1; // Initialize pick number globally
+
+    // Loop through the number of maps to create rounds
+    for (let i = 0; i < numberOfMaps; i++) {
+      const isAscending = i % 2 === 0; // Alternate between ascending and descending
+
+      // Collect all teams and sort by draft_priority
+      let teams = Object.values(groups)
+        .flatMap((group) => Object.values(group.teams))
+        .sort((a, b) =>
+          isAscending
+            ? a.draft_priority - b.draft_priority
+            : b.draft_priority - a.draft_priority
+        );
+
+      // Push each round's header and teams into rounds array
+      rounds.push(
+        <div key={`round-${i + 1}`}>
+          <RoundHeader>--------Round {i + 1}--------</RoundHeader>
+          <TeamList>
+            {teams.map((team) => {
+              const currentPick = pickNumber; // Store current pick number
+              pickNumber++; // Increment pick number
+
+              return (
+                <TeamListItem key={team.team_id}>
+                  {currentPick} {team.team_name}
+                </TeamListItem>
+              );
+            })}
+          </TeamList>
+        </div>
+      );
+    }
+
+    return rounds;
+  };
 
   return (
     <>
@@ -113,40 +170,7 @@ function DraftLeftSidebar() {
           <Section size="4rem">User Status</Section>
           <Section size="7rem">Draft Starting Soon!</Section>
         </FixedTopArea>
-        <ScrollableContent>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-          <h1>Left Sidebar</h1>
-        </ScrollableContent>
+        <ScrollableContent>{renderRounds()}</ScrollableContent>
       </StyledSidebar>
     </>
   );
