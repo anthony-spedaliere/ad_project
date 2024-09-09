@@ -1,4 +1,6 @@
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+import CountdownBox from "./CountdownBox";
 
 const StyledSidebar = styled.aside`
   grid-area: left;
@@ -74,12 +76,39 @@ const ScrollableContent = styled.div`
   padding-left: 1rem;
 `;
 
+const TimerSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0rem 1rem;
+  color: var(--brand-color);
+`;
+
+const RoundAndPickContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1.5rem;
+`;
+
 function DraftLeftSidebar() {
+  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraft);
+
   return (
     <>
       <StyledSidebar>
         <FixedTopArea>
-          <Section size="7rem">Timer</Section>
+          <TimerSection>
+            <CountdownBox
+              draftId={liveDraftInfo?.draft?.draft_id}
+              sidebar={true}
+            />
+            <RoundAndPickContainer>
+              <div>Round 1</div>
+              <div>Pick 4</div>
+            </RoundAndPickContainer>
+          </TimerSection>
           <Section size="4rem">User Status</Section>
           <Section size="7rem">Draft Status</Section>
         </FixedTopArea>

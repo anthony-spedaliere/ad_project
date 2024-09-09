@@ -175,3 +175,18 @@ export async function updateStartClock(startTime, draftId) {
 
   return data;
 }
+
+export async function getStartClock(draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .select("start_clock")
+    .eq("id", draftId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching drafts:", error);
+    return;
+  }
+
+  return data;
+}

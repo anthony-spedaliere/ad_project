@@ -146,7 +146,10 @@ function JoinDraftPage() {
         <Header>
           <HeaderContent>
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
-            <CountdownBox draftId={liveDraftInfo?.draft?.draft_id} />
+            <CountdownBox
+              draftId={liveDraftInfo?.draft?.draft_id}
+              sidebar={false}
+            />
           </HeaderContent>
           <BackButton
             onClick={handleBack}
