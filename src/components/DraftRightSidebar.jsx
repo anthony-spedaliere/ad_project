@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaStar } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { CiMenuBurger } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedFavorites } from "../store/slices/liveDraftSlice";
 
 const StyledSidebar = styled.aside`
   grid-area: right;
@@ -71,9 +73,24 @@ const UpdateStatusContainer = styled.div`
   padding: 0.5rem;
 `;
 
+const QueueContainer = styled.div`
+  background-color: var(--brand-color);
+  color: var(--background-color);
+  border-radius: 1rem;
+  display: flex;
+  padding: 0.5rem;
+  justify-content: space-between;
+`;
+
 function DraftRightSidebar() {
+  const dispatch = useDispatch();
+
   const teamsHaveJoinedArr = useSelector(
     (state) => state.liveDraft.teamsHaveJoined
+  );
+
+  const selectedFavoritesArr = useSelector(
+    (state) => state.liveDraft.selectedFavorites
   );
 
   // Reference for the scrollable div (Body)
@@ -108,6 +125,18 @@ function DraftRightSidebar() {
     }
   };
 
+  const dragQueueItem = useRef(0);
+  const draggedOverQueueItem = useRef(0);
+
+  function handleSort() {
+    const queueClone = [...selectedFavoritesArr];
+    const temp = queueClone[dragQueueItem.current];
+    queueClone[dragQueueItem.current] =
+      queueClone[draggedOverQueueItem.current];
+    queueClone[draggedOverQueueItem.current] = temp;
+    dispatch(setSelectedFavorites(queueClone));
+  }
+
   return (
     <StyledSidebar>
       <Section>
@@ -116,7 +145,23 @@ function DraftRightSidebar() {
           My Queue
         </Header>
         <Body>
-          <h1>Body 1</h1>
+          {selectedFavoritesArr.length > 0 ? (
+            selectedFavoritesArr.map((item, index) => (
+              <QueueContainer
+                key={item.poi_id}
+                draggable
+                onDragStart={() => (dragQueueItem.current = index)}
+                onDragEnter={() => (draggedOverQueueItem.current = index)}
+                onDragEnd={handleSort}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                {item.poi_name}
+                <CiMenuBurger />
+              </QueueContainer>
+            ))
+          ) : (
+            <h3>Queue Empty</h3>
+          )}
         </Body>
       </Section>
       <Section>
