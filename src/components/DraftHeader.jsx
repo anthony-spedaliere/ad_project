@@ -2,6 +2,7 @@ import styled from "styled-components";
 import StyledSelect from "./StyledSelect";
 import StyledInput from "../ui/StyledInput";
 import StyledCheckbox from "../ui/StyledCheckbox";
+import StyledButton from "../ui/StyledButton";
 
 const StyledHeader = styled.header`
   background-color: var(--background-color-dark);
@@ -53,6 +54,15 @@ function DraftHeader() {
         <StyledCheckbox textColor="var(--brand-color)" marginBottom="0rem">
           Hide Drafted
         </StyledCheckbox>
+        <StyledButton
+          $bgColor="var(--brand-color)"
+          $textColor="var(--background-color)"
+          $hoverBgColor="#B5B3DE"
+          $padding="1rem 3rem"
+          disabled
+        >
+          Pick
+        </StyledButton>
       </HeaderBottom>
     </StyledHeader>
   );

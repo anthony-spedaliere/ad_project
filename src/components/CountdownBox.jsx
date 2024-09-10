@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import supabase from "../services/supabase";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import SpinnerMini from "../ui/SpinnerMini";
+import { useGetStartClock } from "../authentication/useGetStartClock";
 
 const CountdownBoxStyle = styled.div`
   background-color: var(--brand-color);
@@ -19,38 +19,29 @@ const CountdownBoxStyle = styled.div`
   border-radius: 1rem;
 `;
 
+const SidebarCountdownBoxStyle = styled.div`
+  background-color: var(--background-color);
+  padding: 0.5rem;
+  color: var(--brand-color);
+`;
+
 const TimeRemaining = styled.div`
   font-size: 3rem;
 `;
 
 const Countdown = styled.div`
   font-size: 5rem;
-  font-weight: 700;
 `;
 
 const DraftStartingHeader = styled.h2``;
 
-function CountdownBox({ draftId }) {
+const SidebarDraftStartingHeader = styled.h3``;
+
+function CountdownBox({ draftId, sidebar }) {
   const [remainingTime, setRemainingTime] = useState(null);
+  const { data, isPending } = useGetStartClock(draftId);
 
-  useEffect(() => {
-    const fetchDraftData = async () => {
-      const { data } = await supabase
-        .from("draft")
-        .select("start_clock")
-        .eq("id", draftId)
-        .single();
-
-      if (data) {
-        const startTime = dayjs(data.start_clock);
-        updateRemainingTime(startTime);
-      }
-    };
-
-    fetchDraftData();
-  }, [draftId]);
-
-  const updateRemainingTime = (startTime) => {
+  const updateRemainingTime = useCallback((startTime) => {
     const now = dayjs();
     const endTime = startTime.add(10, "minute");
     const timeDiff = endTime.diff(now, "second");
@@ -60,7 +51,14 @@ function CountdownBox({ draftId }) {
     } else {
       setRemainingTime(0);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (data && !isPending) {
+      const startTime = dayjs(data.start_clock);
+      updateRemainingTime(startTime);
+    }
+  }, [data, isPending, updateRemainingTime]);
 
   useEffect(() => {
     if (remainingTime !== null && remainingTime > 0) {
@@ -72,14 +70,16 @@ function CountdownBox({ draftId }) {
     }
   }, [remainingTime]);
 
-  if (remainingTime === null) {
+  if (isPending || remainingTime === null) {
+    // Conditionally render styles based on 'sidebar' prop during loading state
+    const StyledBox = sidebar ? SidebarCountdownBoxStyle : CountdownBoxStyle;
+
     return (
-      <CountdownBoxStyle>
-        <TimeRemaining>Starting in:</TimeRemaining>
+      <StyledBox>
         <Countdown>
           <SpinnerMini />
         </Countdown>
-      </CountdownBoxStyle>
+      </StyledBox>
     );
   }
 
@@ -90,19 +90,35 @@ function CountdownBox({ draftId }) {
   const formattedSeconds = seconds.toString().padStart(2, "0");
 
   return (
-    <CountdownBoxStyle>
-      {remainingTime > 0 ? (
-        <>
-          <TimeRemaining>Starting in:</TimeRemaining>
-
-          <Countdown>
-            {minutes}:{formattedSeconds}
-          </Countdown>
-        </>
+    <>
+      {sidebar ? (
+        <SidebarCountdownBoxStyle>
+          {remainingTime > 0 ? (
+            <>
+              <Countdown>
+                {minutes}:{formattedSeconds}
+              </Countdown>
+            </>
+          ) : (
+            <SidebarDraftStartingHeader>0:00</SidebarDraftStartingHeader>
+          )}
+        </SidebarCountdownBoxStyle>
       ) : (
-        <DraftStartingHeader>Draft started!</DraftStartingHeader>
+        <CountdownBoxStyle>
+          {remainingTime > 0 ? (
+            <>
+              <TimeRemaining>Starting in:</TimeRemaining>
+
+              <Countdown>
+                {minutes}:{formattedSeconds}
+              </Countdown>
+            </>
+          ) : (
+            <DraftStartingHeader>Draft started!</DraftStartingHeader>
+          )}
+        </CountdownBoxStyle>
       )}
-    </CountdownBoxStyle>
+    </>
   );
 }
 

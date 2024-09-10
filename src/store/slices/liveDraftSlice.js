@@ -1,25 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  liveDraft: null,
-  admin: null,
-  participant: null,
-  teamsHaveJoined: [],
-  selectedFavorites: [],
+  liveDraftData: null, // Object with the draft data - groups, teams, maps, poi's, etc.
+  admin: null, // tracks the adminstrator of the draft
+  participant: null, // track the participant /  team_owner
+  teamsHaveJoined: [], // used to populate the Updates section of draft page right sidebar
+  selectedFavorites: [], // used to populate the Queue section of draft page right sidebar
+  draftStatus: "", // used to handle the draft status bar of draft page left sidebar - "Draft Starting Soon!", "Drafting Now!", "Draft Ended!"
 };
 
 const liveDraftSlice = createSlice({
   name: "liveDraft",
   initialState,
   reducers: {
-    setLiveDraft: (state, action) => {
-      state.liveDraft = action.payload;
+    setLiveDraftData: (state, action) => {
+      state.liveDraftData = action.payload;
     },
     setAdmin: (state, action) => {
       state.admin = action.payload;
     },
     setParticipant: (state, action) => {
       state.participant = action.payload;
+    },
+    setDraftStatus: (state, action) => {
+      state.draftStatus = action.payload;
     },
     setTeamsHaveJoined: (state, action) => {
       if (Array.isArray(state.teamsHaveJoined)) {
@@ -42,7 +46,7 @@ const liveDraftSlice = createSlice({
 });
 
 export const {
-  setLiveDraft,
+  setLiveDraftData,
   setAdmin,
   setParticipant,
   setTeamsHaveJoined,
@@ -50,5 +54,6 @@ export const {
   resetTeamsHaveJoined,
   setSelectedFavorites,
   resetSelectedFavorites,
+  setDraftStatus,
 } = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;

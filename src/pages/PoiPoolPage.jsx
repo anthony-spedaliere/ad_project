@@ -21,7 +21,7 @@ const PoiPoolPage = () => {
   );
 
   const [selectedPois, setSelectedPois] = useState(selectedFavorites || []); // Local state to track selected POIs
-  const liveDraftData = useSelector((state) => state.liveDraft.liveDraft);
+  const liveDraftData = useSelector((state) => state.liveDraft.liveDraftData);
   const maps = liveDraftData.draft.maps || {};
 
   // Sync local state with Redux state on mount
