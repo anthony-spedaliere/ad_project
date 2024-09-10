@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import {
   setAdmin,
-  setLiveDraft,
+  setLiveDraftData,
   setParticipant,
 } from "../store/slices/liveDraftSlice";
 
@@ -64,7 +64,7 @@ function JoinedDraftsData() {
   useEffect(() => {
     if (liveDraftDetails) {
       const groupedData = groupData(liveDraftDetails);
-      dispatch(setLiveDraft(groupedData));
+      dispatch(setLiveDraftData(groupedData));
       dispatch(setAdmin(groupedData.draft.admin));
       dispatch(setParticipant(userId));
     }

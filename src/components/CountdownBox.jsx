@@ -3,8 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import SpinnerMini from "../ui/SpinnerMini";
 import { useGetStartClock } from "../authentication/useGetStartClock";
-import { useDispatch } from "react-redux";
-import { setDraftStatus } from "../store/slices/liveDraftSlice";
 
 const CountdownBoxStyle = styled.div`
   background-color: var(--brand-color);
@@ -41,31 +39,26 @@ const SidebarDraftStartingHeader = styled.h3``;
 
 function CountdownBox({ draftId, sidebar }) {
   const [remainingTime, setRemainingTime] = useState(null);
-  const { data } = useGetStartClock(draftId);
-  const dispatch = useDispatch();
+  const { data, isPending } = useGetStartClock(draftId);
 
-  const updateRemainingTime = useCallback(
-    (startTime) => {
-      const now = dayjs();
-      const endTime = startTime.add(10, "minute");
-      const timeDiff = endTime.diff(now, "second");
+  const updateRemainingTime = useCallback((startTime) => {
+    const now = dayjs();
+    const endTime = startTime.add(10, "minute");
+    const timeDiff = endTime.diff(now, "second");
 
-      if (timeDiff > 0) {
-        setRemainingTime(timeDiff);
-      } else {
-        setRemainingTime(0);
-        dispatch(setDraftStatus("Drafting Now!"));
-      }
-    },
-    [dispatch]
-  );
+    if (timeDiff > 0) {
+      setRemainingTime(timeDiff);
+    } else {
+      setRemainingTime(0);
+    }
+  }, []);
 
   useEffect(() => {
-    if (data) {
+    if (data && !isPending) {
       const startTime = dayjs(data.start_clock);
       updateRemainingTime(startTime);
     }
-  }, [data, updateRemainingTime]);
+  }, [data, isPending, updateRemainingTime]);
 
   useEffect(() => {
     if (remainingTime !== null && remainingTime > 0) {
@@ -77,7 +70,7 @@ function CountdownBox({ draftId, sidebar }) {
     }
   }, [remainingTime]);
 
-  if (remainingTime === null) {
+  if (isPending || remainingTime === null) {
     // Conditionally render styles based on 'sidebar' prop during loading state
     const StyledBox = sidebar ? SidebarCountdownBoxStyle : CountdownBoxStyle;
 

@@ -38,8 +38,7 @@ import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import {
   setAdmin,
-  setDraftStatus,
-  setLiveDraft,
+  setLiveDraftData,
   setParticipant,
 } from "../store/slices/liveDraftSlice";
 import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasStarted";
@@ -92,7 +91,7 @@ function MyDrafts() {
   useEffect(() => {
     if (liveDraftDetails) {
       const groupedData = groupData(liveDraftDetails);
-      dispatch(setLiveDraft(groupedData));
+      dispatch(setLiveDraftData(groupedData));
       dispatch(setAdmin(groupedData.draft.admin));
       dispatch(setParticipant(userId));
     }
@@ -161,12 +160,17 @@ function MyDrafts() {
     handleStartDraftCancel();
     setStartClock({ startTime: now, draftId: selectedDraftId });
 
-    setUpdateDraftHasStarted({
-      hasDraftStarted: true,
-      draftId: selectedDraftId,
-    });
-    dispatch(setDraftStatus("Draft Starting Soon!"));
-    navigate(`/join-draft`);
+    setUpdateDraftHasStarted(
+      {
+        hasDraftStarted: true,
+        draftId: selectedDraftId,
+      },
+      {
+        onSuccess: () => {
+          navigate(`/join-draft`);
+        },
+      }
+    );
   };
 
   //=====================================================================

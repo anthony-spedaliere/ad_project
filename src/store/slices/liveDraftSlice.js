@@ -13,7 +13,7 @@ const liveDraftSlice = createSlice({
   name: "liveDraft",
   initialState,
   reducers: {
-    setLiveDraft: (state, action) => {
+    setLiveDraftData: (state, action) => {
       state.liveDraftData = action.payload;
     },
     setAdmin: (state, action) => {
@@ -46,7 +46,7 @@ const liveDraftSlice = createSlice({
 });
 
 export const {
-  setLiveDraft,
+  setLiveDraftData,
   setAdmin,
   setParticipant,
   setTeamsHaveJoined,

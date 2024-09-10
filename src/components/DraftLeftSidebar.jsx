@@ -169,7 +169,7 @@ function DraftLeftSidebar() {
             </RoundAndPickContainer>
           </TimerSection>
           <Section size="4rem">User Status</Section>
-          <Section size="7rem">{draftStatus}</Section>
+          <Section size="7rem">Draft</Section>
         </FixedTopArea>
         <ScrollableContent>{renderRounds()}</ScrollableContent>
       </StyledSidebar>
