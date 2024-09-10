@@ -38,6 +38,7 @@ import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import {
   setAdmin,
+  setDraftStatus,
   setLiveDraft,
   setParticipant,
 } from "../store/slices/liveDraftSlice";
@@ -164,6 +165,7 @@ function MyDrafts() {
       hasDraftStarted: true,
       draftId: selectedDraftId,
     });
+    dispatch(setDraftStatus("Draft Starting Soon!"));
     navigate(`/join-draft`);
   };
 

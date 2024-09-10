@@ -106,7 +106,7 @@ const TeamsContainer = styled.div`
 function JoinDraftPage() {
   const navigate = useNavigate();
 
-  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraft);
+  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
 

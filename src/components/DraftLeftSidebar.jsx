@@ -108,7 +108,8 @@ const TeamListItem = styled.li`
 `;
 
 function DraftLeftSidebar() {
-  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraft);
+  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+  const draftStatus = useSelector((state) => state.liveDraft.draftStatus);
 
   const renderRounds = () => {
     const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
@@ -168,7 +169,7 @@ function DraftLeftSidebar() {
             </RoundAndPickContainer>
           </TimerSection>
           <Section size="4rem">User Status</Section>
-          <Section size="7rem">Draft Starting Soon!</Section>
+          <Section size="7rem">{draftStatus}</Section>
         </FixedTopArea>
         <ScrollableContent>{renderRounds()}</ScrollableContent>
       </StyledSidebar>
