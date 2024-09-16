@@ -1,6 +1,8 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import CustomCountdownBox from "./CustomCountdownBox";
+import { useState } from "react";
+import { setTeamTurnList } from "../store/slices/liveDraftSlice";
 
 const StyledSidebar = styled.aside`
   grid-area: left;
@@ -108,20 +110,53 @@ const TeamListItem = styled.li`
 `;
 
 function DraftLeftSidebar() {
+  const dispatch = useDispatch();
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
 
+  // Initialize teamOwnersArray without including round numbers
+  const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
+  const groups = liveDraftInfo?.draft?.groups || {};
+
+  let teamOwnersArray = [];
+
+  for (let i = 0; i < numberOfMaps; i++) {
+    const isAscending = i % 2 === 0;
+
+    // Collect all teams and sort by draft_priority
+    let teams = Object.values(groups)
+      .flatMap((group) => Object.values(group.teams))
+      .sort((a, b) =>
+        isAscending
+          ? a.draft_priority - b.draft_priority
+          : b.draft_priority - a.draft_priority
+      );
+
+    // Store team owners in the array in the current round's order
+    teams.forEach((team) => {
+      teamOwnersArray.push(team.team_owner); // Add only team_owner to the array
+    });
+  }
+
+  dispatch(setTeamTurnList(teamOwnersArray));
+
+  const [currentTeamOwner, setCurrentTeamOwner] = useState(
+    teamOwnersArray[0] || null
+  );
+
+  // Function to update the current team owner based on the turn number
+  const handleTurnChange = (turn) => {
+    if (teamOwnersArray.length > 0) {
+      setCurrentTeamOwner(teamOwnersArray[turn - 1]); // turn - 1 to match the 0-based index
+    }
+  };
+
   const renderRounds = () => {
-    const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
-    const groups = liveDraftInfo?.draft?.groups || {};
-
     let rounds = [];
-    let pickNumber = 1; // Initialize pick number globally
+    let pickNumber = 1;
 
-    // Loop through the number of maps to create rounds
     for (let i = 0; i < numberOfMaps; i++) {
-      const isAscending = i % 2 === 0; // Alternate between ascending and descending
+      const isAscending = i % 2 === 0;
 
-      // Collect all teams and sort by draft_priority
       let teams = Object.values(groups)
         .flatMap((group) => Object.values(group.teams))
         .sort((a, b) =>
@@ -130,14 +165,13 @@ function DraftLeftSidebar() {
             : b.draft_priority - a.draft_priority
         );
 
-      // Push each round's header and teams into rounds array
       rounds.push(
         <div key={`round-${i + 1}`}>
           <RoundHeader>--------Round {i + 1}--------</RoundHeader>
           <TeamList>
             {teams.map((team) => {
-              const currentPick = pickNumber; // Store current pick number
-              pickNumber++; // Increment pick number
+              const currentPick = pickNumber;
+              pickNumber++;
 
               return (
                 <TeamListItem key={team.team_id}>

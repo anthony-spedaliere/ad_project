@@ -6,6 +6,8 @@ const initialState = {
   participant: null, // track the participant /  team_owner
   teamsHaveJoined: [], // used to populate the Updates section of draft page right sidebar
   selectedFavorites: [], // used to populate the Queue section of draft page right sidebar
+  teamTurnList: [], // holds the uuid for the teams in draft, in order of turn
+  currentTurn: 0, // integer representing current turn draft is on. 0 is for predraft countdown and -1 is for end of draft countdown. All positive integers represent the turn based on number of maps * number of teams.
 };
 
 const liveDraftSlice = createSlice({
@@ -31,6 +33,12 @@ const liveDraftSlice = createSlice({
     setSelectedFavorites: (state, action) => {
       state.selectedFavorites = action.payload;
     },
+    setTeamTurnList: (state, action) => {
+      state.teamTurnList = action.payload;
+    },
+    setCurrentTurn: (state, action) => {
+      state.currentTurn = action.payload;
+    },
     resetLiveDraftState: () => initialState,
     resetTeamsHaveJoined: (state) => {
       state.teamsHaveJoined = [];
@@ -50,5 +58,7 @@ export const {
   resetTeamsHaveJoined,
   setSelectedFavorites,
   resetSelectedFavorites,
+  setTeamTurnList,
+  setCurrentTurn,
 } = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;
