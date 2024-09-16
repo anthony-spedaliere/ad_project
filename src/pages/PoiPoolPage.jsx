@@ -10,6 +10,7 @@ import {
   DataCell,
   DataRow,
 } from "../styles/PoiPoolPageStyles";
+import StyledButton from "../ui/StyledButton";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 import { setSelectedFavorites } from "../store/slices/liveDraftSlice";
 
@@ -21,6 +22,7 @@ const PoiPoolPage = () => {
   );
 
   const [selectedPois, setSelectedPois] = useState(selectedFavorites || []); // Local state to track selected POIs
+  const [highlightedRow, setHighlightedRow] = useState(null);
   const liveDraftData = useSelector((state) => state.liveDraft.liveDraftData);
   const maps = liveDraftData.draft.maps || {};
 
@@ -42,6 +44,10 @@ const PoiPoolPage = () => {
       // Otherwise, add the POI to the selected list
       setSelectedPois((prevSelected) => [...prevSelected, poi]);
     }
+  };
+
+  const handleRowClick = (poi) => {
+    setHighlightedRow(poi.poi_id);
   };
 
   const isPoiSelected = (poi) =>
@@ -71,12 +77,17 @@ const PoiPoolPage = () => {
             );
 
             return sortedPois.map((poi) => (
-              <DataRow key={poi.poi_id}>
+              <DataRow
+                key={poi.poi_id}
+                $isSelected={highlightedRow === poi.poi_id}
+                onClick={() => handleRowClick(poi)}
+              >
                 <DataCell>
                   {isPoiSelected(poi) ? (
                     <FaStar
                       style={{ cursor: "pointer" }}
                       onClick={() => handleFavoriteClick(poi)}
+                      color="yellow"
                     />
                   ) : (
                     <FaRegStar
@@ -88,7 +99,23 @@ const PoiPoolPage = () => {
                 <DataCell>{poi.poi_name}</DataCell>
                 <DataCell>{map.map_name}</DataCell>
                 <DataCell>{poi.poi_number}</DataCell>
-                <DataCell />
+                <DataCell>
+                  {highlightedRow === poi.poi_id && (
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <StyledButton
+                        $bgColor="var(--brand-color)"
+                        $textColor="var(--background-color)"
+                        $fontSize="1.6rem"
+                        height="2.5rem"
+                        $hoverBgColor="var(--blue-color)"
+                        width="10rem"
+                        onClick={() => console.log("clicked")}
+                      >
+                        Draft
+                      </StyledButton>
+                    </div>
+                  )}
+                </DataCell>
               </DataRow>
             ));
           })}
