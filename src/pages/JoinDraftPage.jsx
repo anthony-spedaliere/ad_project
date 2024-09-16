@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import TeamCard from "../components/TeamCard";
-import CountdownBox from "../components/CountdownBox";
 import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
 import supabase from "../services/supabase";
 import { setTeamsHaveJoined } from "../store/slices/liveDraftSlice";
+import CustomCountdownBox from "../components/CustomCountdownBox";
 
 const Main = styled.main`
   background-color: var(--background-color);
@@ -39,24 +39,6 @@ const Title = styled.h1`
 const HeaderContent = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const LeaveDraftButton = styled.button`
-  color: ${(props) => props.$customColor || "var(--red-color)"};
-  text-decoration: none;
-  font-size: 2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: ${(props) => props.$mgBottom || "0rem"};
-
-  &:hover {
-    color: var(--color-grey-400);
-  }
 `;
 
 export const BackButton = styled.button`
@@ -103,6 +85,21 @@ const TeamsContainer = styled.div`
   max-width: 100%;
 `;
 
+const CountdownBoxStyle = styled.div`
+  background-color: var(--brand-color);
+  min-height: 13rem;
+  min-width: 16rem;
+  padding: 0.5rem;
+  color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-left: 2rem;
+  border-radius: 1rem;
+`;
+
 function JoinDraftPage() {
   const navigate = useNavigate();
 
@@ -146,10 +143,12 @@ function JoinDraftPage() {
         <Header>
           <HeaderContent>
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
-            <CountdownBox
-              draftId={liveDraftInfo?.draft?.draft_id}
-              sidebar={false}
-            />
+            <CountdownBoxStyle>
+              <CustomCountdownBox
+                draftId={liveDraftInfo?.draft?.draft_id}
+                duration={30}
+              />
+            </CountdownBoxStyle>
           </HeaderContent>
           <BackButton
             onClick={handleBack}
