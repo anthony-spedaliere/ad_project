@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import CountdownBox from "./CountdownBox";
+import CustomCountdownBox from "./CustomCountdownBox";
 
 const StyledSidebar = styled.aside`
   grid-area: left;
@@ -159,9 +159,9 @@ function DraftLeftSidebar() {
       <StyledSidebar>
         <FixedTopArea>
           <TimerSection>
-            <CountdownBox
+            <CustomCountdownBox
               draftId={liveDraftInfo?.draft?.draft_id}
-              sidebar={true}
+              duration={180}
             />
             <RoundAndPickContainer>
               <div>Round 1</div>
