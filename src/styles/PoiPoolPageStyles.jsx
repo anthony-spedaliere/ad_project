@@ -14,29 +14,33 @@ export const StyledTable = styled.table`
 `;
 
 export const TableHeader = styled.thead`
-  background-color: var(--table-header-bg);
+  background-color: var(--background-color-light);
 `;
 
 export const HeaderCell = styled.th`
   padding: 10px;
-  border: 1px solid var(--background-color);
+  border: 1px solid var(--background-color-light);
   text-align: left;
 `;
 
 export const HeaderRow = styled.tr`
-  background-color: var(--background-color-light);
+  background-color: var(--background-color);
 `;
 
 export const TableBody = styled.tbody`
-  background-color: var(--table-body-bg);
+  background-color: var(--brand-color);
 `;
 
 export const DataRow = styled.tr`
-  color: var(--background-color);
+  color: ${({ $isSelected }) =>
+    $isSelected ? "var(--brand-color)" : "var(--background-color)"};
+  background-color: ${({ $isSelected }) =>
+    $isSelected ? "var(--background-color-light)" : "transparent"};
+  cursor: pointer;
 `;
 
 export const DataCell = styled.td`
   padding: 10px;
-  border: 1px solid var(--background-color-light);
+  border: 1px solid var(--background-color-dark);
   text-align: left;
 `;
