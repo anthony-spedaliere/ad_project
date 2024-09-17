@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import SpinnerMini from "../ui/SpinnerMini";
 import { useGetStartClock } from "../authentication/useGetStartClock";
+import { useSelector } from "react-redux";
 
 const Countdown = styled.div`
   font-size: 5rem;
@@ -11,6 +12,7 @@ const Countdown = styled.div`
 function CustomCountdownBox({ draftId, duration, onComplete }) {
   const [remainingTime, setRemainingTime] = useState(null);
   const { data, isPending } = useGetStartClock(draftId);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
 
   const updateRemainingTime = useCallback(
     (startTime) => {

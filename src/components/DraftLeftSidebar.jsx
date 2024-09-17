@@ -107,11 +107,16 @@ const TeamList = styled.ul`
 const TeamListItem = styled.li`
   font-size: 1.5rem;
   margin-bottom: 0.3rem;
+  background-color: ${(props) =>
+    props.$isHighlighted ? "var(--brand-color)" : "transparent"};
+  color: ${(props) =>
+    props.$fontColor ? "var(--background-color)" : "var(--brand-color)"};
 `;
 
 function DraftLeftSidebar() {
   const dispatch = useDispatch();
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
 
   // Initialize teamOwnersArray without including round numbers
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
@@ -153,6 +158,7 @@ function DraftLeftSidebar() {
   const renderRounds = () => {
     let rounds = [];
     let pickNumber = 1;
+    let teamIndex = 0;
 
     for (let i = 0; i < numberOfMaps; i++) {
       const isAscending = i % 2 === 0;
@@ -173,8 +179,15 @@ function DraftLeftSidebar() {
               const currentPick = pickNumber;
               pickNumber++;
 
+              const isHighlighted = currentTurn === teamIndex + 1; // Check if this team is the current turn
+              teamIndex++; // Increment team index
+
               return (
-                <TeamListItem key={team.team_id}>
+                <TeamListItem
+                  key={team.team_id}
+                  $isHighlighted={isHighlighted}
+                  $fontColor={isHighlighted}
+                >
                   {currentPick} {team.team_name}
                 </TeamListItem>
               );
@@ -194,7 +207,7 @@ function DraftLeftSidebar() {
           <TimerSection>
             <CustomCountdownBox
               draftId={liveDraftInfo?.draft?.draft_id}
-              duration={180}
+              duration={30}
             />
             <RoundAndPickContainer>
               <div>Round 1</div>

@@ -57,6 +57,10 @@ const PoiPoolPage = () => {
     dispatch(setSelectedFavorites(selectedPois));
   }, [dispatch, selectedPois]);
 
+  function handleClickTest() {
+    console.log("clicked");
+  }
+
   return (
     <TableContainer>
       <StyledTable>
@@ -109,7 +113,7 @@ const PoiPoolPage = () => {
                         height="2.5rem"
                         $hoverBgColor="var(--blue-color)"
                         width="10rem"
-                        onClick={() => console.log("clicked")}
+                        onClick={handleClickTest}
                       >
                         Draft
                       </StyledButton>
