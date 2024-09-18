@@ -1,7 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import CustomCountdownBox from "./CustomCountdownBox";
 import { useState } from "react";
-import { setTeamTurnList } from "../store/slices/liveDraftSlice";
 import {
   StyledSidebar,
   FixedTopArea,
@@ -15,35 +14,13 @@ import {
 } from "../styles/DraftLeftSidebarStyles";
 
 function DraftLeftSidebar() {
-  const dispatch = useDispatch();
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
 
   // Initialize teamOwnersArray without including round numbers
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
   const groups = liveDraftInfo?.draft?.groups || {};
-
-  let teamOwnersArray = [];
-
-  for (let i = 0; i < numberOfMaps; i++) {
-    const isAscending = i % 2 === 0;
-
-    // Collect all teams and sort by draft_priority
-    let teams = Object.values(groups)
-      .flatMap((group) => Object.values(group.teams))
-      .sort((a, b) =>
-        isAscending
-          ? a.draft_priority - b.draft_priority
-          : b.draft_priority - a.draft_priority
-      );
-
-    // Store team owners in the array in the current round's order
-    teams.forEach((team) => {
-      teamOwnersArray.push(team.team_owner); // Add only team_owner to the array
-    });
-  }
-
-  dispatch(setTeamTurnList(teamOwnersArray));
 
   const [currentTeamOwner, setCurrentTeamOwner] = useState(
     teamOwnersArray[0] || null

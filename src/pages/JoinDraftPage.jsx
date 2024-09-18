@@ -4,8 +4,12 @@ import TeamCard from "../components/TeamCard";
 import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
 import supabase from "../services/supabase";
-import { setTeamsHaveJoined } from "../store/slices/liveDraftSlice";
+import {
+  setTeamsHaveJoined,
+  setTeamTurnList,
+} from "../store/slices/liveDraftSlice";
 import CustomCountdownBox from "../components/CustomCountdownBox";
+import { useEffect } from "react";
 
 const Main = styled.main`
   background-color: var(--background-color);
@@ -102,10 +106,36 @@ const CountdownBoxStyle = styled.div`
 
 function JoinDraftPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
+
+  const groups = liveDraftInfo?.draft?.groups || {};
+  const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
+  let teamOwnersArray = [];
+
+  // for-loop creating the team owner array
+  for (let i = 0; i < numberOfMaps; i++) {
+    const isAscending = i % 2 === 0;
+
+    // Collect all teams and sort by draft_priority
+    let teams = Object.values(groups)
+      .flatMap((group) => Object.values(group.teams))
+      .sort((a, b) =>
+        isAscending
+          ? a.draft_priority - b.draft_priority
+          : b.draft_priority - a.draft_priority
+      );
+
+    // Store team owners in the array in the current round's order
+    teams.forEach((team) => {
+      teamOwnersArray.push(team.team_owner); // Add only team_owner to the array
+    });
+  }
+  // initialize global state with the teamOwnerArray
+  dispatch(setTeamTurnList(teamOwnersArray));
 
   const teams = Object.values(liveDraftInfo?.draft?.groups || {})
     .flatMap((group) => Object.values(group.teams))
@@ -118,8 +148,6 @@ function JoinDraftPage() {
   function handleBack() {
     navigate("/dashboard/my-drafts");
   }
-
-  const dispatch = useDispatch();
 
   const channelUpdates = supabase
     .channel("has-joined-updates")
@@ -136,6 +164,21 @@ function JoinDraftPage() {
       }
     )
     .subscribe();
+
+  // const draftTurnUpdates = supabase
+  //   .channel("draft-turn-updates")
+  //   .on(
+  //     "postgres_changes",
+  //     {
+  //       event: "*",
+  //       schema: "public",
+  //       table: "draft",
+  //     },
+  //     (payload) => {
+  //       console.log(payload.new);
+  //     }
+  //   )
+  //   .subscribe();
 
   return (
     <Main>
