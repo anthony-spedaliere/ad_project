@@ -12,11 +12,13 @@ import {
   TeamList,
   TeamListItem,
 } from "../styles/DraftLeftSidebarStyles";
+import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
 
 function DraftLeftSidebar() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
+  const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
 
   // Initialize teamOwnersArray without including round numbers
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
@@ -30,6 +32,7 @@ function DraftLeftSidebar() {
   const handleTurnChange = (turn) => {
     if (teamOwnersArray.length > 0) {
       setCurrentTeamOwner(teamOwnersArray[turn - 1]); // turn - 1 to match the 0-based index
+      setDraftTurn(turn);
     }
   };
 
@@ -85,7 +88,13 @@ function DraftLeftSidebar() {
           <TimerSection>
             <CustomCountdownBox
               draftId={liveDraftInfo?.draft?.draft_id}
-              duration={30}
+              duration={10}
+              onComplete={() =>
+                handleTurnChange({
+                  newTurn: currentTurn + 1,
+                  draftId: liveDraftInfo?.draft?.draft_id,
+                })
+              }
             />
             <RoundAndPickContainer>
               <div>Round 1</div>

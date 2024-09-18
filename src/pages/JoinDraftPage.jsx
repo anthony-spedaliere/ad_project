@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
 import supabase from "../services/supabase";
 import {
+  setCurrentTurn,
   setTeamsHaveJoined,
   setTeamTurnList,
 } from "../store/slices/liveDraftSlice";
 import CustomCountdownBox from "../components/CustomCountdownBox";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const Main = styled.main`
   background-color: var(--background-color);
@@ -111,31 +112,33 @@ function JoinDraftPage() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
 
-  const groups = liveDraftInfo?.draft?.groups || {};
+  const groups = useMemo(
+    () => liveDraftInfo?.draft?.groups || {},
+    [liveDraftInfo]
+  );
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
-  let teamOwnersArray = [];
 
-  // for-loop creating the team owner array
-  for (let i = 0; i < numberOfMaps; i++) {
-    const isAscending = i % 2 === 0;
-
-    // Collect all teams and sort by draft_priority
-    let teams = Object.values(groups)
-      .flatMap((group) => Object.values(group.teams))
-      .sort((a, b) =>
-        isAscending
-          ? a.draft_priority - b.draft_priority
-          : b.draft_priority - a.draft_priority
-      );
-
-    // Store team owners in the array in the current round's order
-    teams.forEach((team) => {
-      teamOwnersArray.push(team.team_owner); // Add only team_owner to the array
-    });
-  }
-  // initialize global state with the teamOwnerArray
-  dispatch(setTeamTurnList(teamOwnersArray));
+  useEffect(() => {
+    if (numberOfMaps > 0) {
+      let teamOwnersArray = [];
+      for (let i = 0; i < numberOfMaps; i++) {
+        const isAscending = i % 2 === 0;
+        let teams = Object.values(groups)
+          .flatMap((group) => Object.values(group.teams))
+          .sort((a, b) =>
+            isAscending
+              ? a.draft_priority - b.draft_priority
+              : b.draft_priority - a.draft_priority
+          );
+        teams.forEach((team) => {
+          teamOwnersArray.push(team.team_owner);
+        });
+      }
+      dispatch(setTeamTurnList(teamOwnersArray));
+    }
+  }, [numberOfMaps, groups, dispatch]);
 
   const teams = Object.values(liveDraftInfo?.draft?.groups || {})
     .flatMap((group) => Object.values(group.teams))
@@ -165,20 +168,21 @@ function JoinDraftPage() {
     )
     .subscribe();
 
-  // const draftTurnUpdates = supabase
-  //   .channel("draft-turn-updates")
-  //   .on(
-  //     "postgres_changes",
-  //     {
-  //       event: "*",
-  //       schema: "public",
-  //       table: "draft",
-  //     },
-  //     (payload) => {
-  //       console.log(payload.new);
-  //     }
-  //   )
-  //   .subscribe();
+  const draftTurnUpdates = supabase
+    .channel("draft-turn-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "draft",
+        filter: `id=eq.${liveDraftInfo?.draft?.draft_id}`,
+      },
+      (payload) => {
+        dispatch(setCurrentTurn(payload.new.turn));
+      }
+    )
+    .subscribe();
 
   return (
     <Main>
@@ -187,10 +191,14 @@ function JoinDraftPage() {
           <HeaderContent>
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
             <CountdownBoxStyle>
-              <CustomCountdownBox
-                draftId={liveDraftInfo?.draft?.draft_id}
-                duration={30}
-              />
+              {currentTurn === 0 ? (
+                <CustomCountdownBox
+                  draftId={liveDraftInfo?.draft?.draft_id}
+                  duration={10}
+                />
+              ) : (
+                <p>Draft Started!</p>
+              )}
             </CountdownBoxStyle>
           </HeaderContent>
           <BackButton
