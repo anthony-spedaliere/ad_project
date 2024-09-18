@@ -29,10 +29,13 @@ function DraftLeftSidebar() {
   );
 
   // Function to update the current team owner based on the turn number
-  const handleTurnChange = (turn) => {
+  const handleTurnChange = (turn, dId) => {
     if (teamOwnersArray.length > 0) {
       setCurrentTeamOwner(teamOwnersArray[turn - 1]); // turn - 1 to match the 0-based index
-      setDraftTurn(turn);
+      setDraftTurn({
+        newTurn: turn,
+        draftId: dId,
+      });
     }
   };
 
@@ -90,10 +93,10 @@ function DraftLeftSidebar() {
               draftId={liveDraftInfo?.draft?.draft_id}
               duration={10}
               onComplete={() =>
-                handleTurnChange({
-                  newTurn: currentTurn + 1,
-                  draftId: liveDraftInfo?.draft?.draft_id,
-                })
+                handleTurnChange(
+                  currentTurn + 1,
+                  liveDraftInfo?.draft?.draft_id
+                )
               }
             />
             <RoundAndPickContainer>
