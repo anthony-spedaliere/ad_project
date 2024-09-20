@@ -20,6 +20,8 @@ function DraftLeftSidebar() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
+  const teamNameList = useSelector((state) => state.liveDraft.teamNameList);
+  const participant = useSelector((state) => state.liveDraft.participant);
   const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
 
   // Initialize teamOwnersArray without including round numbers
@@ -35,7 +37,7 @@ function DraftLeftSidebar() {
   // Function to update the current team owner based on the turn number
   const handleTurnChange = (turn, dId) => {
     if (teamOwnersArray.length > 0) {
-      setCurrentTeamOwner(teamOwnersArray[turn - 1]); // turn - 1 to match the 0-based index
+      setCurrentTeamOwner(teamOwnersArray[turn - 1]);
       setDraftTurn({
         newTurn: turn,
         draftId: dId,
@@ -103,7 +105,7 @@ function DraftLeftSidebar() {
         <FixedTopArea>
           <TimerSection>
             <CustomCountdownBox
-              duration={121}
+              duration={6}
               onComplete={() => {
                 const now = dayjs();
                 setStartClock({
@@ -122,7 +124,20 @@ function DraftLeftSidebar() {
               <div>Pick {currentTurn}</div>
             </RoundAndPickContainer>
           </TimerSection>
-          <Section size="4rem">User Status</Section>
+          <Section size="4rem">
+            {" "}
+            {currentTurn === 0
+              ? "Draft Starting Soon"
+              : currentTeamOwner === participant
+              ? "Your Pick!"
+              : teamNameList &&
+                currentTurn > 0 &&
+                currentTurn <= teamNameList.length
+              ? teamNameList[currentTurn - 1] + " Picking "
+              : teamNameList && currentTurn === teamNameList.length + 1
+              ? "Draft Finished!"
+              : null}
+          </Section>
           <Section size="7rem">Draft</Section>
         </FixedTopArea>
         <ScrollableContent>{renderRounds()}</ScrollableContent>

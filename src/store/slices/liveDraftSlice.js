@@ -9,6 +9,7 @@ const initialState = {
   teamTurnList: [], // holds the uuid for the teams in draft, in order of turn
   currentTurn: 0, // integer representing current turn draft is on. 0 is for predraft countdown and -1 is for end of draft countdown. All positive integers represent the turn based on number of maps * number of teams.
   pickStartTime: null,
+  teamNameList: [],
 };
 
 const liveDraftSlice = createSlice({
@@ -37,6 +38,9 @@ const liveDraftSlice = createSlice({
     setTeamTurnList: (state, action) => {
       state.teamTurnList = action.payload;
     },
+    setTeamNameList: (state, action) => {
+      state.teamNameList = action.payload;
+    },
     setCurrentTurn: (state, action) => {
       state.currentTurn = action.payload;
     },
@@ -63,6 +67,7 @@ export const {
   setSelectedFavorites,
   resetSelectedFavorites,
   setTeamTurnList,
+  setTeamNameList,
   setCurrentTurn,
   setPickStartTime,
 } = liveDraftSlice.actions;

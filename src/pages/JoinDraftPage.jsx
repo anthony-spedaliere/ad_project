@@ -7,6 +7,7 @@ import supabase from "../services/supabase";
 import {
   setCurrentTurn,
   setPickStartTime,
+  setTeamNameList,
   setTeamsHaveJoined,
   setTeamTurnList,
 } from "../store/slices/liveDraftSlice";
@@ -124,6 +125,7 @@ function JoinDraftPage() {
   useEffect(() => {
     if (numberOfMaps > 0) {
       let teamOwnersArray = [];
+      let teamNamesArray = [];
       for (let i = 0; i < numberOfMaps; i++) {
         const isAscending = i % 2 === 0;
         let teams = Object.values(groups)
@@ -135,9 +137,11 @@ function JoinDraftPage() {
           );
         teams.forEach((team) => {
           teamOwnersArray.push(team.team_owner);
+          teamNamesArray.push(team.team_name);
         });
       }
       dispatch(setTeamTurnList(teamOwnersArray));
+      dispatch(setTeamNameList(teamNamesArray));
     }
   }, [numberOfMaps, groups, dispatch]);
 
@@ -194,7 +198,7 @@ function JoinDraftPage() {
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
             <CountdownBoxStyle>
               {currentTurn === 0 ? (
-                <CustomCountdownBox duration={11} />
+                <CustomCountdownBox duration={31} />
               ) : (
                 <p>Draft Started!</p>
               )}
