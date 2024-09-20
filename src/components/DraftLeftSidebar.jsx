@@ -88,13 +88,22 @@ function DraftLeftSidebar() {
     return rounds;
   };
 
+  const totalPicks = teamOwnersArray.length;
+
+  // Calculate picks per round
+  const picksPerRound = totalPicks / numberOfMaps;
+
+  // Calculate round based on the currentTurn and picksPerRound
+  const currentRound =
+    currentTurn > 0 ? Math.floor((currentTurn - 1) / picksPerRound) + 1 : 1; // Default to 1 if turn is 0
+
   return (
     <>
       <StyledSidebar>
         <FixedTopArea>
           <TimerSection>
             <CustomCountdownBox
-              duration={11}
+              duration={121}
               onComplete={() => {
                 const now = dayjs();
                 setStartClock({
@@ -109,8 +118,8 @@ function DraftLeftSidebar() {
               }}
             />
             <RoundAndPickContainer>
-              <div>Round 1</div>
-              <div>Pick 4</div>
+              <div>Round {currentRound}</div>
+              <div>Pick {currentTurn}</div>
             </RoundAndPickContainer>
           </TimerSection>
           <Section size="4rem">User Status</Section>
