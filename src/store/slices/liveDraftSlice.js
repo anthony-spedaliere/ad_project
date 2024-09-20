@@ -8,6 +8,7 @@ const initialState = {
   selectedFavorites: [], // used to populate the Queue section of draft page right sidebar
   teamTurnList: [], // holds the uuid for the teams in draft, in order of turn
   currentTurn: 0, // integer representing current turn draft is on. 0 is for predraft countdown and -1 is for end of draft countdown. All positive integers represent the turn based on number of maps * number of teams.
+  pickStartTime: null,
 };
 
 const liveDraftSlice = createSlice({
@@ -46,6 +47,9 @@ const liveDraftSlice = createSlice({
     resetSelectedFavorites: (state) => {
       state.selectedFavorites = [];
     },
+    setPickStartTime: (state, action) => {
+      state.pickStartTime = action.payload;
+    },
   },
 });
 
@@ -60,5 +64,6 @@ export const {
   resetSelectedFavorites,
   setTeamTurnList,
   setCurrentTurn,
+  setPickStartTime,
 } = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;

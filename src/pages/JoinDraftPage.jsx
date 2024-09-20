@@ -6,6 +6,7 @@ import { IoReturnUpBack } from "react-icons/io5";
 import supabase from "../services/supabase";
 import {
   setCurrentTurn,
+  setPickStartTime,
   setTeamsHaveJoined,
   setTeamTurnList,
 } from "../store/slices/liveDraftSlice";
@@ -180,6 +181,7 @@ function JoinDraftPage() {
       },
       (payload) => {
         dispatch(setCurrentTurn(payload.new.turn));
+        dispatch(setPickStartTime(payload.new.start_clock));
       }
     )
     .subscribe();
@@ -192,10 +194,7 @@ function JoinDraftPage() {
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
             <CountdownBoxStyle>
               {currentTurn === 0 ? (
-                <CustomCountdownBox
-                  draftId={liveDraftInfo?.draft?.draft_id}
-                  duration={10}
-                />
+                <CustomCountdownBox duration={10} />
               ) : (
                 <p>Draft Started!</p>
               )}

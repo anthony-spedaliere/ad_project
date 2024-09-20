@@ -2,15 +2,15 @@ import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import SpinnerMini from "../ui/SpinnerMini";
-import { useGetStartClock } from "../authentication/useGetStartClock";
+import { useSelector } from "react-redux";
 
 const Countdown = styled.div`
   font-size: 5rem;
 `;
 
-function CustomCountdownBox({ draftId, duration, onComplete }) {
+function CustomCountdownBox({ duration, onComplete }) {
   const [remainingTime, setRemainingTime] = useState(null);
-  const { data, isPending } = useGetStartClock(draftId);
+  const pickStartTime = useSelector((state) => state.liveDraft.pickStartTime);
 
   const updateRemainingTime = useCallback(
     (startTime) => {
@@ -28,11 +28,11 @@ function CustomCountdownBox({ draftId, duration, onComplete }) {
   );
 
   useEffect(() => {
-    if (data && !isPending) {
-      const startTime = dayjs(data.start_clock);
+    if (pickStartTime) {
+      const startTime = dayjs(pickStartTime);
       updateRemainingTime(startTime);
     }
-  }, [data, isPending, updateRemainingTime]);
+  }, [pickStartTime, updateRemainingTime]);
 
   useEffect(() => {
     if (remainingTime !== null && remainingTime > 0) {
@@ -53,7 +53,7 @@ function CustomCountdownBox({ draftId, duration, onComplete }) {
     }
   }, [remainingTime, onComplete]);
 
-  if (isPending || remainingTime === null) {
+  if (remainingTime === null) {
     return (
       <Countdown>
         <SpinnerMini />

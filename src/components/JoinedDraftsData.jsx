@@ -108,11 +108,6 @@ function JoinedDraftsData() {
     showLeaveDraftModal();
   };
 
-  // function handleEnterLiveDraft(draftId) {
-  //   setSelectedDraftId(draftId);
-  //   navigate(`/join-draft`);
-  // }
-
   //=====================================================================
 
   // Start Modal functions
