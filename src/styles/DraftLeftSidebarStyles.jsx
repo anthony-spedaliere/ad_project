@@ -55,14 +55,14 @@ export const Section = styled.div`
   &:last-child {
     background-color: var(--background-color);
     color: var(--brand-color);
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
   }
 
   &:nth-child(2) {
     background-color: var(--brand-color);
     color: var(--background-color-dark);
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
   }
 `;

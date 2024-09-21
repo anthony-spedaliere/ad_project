@@ -23,6 +23,7 @@ function DraftLeftSidebar() {
   const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
   const teamNameList = useSelector((state) => state.liveDraft.teamNameList);
   const participant = useSelector((state) => state.liveDraft.participant);
+  const admin = useSelector((state) => state.liveDraft.admin);
   const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
 
   // Initialize teamOwnersArray without including round numbers
@@ -34,7 +35,6 @@ function DraftLeftSidebar() {
   const [currentTeamOwner, setCurrentTeamOwner] = useState(
     teamOwnersArray[0] || null
   );
-  console.log("current turn: ", currentTurn);
 
   // Function to update the current team owner based on the turn number
   const handleTurnChange = (turn, dId) => {
@@ -171,19 +171,63 @@ function DraftLeftSidebar() {
             </RoundAndPickContainer>
           </TimerSection>
           <Section size="4rem">
-            {" "}
             {currentTurn === 0
               ? "-"
-              : currentTeamOwner === participant
-              ? "Your Pick!"
-              : teamNameList &&
-                currentTurn > 0 &&
-                currentTurn <= teamNameList.length
-              ? teamNameList[currentTurn - 1] + " Picking "
-              : teamNameList && currentTurn > teamNameList.length
+              : admin === participant
+              ? "-" // Admin should only see "-"
+              : currentTurn > teamOwnersArray.length
               ? "Draft Finished!"
-              : null}
+              : currentTeamOwner === participant
+              ? "It's your turn to draft!"
+              : (() => {
+                  // Get all indices where the participant is in teamOwnersArray
+                  const participantPicks = teamOwnersArray.reduce(
+                    (acc, owner, index) => {
+                      if (owner === participant) acc.push(index + 1); // Store 1-based pick numbers
+                      return acc;
+                    },
+                    []
+                  );
+
+                  // Find the next pick the participant has
+                  const nextPick = participantPicks.find(
+                    (pick) => pick > currentTurn
+                  );
+
+                  // If the participant has no more picks (i.e. they have picked all their turns)
+                  const isLastPickDone =
+                    participantPicks.length > 0 &&
+                    participantPicks[participantPicks.length - 1] <=
+                      currentTurn;
+
+                  // Calculate total picks left in the draft
+                  const picksLeftInDraft =
+                    teamOwnersArray.length - currentTurn + 1;
+
+                  if (!nextPick && !isLastPickDone) {
+                    return "Draft Finished!";
+                  } else if (
+                    isLastPickDone &&
+                    currentTurn <= teamOwnersArray.length &&
+                    picksLeftInDraft > 1
+                  ) {
+                    // Participant has finished their last pick but the draft is still ongoing
+                    return `${picksLeftInDraft} picks left in the draft`;
+                  } else if (
+                    isLastPickDone &&
+                    currentTurn <= teamOwnersArray.length &&
+                    picksLeftInDraft === 1
+                  ) {
+                    return "Last pick!";
+                  } else if (nextPick === currentTurn + 1) {
+                    return "Your turn is next!";
+                  } else {
+                    const picksLeftUntilTurn = nextPick - currentTurn;
+                    return `${picksLeftUntilTurn} picks until your turn`;
+                  }
+                })()}
           </Section>
+
           <Section size="7rem">
             {currentTurn === 0
               ? "Draft Starting Soon!"
