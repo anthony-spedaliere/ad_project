@@ -28,7 +28,9 @@ import {
   setAdmin,
   setLiveDraftData,
   setParticipant,
+  setPickStartTime,
 } from "../store/slices/liveDraftSlice";
+import { useGetStartClock } from "../authentication/useGetStartClock";
 
 function JoinedDraftsData() {
   // Get current draft ID and user ID from Redux state
@@ -60,6 +62,7 @@ function JoinedDraftsData() {
   const { mutate: updateTeamOwnerReject } = useUpdateTeamOwnerAndRegenUuid();
 
   const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
+  const { data: startClockData } = useGetStartClock(selectedDraftId);
 
   useEffect(() => {
     if (liveDraftDetails) {
@@ -108,11 +111,6 @@ function JoinedDraftsData() {
     showLeaveDraftModal();
   };
 
-  // function handleEnterLiveDraft(draftId) {
-  //   setSelectedDraftId(draftId);
-  //   navigate(`/join-draft`);
-  // }
-
   //=====================================================================
 
   // Start Modal functions
@@ -126,6 +124,8 @@ function JoinedDraftsData() {
   };
 
   const handleStartDraftConfirm = () => {
+    dispatch(setPickStartTime(startClockData.start_clock));
+
     handleStartDraftCancel();
     navigate(`/join-draft`);
   };

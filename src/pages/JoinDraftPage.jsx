@@ -4,8 +4,15 @@ import TeamCard from "../components/TeamCard";
 import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
 import supabase from "../services/supabase";
-import { setTeamsHaveJoined } from "../store/slices/liveDraftSlice";
+import {
+  setCurrentTurn,
+  setPickStartTime,
+  setTeamNameList,
+  setTeamsHaveJoined,
+  setTeamTurnList,
+} from "../store/slices/liveDraftSlice";
 import CustomCountdownBox from "../components/CustomCountdownBox";
+import { useEffect, useMemo } from "react";
 
 const Main = styled.main`
   background-color: var(--background-color);
@@ -102,10 +109,41 @@ const CountdownBoxStyle = styled.div`
 
 function JoinDraftPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+
+  const groups = useMemo(
+    () => liveDraftInfo?.draft?.groups || {},
+    [liveDraftInfo]
+  );
+  const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
+
+  useEffect(() => {
+    if (numberOfMaps > 0) {
+      let teamOwnersArray = [];
+      let teamNamesArray = [];
+      for (let i = 0; i < numberOfMaps; i++) {
+        const isAscending = i % 2 === 0;
+        let teams = Object.values(groups)
+          .flatMap((group) => Object.values(group.teams))
+          .sort((a, b) =>
+            isAscending
+              ? a.draft_priority - b.draft_priority
+              : b.draft_priority - a.draft_priority
+          );
+        teams.forEach((team) => {
+          teamOwnersArray.push(team.team_owner);
+          teamNamesArray.push(team.team_name);
+        });
+      }
+      dispatch(setTeamTurnList(teamOwnersArray));
+      dispatch(setTeamNameList(teamNamesArray));
+    }
+  }, [numberOfMaps, groups, dispatch]);
 
   const teams = Object.values(liveDraftInfo?.draft?.groups || {})
     .flatMap((group) => Object.values(group.teams))
@@ -118,8 +156,6 @@ function JoinDraftPage() {
   function handleBack() {
     navigate("/dashboard/my-drafts");
   }
-
-  const dispatch = useDispatch();
 
   const channelUpdates = supabase
     .channel("has-joined-updates")
@@ -137,6 +173,23 @@ function JoinDraftPage() {
     )
     .subscribe();
 
+  const draftTurnUpdates = supabase
+    .channel("draft-turn-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "draft",
+        filter: `id=eq.${liveDraftInfo?.draft?.draft_id}`,
+      },
+      (payload) => {
+        dispatch(setCurrentTurn(payload.new.turn));
+        dispatch(setPickStartTime(payload.new.start_clock));
+      }
+    )
+    .subscribe();
+
   return (
     <Main>
       <Container>
@@ -144,10 +197,11 @@ function JoinDraftPage() {
           <HeaderContent>
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
             <CountdownBoxStyle>
-              <CustomCountdownBox
-                draftId={liveDraftInfo?.draft?.draft_id}
-                duration={30}
-              />
+              {currentTurn === 0 ? (
+                <CustomCountdownBox duration={21} />
+              ) : (
+                <p>Draft Started!</p>
+              )}
             </CountdownBoxStyle>
           </HeaderContent>
           <BackButton

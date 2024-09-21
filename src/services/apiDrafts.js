@@ -190,3 +190,18 @@ export async function getStartClock(draftId) {
 
   return data;
 }
+
+export async function updateDraftTurn(newTurn, draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .update({ turn: newTurn })
+    .eq("id", draftId)
+    .select();
+
+  if (error) {
+    console.error("Error fetching draft turn:", error);
+    return;
+  }
+
+  return data;
+}

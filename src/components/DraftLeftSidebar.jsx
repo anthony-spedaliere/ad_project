@@ -1,127 +1,60 @@
 import { useSelector } from "react-redux";
-import styled from "styled-components";
 import CustomCountdownBox from "./CustomCountdownBox";
-
-const StyledSidebar = styled.aside`
-  grid-area: left;
-  background-color: var(--background-color-light);
-  border-right: 1px solid var(--background-color);
-  grid-row: 1 / 3;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow: auto;
-
-  max-height: 100vh;
-
-  /* Custom scrollbar styles for WebKit browsers (Chrome, Safari, Edge) */
-  ::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--background-color-light);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--background-color-dark);
-    border-radius: 10px;
-    border: 3px solid var(--background-color-light);
-  }
-
-  /* Firefox scrollbar styling */
-  scrollbar-width: thin;
-  scrollbar-color: var(--background-color-dark) var(--background-color-light);
-`;
-
-const FixedTopArea = styled.div`
-  position: sticky;
-  top: 0;
-  background-color: var(--background-color);
-  min-height: 18rem;
-  width: 100%;
-  z-index: 10;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Section = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  height: ${(props) => props.size || "1fr"};
-
-  &:first-child,
-  &:last-child {
-    background-color: var(--background-color);
-    color: var(--brand-color);
-    font-size: 2.5rem;
-    font-weight: 700;
-  }
-
-  &:nth-child(2) {
-    background-color: var(--brand-color);
-    color: var(--background-color-dark);
-    font-size: 2.5rem;
-    font-weight: 700;
-  }
-`;
-
-const ScrollableContent = styled.div`
-  flex-grow: 1;
-  overflow: auto;
-  width: 100%;
-  padding-left: 1rem;
-`;
-
-const TimerSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 7rem;
-  font-size: 3rem;
-  font-weight: bold;
-  margin: 0rem 1rem;
-  color: var(--brand-color);
-`;
-
-const RoundAndPickContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-size: 1.5rem;
-`;
-
-const RoundHeader = styled.h2`
-  margin-bottom: 0.5rem;
-`;
-
-const TeamList = styled.ul`
-  list-style-type: none;
-  padding-left: 0;
-`;
-
-const TeamListItem = styled.li`
-  font-size: 1.5rem;
-  margin-bottom: 0.3rem;
-`;
+import { useState } from "react";
+import {
+  StyledSidebar,
+  FixedTopArea,
+  Section,
+  ScrollableContent,
+  TimerSection,
+  RoundAndPickContainer,
+  RoundHeader,
+  TeamList,
+  TeamListItem,
+} from "../styles/DraftLeftSidebarStyles";
+import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
+import dayjs from "dayjs";
+import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
+import StyledHeader from "../ui/StyledHeader";
 
 function DraftLeftSidebar() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
+  const teamNameList = useSelector((state) => state.liveDraft.teamNameList);
+  const participant = useSelector((state) => state.liveDraft.participant);
+  const admin = useSelector((state) => state.liveDraft.admin);
+  const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
+
+  // Initialize teamOwnersArray without including round numbers
+  const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
+  const groups = liveDraftInfo?.draft?.groups || {};
+
+  const { setStartClock } = useUpdateStartClock();
+
+  const [currentTeamOwner, setCurrentTeamOwner] = useState(
+    teamOwnersArray[0] || null
+  );
+
+  // Function to update the current team owner based on the turn number
+  const handleTurnChange = (turn, dId) => {
+    if (teamOwnersArray.length > 0) {
+      setCurrentTeamOwner(teamOwnersArray[turn - 1]);
+      setDraftTurn({
+        newTurn: turn,
+        draftId: dId,
+      });
+    }
+  };
 
   const renderRounds = () => {
-    const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
-    const groups = liveDraftInfo?.draft?.groups || {};
-
     let rounds = [];
-    let pickNumber = 1; // Initialize pick number globally
+    let pickNumber = 1;
+    let teamIndex = 0;
 
-    // Loop through the number of maps to create rounds
     for (let i = 0; i < numberOfMaps; i++) {
-      const isAscending = i % 2 === 0; // Alternate between ascending and descending
+      const isAscending = i % 2 === 0;
 
-      // Collect all teams and sort by draft_priority
       let teams = Object.values(groups)
         .flatMap((group) => Object.values(group.teams))
         .sort((a, b) =>
@@ -130,17 +63,23 @@ function DraftLeftSidebar() {
             : b.draft_priority - a.draft_priority
         );
 
-      // Push each round's header and teams into rounds array
       rounds.push(
         <div key={`round-${i + 1}`}>
           <RoundHeader>--------Round {i + 1}--------</RoundHeader>
           <TeamList>
             {teams.map((team) => {
-              const currentPick = pickNumber; // Store current pick number
-              pickNumber++; // Increment pick number
+              const currentPick = pickNumber;
+              pickNumber++;
+
+              const isHighlighted = currentTurn === teamIndex + 1; // Check if this team is the current turn
+              teamIndex++; // Increment team index
 
               return (
-                <TeamListItem key={team.team_id}>
+                <TeamListItem
+                  key={team.team_id}
+                  $isHighlighted={isHighlighted}
+                  $fontColor={isHighlighted}
+                >
                   {currentPick} {team.team_name}
                 </TeamListItem>
               );
@@ -153,22 +92,149 @@ function DraftLeftSidebar() {
     return rounds;
   };
 
+  const totalPicks = teamOwnersArray.length;
+
+  // Calculate picks per round
+  const picksPerRound = totalPicks / numberOfMaps;
+
+  // Calculate round based on the currentTurn and picksPerRound
+  const currentRound =
+    currentTurn > 0 ? Math.floor((currentTurn - 1) / picksPerRound) + 1 : 1; // Default to 1 if turn is 0
+
   return (
     <>
       <StyledSidebar>
         <FixedTopArea>
           <TimerSection>
-            <CustomCountdownBox
-              draftId={liveDraftInfo?.draft?.draft_id}
-              duration={180}
-            />
+            {currentTurn === 0 ? (
+              <CustomCountdownBox
+                duration={21}
+                onComplete={() => {
+                  const now = dayjs();
+                  setStartClock({
+                    startTime: now,
+                    draftId: liveDraftInfo?.draft?.draft_id,
+                  });
+
+                  handleTurnChange(
+                    currentTurn + 1,
+                    liveDraftInfo?.draft?.draft_id
+                  );
+                }}
+              />
+            ) : currentTurn > 0 && currentTurn <= teamOwnersArray.length ? (
+              <CustomCountdownBox
+                duration={6}
+                onComplete={() => {
+                  const now = dayjs();
+                  setStartClock({
+                    startTime: now,
+                    draftId: liveDraftInfo?.draft?.draft_id,
+                  });
+
+                  handleTurnChange(
+                    currentTurn + 1,
+                    liveDraftInfo?.draft?.draft_id
+                  );
+                }}
+              />
+            ) : currentTurn === teamOwnersArray.length + 1 ? (
+              <CustomCountdownBox
+                duration={21}
+                onComplete={() => {
+                  const now = dayjs();
+                  setStartClock({
+                    startTime: now,
+                    draftId: liveDraftInfo?.draft?.draft_id,
+                  });
+
+                  handleTurnChange(
+                    currentTurn + 1,
+                    liveDraftInfo?.draft?.draft_id
+                  );
+                }}
+              />
+            ) : (
+              <StyledHeader $fontSize="5rem">0:00</StyledHeader>
+            )}
             <RoundAndPickContainer>
-              <div>Round 1</div>
-              <div>Pick 4</div>
+              <div>
+                Round{" "}
+                {currentRound <= numberOfMaps ? currentRound : numberOfMaps}
+              </div>
+              <div>
+                Pick{" "}
+                {currentTurn <= teamOwnersArray.length
+                  ? currentTurn
+                  : teamOwnersArray.length}
+              </div>
             </RoundAndPickContainer>
           </TimerSection>
-          <Section size="4rem">User Status</Section>
-          <Section size="7rem">Draft</Section>
+          <Section size="4rem">
+            {currentTurn === 0
+              ? "-"
+              : admin === participant
+              ? "-" // Admin should only see "-"
+              : currentTurn > teamOwnersArray.length
+              ? "Draft Finished!"
+              : currentTeamOwner === participant
+              ? "It's your turn to draft!"
+              : (() => {
+                  // Get all indices where the participant is in teamOwnersArray
+                  const participantPicks = teamOwnersArray.reduce(
+                    (acc, owner, index) => {
+                      if (owner === participant) acc.push(index + 1); // Store 1-based pick numbers
+                      return acc;
+                    },
+                    []
+                  );
+
+                  // Find the next pick the participant has
+                  const nextPick = participantPicks.find(
+                    (pick) => pick > currentTurn
+                  );
+
+                  // If the participant has no more picks (i.e. they have picked all their turns)
+                  const isLastPickDone =
+                    participantPicks.length > 0 &&
+                    participantPicks[participantPicks.length - 1] <=
+                      currentTurn;
+
+                  // Calculate total picks left in the draft
+                  const picksLeftInDraft =
+                    teamOwnersArray.length - currentTurn + 1;
+
+                  if (!nextPick && !isLastPickDone) {
+                    return "Draft Finished!";
+                  } else if (
+                    isLastPickDone &&
+                    currentTurn <= teamOwnersArray.length &&
+                    picksLeftInDraft > 1
+                  ) {
+                    // Participant has finished their last pick but the draft is still ongoing
+                    return `${picksLeftInDraft} picks left in the draft`;
+                  } else if (
+                    isLastPickDone &&
+                    currentTurn <= teamOwnersArray.length &&
+                    picksLeftInDraft === 1
+                  ) {
+                    return "Last pick!";
+                  } else if (nextPick === currentTurn + 1) {
+                    return "Your turn is next!";
+                  } else {
+                    const picksLeftUntilTurn = nextPick - currentTurn;
+                    return `${picksLeftUntilTurn} picks until your turn`;
+                  }
+                })()}
+          </Section>
+
+          <Section size="7rem">
+            {currentTurn === 0
+              ? "Draft Starting Soon!"
+              : currentTurn > 0 && currentTurn <= teamOwnersArray.length
+              ? "Draft in Progress!"
+              : "Review Draft Results!"}
+          </Section>
         </FixedTopArea>
         <ScrollableContent>{renderRounds()}</ScrollableContent>
       </StyledSidebar>

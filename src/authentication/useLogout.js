@@ -13,7 +13,6 @@ export function useLogout() {
       queryClient.removeQueries();
 
       persistor.purge().then(() => {
-        console.log("Persisted state purged");
         navigate("/login", { replace: true });
       });
     },

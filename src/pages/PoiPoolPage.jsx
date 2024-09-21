@@ -13,6 +13,7 @@ import {
 import StyledButton from "../ui/StyledButton";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 import { setSelectedFavorites } from "../store/slices/liveDraftSlice";
+import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
 
 const PoiPoolPage = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,9 @@ const PoiPoolPage = () => {
   const [highlightedRow, setHighlightedRow] = useState(null);
   const liveDraftData = useSelector((state) => state.liveDraft.liveDraftData);
   const maps = liveDraftData.draft.maps || {};
+
+  // test variable
+  const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
 
   // Sync local state with Redux state on mount
   useEffect(() => {
@@ -56,6 +60,10 @@ const PoiPoolPage = () => {
   useEffect(() => {
     dispatch(setSelectedFavorites(selectedPois));
   }, [dispatch, selectedPois]);
+
+  function handleClickTest() {
+    setDraftTurn({ newTurn: 0, draftId: 93 });
+  }
 
   return (
     <TableContainer>
@@ -109,7 +117,7 @@ const PoiPoolPage = () => {
                         height="2.5rem"
                         $hoverBgColor="var(--blue-color)"
                         width="10rem"
-                        onClick={() => console.log("clicked")}
+                        onClick={handleClickTest}
                       >
                         Draft
                       </StyledButton>

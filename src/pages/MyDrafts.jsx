@@ -40,6 +40,7 @@ import {
   setAdmin,
   setLiveDraftData,
   setParticipant,
+  setPickStartTime,
 } from "../store/slices/liveDraftSlice";
 import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasStarted";
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
@@ -156,6 +157,7 @@ function MyDrafts() {
 
   const handleStartDraftConfirm = () => {
     const now = dayjs();
+    dispatch(setPickStartTime(now.toISOString()));
 
     handleStartDraftCancel();
     setStartClock({ startTime: now, draftId: selectedDraftId });
