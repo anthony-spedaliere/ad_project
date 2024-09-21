@@ -4,6 +4,7 @@ const initialState = {
   liveDraftData: null, // Object with the draft data - groups, teams, maps, poi's, etc.
   admin: null, // tracks the adminstrator of the draft
   participant: null, // track the participant /  team_owner
+  activeUser: null,
   teamsHaveJoined: [], // used to populate the Updates section of draft page right sidebar
   selectedFavorites: [], // used to populate the Queue section of draft page right sidebar
   teamTurnList: [], // holds the uuid for the teams in draft, in order of turn
@@ -24,6 +25,9 @@ const liveDraftSlice = createSlice({
     },
     setParticipant: (state, action) => {
       state.participant = action.payload;
+    },
+    setActiveUser: (state, action) => {
+      state.activeUser = action.payload;
     },
     setTeamsHaveJoined: (state, action) => {
       if (Array.isArray(state.teamsHaveJoined)) {
@@ -69,6 +73,7 @@ export const {
   setTeamTurnList,
   setTeamNameList,
   setCurrentTurn,
+  setActiveUser,
   setPickStartTime,
 } = liveDraftSlice.actions;
 export default liveDraftSlice.reducer;

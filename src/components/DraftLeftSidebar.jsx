@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomCountdownBox from "./CustomCountdownBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyledSidebar,
   FixedTopArea,
@@ -16,15 +16,16 @@ import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
 import dayjs from "dayjs";
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
 import StyledHeader from "../ui/StyledHeader";
+import { setActiveUser } from "../store/slices/liveDraftSlice";
 
 function DraftLeftSidebar() {
+  const dispatch = useDispatch();
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
-  const teamNameList = useSelector((state) => state.liveDraft.teamNameList);
   const participant = useSelector((state) => state.liveDraft.participant);
   const admin = useSelector((state) => state.liveDraft.admin);
-  const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
+  const { setDraftTurn } = useUpdateDraftTurn();
 
   // Initialize teamOwnersArray without including round numbers
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
@@ -40,12 +41,17 @@ function DraftLeftSidebar() {
   const handleTurnChange = (turn, dId) => {
     if (teamOwnersArray.length > 0) {
       setCurrentTeamOwner(teamOwnersArray[turn - 1]);
+
       setDraftTurn({
         newTurn: turn,
         draftId: dId,
       });
     }
   };
+
+  useEffect(() => {
+    dispatch(setActiveUser(teamOwnersArray[currentTurn - 1]));
+  }, [currentTurn, dispatch, teamOwnersArray]);
 
   const renderRounds = () => {
     let rounds = [];

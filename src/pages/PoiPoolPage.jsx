@@ -25,7 +25,12 @@ const PoiPoolPage = () => {
   const [selectedPois, setSelectedPois] = useState(selectedFavorites || []); // Local state to track selected POIs
   const [highlightedRow, setHighlightedRow] = useState(null);
   const liveDraftData = useSelector((state) => state.liveDraft.liveDraftData);
+  const participant = useSelector((state) => state.liveDraft.participant);
+  const admin = useSelector((state) => state.liveDraft.admin);
+  const activeUser = useSelector((state) => state.liveDraft.activeUser);
   const maps = liveDraftData.draft.maps || {};
+
+  console.log(activeUser);
 
   // test variable
   const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
@@ -108,21 +113,25 @@ const PoiPoolPage = () => {
                 <DataCell>{map.map_name}</DataCell>
                 <DataCell>{poi.poi_number}</DataCell>
                 <DataCell>
-                  {highlightedRow === poi.poi_id && (
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <StyledButton
-                        $bgColor="var(--brand-color)"
-                        $textColor="var(--background-color)"
-                        $fontSize="1.6rem"
-                        height="2.5rem"
-                        $hoverBgColor="var(--blue-color)"
-                        width="10rem"
-                        onClick={handleClickTest}
-                      >
-                        Draft
-                      </StyledButton>
-                    </div>
-                  )}
+                  {participant === activeUser || participant === admin
+                    ? highlightedRow === poi.poi_id && (
+                        <div
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <StyledButton
+                            $bgColor="var(--brand-color)"
+                            $textColor="var(--background-color)"
+                            $fontSize="1.6rem"
+                            height="2.5rem"
+                            $hoverBgColor="var(--blue-color)"
+                            width="10rem"
+                            onClick={handleClickTest}
+                          >
+                            Draft
+                          </StyledButton>
+                        </div>
+                      )
+                    : null}
                 </DataCell>
               </DataRow>
             ));
