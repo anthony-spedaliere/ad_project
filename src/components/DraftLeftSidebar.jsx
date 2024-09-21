@@ -15,6 +15,7 @@ import {
 import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
 import dayjs from "dayjs";
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
+import StyledHeader from "../ui/StyledHeader";
 
 function DraftLeftSidebar() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
@@ -33,6 +34,7 @@ function DraftLeftSidebar() {
   const [currentTeamOwner, setCurrentTeamOwner] = useState(
     teamOwnersArray[0] || null
   );
+  console.log("current turn: ", currentTurn);
 
   // Function to update the current team owner based on the turn number
   const handleTurnChange = (turn, dId) => {
@@ -104,41 +106,91 @@ function DraftLeftSidebar() {
       <StyledSidebar>
         <FixedTopArea>
           <TimerSection>
-            <CustomCountdownBox
-              duration={6}
-              onComplete={() => {
-                const now = dayjs();
-                setStartClock({
-                  startTime: now,
-                  draftId: liveDraftInfo?.draft?.draft_id,
-                });
+            {currentTurn === 0 ? (
+              <CustomCountdownBox
+                duration={21}
+                onComplete={() => {
+                  const now = dayjs();
+                  setStartClock({
+                    startTime: now,
+                    draftId: liveDraftInfo?.draft?.draft_id,
+                  });
 
-                handleTurnChange(
-                  currentTurn + 1,
-                  liveDraftInfo?.draft?.draft_id
-                );
-              }}
-            />
+                  handleTurnChange(
+                    currentTurn + 1,
+                    liveDraftInfo?.draft?.draft_id
+                  );
+                }}
+              />
+            ) : currentTurn > 0 && currentTurn <= teamOwnersArray.length ? (
+              <CustomCountdownBox
+                duration={6}
+                onComplete={() => {
+                  const now = dayjs();
+                  setStartClock({
+                    startTime: now,
+                    draftId: liveDraftInfo?.draft?.draft_id,
+                  });
+
+                  handleTurnChange(
+                    currentTurn + 1,
+                    liveDraftInfo?.draft?.draft_id
+                  );
+                }}
+              />
+            ) : currentTurn === teamOwnersArray.length + 1 ? (
+              <CustomCountdownBox
+                duration={21}
+                onComplete={() => {
+                  const now = dayjs();
+                  setStartClock({
+                    startTime: now,
+                    draftId: liveDraftInfo?.draft?.draft_id,
+                  });
+
+                  handleTurnChange(
+                    currentTurn + 1,
+                    liveDraftInfo?.draft?.draft_id
+                  );
+                }}
+              />
+            ) : (
+              <StyledHeader $fontSize="5rem">0:00</StyledHeader>
+            )}
             <RoundAndPickContainer>
-              <div>Round {currentRound}</div>
-              <div>Pick {currentTurn}</div>
+              <div>
+                Round{" "}
+                {currentRound <= numberOfMaps ? currentRound : numberOfMaps}
+              </div>
+              <div>
+                Pick{" "}
+                {currentTurn <= teamOwnersArray.length
+                  ? currentTurn
+                  : teamOwnersArray.length}
+              </div>
             </RoundAndPickContainer>
           </TimerSection>
           <Section size="4rem">
             {" "}
             {currentTurn === 0
-              ? "Draft Starting Soon"
+              ? "-"
               : currentTeamOwner === participant
               ? "Your Pick!"
               : teamNameList &&
                 currentTurn > 0 &&
                 currentTurn <= teamNameList.length
               ? teamNameList[currentTurn - 1] + " Picking "
-              : teamNameList && currentTurn === teamNameList.length + 1
+              : teamNameList && currentTurn > teamNameList.length
               ? "Draft Finished!"
               : null}
           </Section>
-          <Section size="7rem">Draft</Section>
+          <Section size="7rem">
+            {currentTurn === 0
+              ? "Draft Starting Soon!"
+              : currentTurn > 0 && currentTurn <= teamOwnersArray.length
+              ? "Draft in Progress!"
+              : "Review Draft Results!"}
+          </Section>
         </FixedTopArea>
         <ScrollableContent>{renderRounds()}</ScrollableContent>
       </StyledSidebar>

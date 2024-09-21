@@ -198,7 +198,7 @@ function JoinDraftPage() {
             <Title>{liveDraftInfo?.draft?.draft_name}</Title>
             <CountdownBoxStyle>
               {currentTurn === 0 ? (
-                <CustomCountdownBox duration={31} />
+                <CustomCountdownBox duration={21} />
               ) : (
                 <p>Draft Started!</p>
               )}
