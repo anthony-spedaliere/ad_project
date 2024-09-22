@@ -28,12 +28,11 @@ const PoiPoolPage = () => {
   const participant = useSelector((state) => state.liveDraft.participant);
   const admin = useSelector((state) => state.liveDraft.admin);
   const activeUser = useSelector((state) => state.liveDraft.activeUser);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const maps = liveDraftData.draft.maps || {};
 
-  console.log(activeUser);
-
   // test variable
-  const { setDraftTurn, isPending, error } = useUpdateDraftTurn();
+  const { setDraftTurn } = useUpdateDraftTurn();
 
   // Sync local state with Redux state on mount
   useEffect(() => {

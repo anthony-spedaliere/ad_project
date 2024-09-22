@@ -44,3 +44,45 @@ export async function getPoisWithDraftId(draftId) {
 
   return pois;
 }
+
+export async function updateDraftedBy(poiId, userUuid) {
+  const { data, error } = await supabase
+    .from("poi")
+    .update({ drafted_by: userUuid })
+    .eq("id", poiId)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function updateRoundDrafted(poiId, roundDrafted) {
+  const { data, error } = await supabase
+    .from("poi")
+    .update({ round_drafted: roundDrafted })
+    .eq("id", poiId)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function updateNumberPicked(poiId, numberPicked) {
+  const { data, error } = await supabase
+    .from("poi")
+    .update({ number_picked: numberPicked })
+    .eq("id", poiId)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
