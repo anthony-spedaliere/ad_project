@@ -130,7 +130,7 @@ function DraftLeftSidebar() {
               />
             ) : currentTurn > 0 && currentTurn <= teamOwnersArray.length ? (
               <CustomCountdownBox
-                duration={6}
+                duration={11}
                 onComplete={() => {
                   const now = dayjs();
                   setStartClock({

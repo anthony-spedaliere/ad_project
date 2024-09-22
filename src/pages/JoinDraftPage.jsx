@@ -7,6 +7,7 @@ import supabase from "../services/supabase";
 import {
   setCurrentTurn,
   setPickStartTime,
+  setTeamIdList,
   setTeamNameList,
   setTeamsHaveJoined,
   setTeamTurnList,
@@ -126,6 +127,7 @@ function JoinDraftPage() {
     if (numberOfMaps > 0) {
       let teamOwnersArray = [];
       let teamNamesArray = [];
+      let teamIdArray = [];
       for (let i = 0; i < numberOfMaps; i++) {
         const isAscending = i % 2 === 0;
         let teams = Object.values(groups)
@@ -138,10 +140,12 @@ function JoinDraftPage() {
         teams.forEach((team) => {
           teamOwnersArray.push(team.team_owner);
           teamNamesArray.push(team.team_name);
+          teamIdArray.push(team.team_id);
         });
       }
       dispatch(setTeamTurnList(teamOwnersArray));
       dispatch(setTeamNameList(teamNamesArray));
+      dispatch(setTeamIdList(teamIdArray));
     }
   }, [numberOfMaps, groups, dispatch]);
 

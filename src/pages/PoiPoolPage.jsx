@@ -14,6 +14,11 @@ import StyledButton from "../ui/StyledButton";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 import { setSelectedFavorites } from "../store/slices/liveDraftSlice";
 import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
+import { useUpdateRoundDrafted } from "../authentication/useUpdateRoundDrafted";
+import { useUpdateDraftedBy } from "../authentication/useUpdateDraftedBy";
+import { useUpdateNumberPicked } from "../authentication/useUpdateNumberPicked";
+import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
+import dayjs from "dayjs";
 
 const PoiPoolPage = () => {
   const dispatch = useDispatch();
@@ -29,10 +34,26 @@ const PoiPoolPage = () => {
   const admin = useSelector((state) => state.liveDraft.admin);
   const activeUser = useSelector((state) => state.liveDraft.activeUser);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
+  const teamIds = useSelector((state) => state.liveDraft.teamIdList);
+  const numberOfMaps = liveDraftData?.draft?.number_of_maps || 0;
   const maps = liveDraftData.draft.maps || {};
 
   // test variable
   const { setDraftTurn } = useUpdateDraftTurn();
+  const { setRoundDrafted } = useUpdateRoundDrafted();
+  const { setDraftedBy } = useUpdateDraftedBy();
+  const { setNumberPicked } = useUpdateNumberPicked();
+  const { setStartClock } = useUpdateStartClock();
+
+  // -------- Calculate the round ---------
+  const totalPicks = teamOwnersArray.length;
+  // Calculate picks per round
+  const picksPerRound = totalPicks / numberOfMaps;
+  // Calculate round based on the currentTurn and picksPerRound
+  const currentRound =
+    currentTurn > 0 ? Math.floor((currentTurn - 1) / picksPerRound) + 1 : 1; //
+  // ----------------------------------------------------------------------------
 
   // Sync local state with Redux state on mount
   useEffect(() => {
@@ -65,8 +86,21 @@ const PoiPoolPage = () => {
     dispatch(setSelectedFavorites(selectedPois));
   }, [dispatch, selectedPois]);
 
-  function handleClickTest() {
-    setDraftTurn({ newTurn: 0, draftId: 93 });
+  function handleUpdateUserPick(poiId, currTurn, user, currRound) {
+    const now = dayjs();
+    setStartClock({
+      startTime: now,
+      draftId: liveDraftData?.draft?.draft_id,
+    });
+
+    setDraftTurn({
+      newTurn: currentTurn + 1,
+      draftId: liveDraftData?.draft?.draft_id,
+    });
+
+    setRoundDrafted({ poiId: poiId, roundDrafted: currRound });
+    setDraftedBy({ poiId: poiId, userUuid: user });
+    setNumberPicked({ poiId: poiId, numberPicked: currTurn });
   }
 
   return (
@@ -124,7 +158,14 @@ const PoiPoolPage = () => {
                             height="2.5rem"
                             $hoverBgColor="var(--blue-color)"
                             width="10rem"
-                            onClick={handleClickTest}
+                            onClick={() =>
+                              handleUpdateUserPick(
+                                poi.poi_id,
+                                currentTurn,
+                                teamIds[currentTurn - 1],
+                                currentRound
+                              )
+                            }
                           >
                             Draft
                           </StyledButton>

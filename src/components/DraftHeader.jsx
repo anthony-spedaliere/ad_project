@@ -3,6 +3,8 @@ import StyledSelect from "./StyledSelect";
 import StyledInput from "../ui/StyledInput";
 import StyledCheckbox from "../ui/StyledCheckbox";
 import StyledButton from "../ui/StyledButton";
+import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
+import { useSelector } from "react-redux";
 
 const StyledHeader = styled.header`
   background-color: var(--background-color-dark);
@@ -36,6 +38,14 @@ const HeaderTitle = styled.h1`
 `;
 
 function DraftHeader() {
+  const { setDraftTurn } = useUpdateDraftTurn();
+  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+
+  function handleResetTurn(currTurn, draftId) {
+    setDraftTurn({ newTurn: 0, draftId: draftId });
+  }
+
   return (
     <StyledHeader>
       <HeaderTop>
@@ -59,7 +69,9 @@ function DraftHeader() {
           $textColor="var(--background-color)"
           $hoverBgColor="#B5B3DE"
           $padding="1rem 3rem"
-          disabled
+          onClick={() =>
+            handleResetTurn(currentTurn, liveDraftInfo?.draft?.draft_id)
+          }
         >
           Pick
         </StyledButton>
