@@ -43,6 +43,7 @@ const PoiPoolPage = () => {
   const numberOfMaps = liveDraftData?.draft?.number_of_maps || 0;
   const maps = liveDraftData.draft.maps || {};
   const userPicks = useSelector((state) => state.liveDraft.usersPicks);
+  const selectedByArr = useSelector((state) => state.liveDraft.selectedByList);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -166,8 +167,29 @@ const PoiPoolPage = () => {
                 <DataCell>{map.map_name}</DataCell>
                 <DataCell>{poi.poi_number}</DataCell>
                 <DataCell>
-                  {participant === activeUser || participant === admin
-                    ? highlightedRow === poi.poi_id && (
+                  {(() => {
+                    // Check if the poiId exists in selectedByArr
+                    const selectedEntry = selectedByArr.find(
+                      (item) => item.poiId === poi.poi_id
+                    );
+
+                    if (selectedEntry) {
+                      // If it exists, render the selectedBy string
+                      return <span>{selectedEntry.selectedBy}</span>;
+                    }
+
+                    // If it doesn't exist, check if the participant is the admin
+                    if (participant === admin) {
+                      // Admin can see the team names only, no draft button
+                      return null;
+                    }
+
+                    // For other participants, show the Draft button only if it's their turn and the row is highlighted
+                    if (
+                      participant === activeUser &&
+                      highlightedRow === poi.poi_id
+                    ) {
+                      return (
                         <div
                           style={{ display: "flex", justifyContent: "center" }}
                         >
@@ -192,8 +214,12 @@ const PoiPoolPage = () => {
                             Draft
                           </StyledButton>
                         </div>
-                      )
-                    : null}
+                      );
+                    }
+
+                    // Default case for participants who are not active users or admins
+                    return null;
+                  })()}
                 </DataCell>
               </DataRow>
             ));

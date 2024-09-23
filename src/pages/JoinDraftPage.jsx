@@ -7,6 +7,7 @@ import supabase from "../services/supabase";
 import {
   setCurrentTurn,
   setPickStartTime,
+  setSelectedByList,
   setTeamIdList,
   setTeamNameList,
   setTeamsHaveJoined,
@@ -121,6 +122,7 @@ function JoinDraftPage() {
     () => liveDraftInfo?.draft?.groups || {},
     [liveDraftInfo]
   );
+
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
 
   useEffect(() => {
@@ -205,7 +207,18 @@ function JoinDraftPage() {
         filter: `draft_id=eq.${liveDraftInfo?.draft?.draft_id}`,
       },
       (payload) => {
-        // console.log(payload);
+        const updatedPoi = payload.new;
+
+        const teamId = updatedPoi.drafted_by;
+
+        const teamName = Object.values(liveDraftInfo?.draft?.groups || {})
+          .flatMap((group) => Object.values(group.teams))
+          .find((team) => team.team_id === teamId)?.team_name;
+
+        console.log("POI ID:", updatedPoi.id, "Team Name:", teamName);
+
+        // dispatch(setSelectedByList(teamName));
+        dispatch(setSelectedByList({ poiId: updatedPoi.id, teamName }));
       }
     )
     .subscribe();

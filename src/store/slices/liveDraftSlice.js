@@ -10,9 +10,10 @@ const initialState = {
   teamTurnList: [], // holds the uuid for the teams in draft, in order of turn
   currentTurn: 0, // integer representing current turn draft is on. 0 is for predraft countdown and -1 is for end of draft countdown. All positive integers represent the turn based on number of maps * number of teams.
   pickStartTime: null,
-  teamNameList: [],
-  teamIdList: [],
-  usersPicks: [],
+  teamNameList: [], // an array of all team names in order of their pick for all rounds
+  teamIdList: [], // an array of all the team id's in order of their picks for all rounds
+  usersPicks: [], // the picks that show up under My Picks within DraftRightSidebar
+  selectedByList: [], // array of objects with key value pair - poi_id: teamName
 };
 
 const liveDraftSlice = createSlice({
@@ -28,6 +29,27 @@ const liveDraftSlice = createSlice({
     setParticipant: (state, action) => {
       state.participant = action.payload;
     },
+    setSelectedByList: (state, action) => {
+      const { poiId, teamName } = action.payload;
+
+      // Check if the poiId already exists in the selectedByList
+      const existingIndex = state.selectedByList.findIndex(
+        (item) => item.poiId === poiId
+      );
+
+      if (existingIndex > -1) {
+        // If it exists, update the selectedBy for that poiId
+        state.selectedByList[existingIndex].selectedBy = teamName;
+      } else {
+        // If it doesn't exist, add a new entry
+        state.selectedByList.push({ poiId, selectedBy: teamName });
+      }
+    },
+    // setSelectedByList: (state, action) => {
+    //   const newTeam = action.payload;
+    //   state.selectedByList = [...state.selectedByList, newTeam];
+    // },
+
     setActiveUser: (state, action) => {
       state.activeUser = action.payload;
     },
@@ -83,6 +105,7 @@ export const {
   setCurrentTurn,
   setActiveUser,
   setUsersPicks,
+  setSelectedByList,
   setTeamIdList,
   setPickStartTime,
 } = liveDraftSlice.actions;
