@@ -12,6 +12,7 @@ const initialState = {
   pickStartTime: null,
   teamNameList: [],
   teamIdList: [],
+  usersPicks: [],
 };
 
 const liveDraftSlice = createSlice({
@@ -49,6 +50,9 @@ const liveDraftSlice = createSlice({
     setTeamNameList: (state, action) => {
       state.teamNameList = action.payload;
     },
+    setUsersPicks: (state, action) => {
+      state.usersPicks = action.payload;
+    },
     setCurrentTurn: (state, action) => {
       state.currentTurn = action.payload;
     },
@@ -78,6 +82,7 @@ export const {
   setTeamNameList,
   setCurrentTurn,
   setActiveUser,
+  setUsersPicks,
   setTeamIdList,
   setPickStartTime,
 } = liveDraftSlice.actions;

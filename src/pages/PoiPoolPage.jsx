@@ -12,7 +12,10 @@ import {
 } from "../styles/PoiPoolPageStyles";
 import StyledButton from "../ui/StyledButton";
 import { FaStar, FaRegStar } from "react-icons/fa6";
-import { setSelectedFavorites } from "../store/slices/liveDraftSlice";
+import {
+  setSelectedFavorites,
+  setUsersPicks,
+} from "../store/slices/liveDraftSlice";
 import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
 import { useUpdateRoundDrafted } from "../authentication/useUpdateRoundDrafted";
 import { useUpdateDraftedBy } from "../authentication/useUpdateDraftedBy";
@@ -28,6 +31,7 @@ const PoiPoolPage = () => {
   );
 
   const [selectedPois, setSelectedPois] = useState(selectedFavorites || []); // Local state to track selected POIs
+  const [draftedPois, setDraftedPois] = useState([]);
   const [highlightedRow, setHighlightedRow] = useState(null);
   const liveDraftData = useSelector((state) => state.liveDraft.liveDraftData);
   const participant = useSelector((state) => state.liveDraft.participant);
@@ -84,9 +88,11 @@ const PoiPoolPage = () => {
 
   useEffect(() => {
     dispatch(setSelectedFavorites(selectedPois));
-  }, [dispatch, selectedPois]);
+    dispatch(setUsersPicks(draftedPois));
+  }, [dispatch, selectedPois, draftedPois]);
 
-  function handleUpdateUserPick(poiId, currTurn, user, currRound) {
+  function handleUpdateUserPick(poiId, currTurn, user, currRound, poiName) {
+    setDraftedPois((prevDraftedPois) => [...prevDraftedPois, poiName]);
     const now = dayjs();
     setStartClock({
       startTime: now,
@@ -163,7 +169,8 @@ const PoiPoolPage = () => {
                                 poi.poi_id,
                                 currentTurn,
                                 teamIds[currentTurn - 1],
-                                currentRound
+                                currentRound,
+                                poi.poi_name
                               )
                             }
                           >
