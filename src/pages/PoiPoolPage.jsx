@@ -43,6 +43,8 @@ const PoiPoolPage = () => {
   const numberOfMaps = liveDraftData?.draft?.number_of_maps || 0;
   const maps = liveDraftData.draft.maps || {};
 
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   // test variable
   const { setDraftTurn } = useUpdateDraftTurn();
   const { setRoundDrafted } = useUpdateRoundDrafted();
@@ -92,6 +94,8 @@ const PoiPoolPage = () => {
   }, [dispatch, selectedPois, draftedPois]);
 
   function handleUpdateUserPick(poiId, currTurn, user, currRound, poiName) {
+    setButtonDisabled(true);
+
     setDraftedPois((prevDraftedPois) => [...prevDraftedPois, poiName]);
     const now = dayjs();
     setStartClock({
@@ -107,6 +111,8 @@ const PoiPoolPage = () => {
     setRoundDrafted({ poiId: poiId, roundDrafted: currRound });
     setDraftedBy({ poiId: poiId, userUuid: user });
     setNumberPicked({ poiId: poiId, numberPicked: currTurn });
+
+    setButtonDisabled(false);
   }
 
   return (
@@ -173,6 +179,7 @@ const PoiPoolPage = () => {
                                 poi.poi_name
                               )
                             }
+                            disabled={buttonDisabled}
                           >
                             Draft
                           </StyledButton>
