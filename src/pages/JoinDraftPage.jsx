@@ -194,6 +194,22 @@ function JoinDraftPage() {
     )
     .subscribe();
 
+  const draftPoiUpdates = supabase
+    .channel("draft-poi-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "poi",
+        filter: `draft_id=eq.${liveDraftInfo?.draft?.draft_id}`,
+      },
+      (payload) => {
+        // console.log(payload);
+      }
+    )
+    .subscribe();
+
   return (
     <Main>
       <Container>

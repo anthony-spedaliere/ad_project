@@ -97,7 +97,7 @@ function DraftRightSidebar() {
   const updatesContainerRef = useRef(null);
 
   const [isUserScrolling, setIsUserScrolling] = useState(false); // track manual scrolling
-  const usersPicks = useSelector((state) => state.liveDraft.usersPicks);
+  const userPicks = useSelector((state) => state.liveDraft.usersPicks);
 
   // Function to scroll to the bottom of the updates
   const scrollToBottom = useCallback(() => {
@@ -168,8 +168,8 @@ function DraftRightSidebar() {
       <Section>
         <Header>My Picks</Header>
         <Body>
-          {usersPicks.length > 0 ? (
-            usersPicks.map((pick, index) => (
+          {userPicks.length > 0 ? (
+            userPicks.map((pick, index) => (
               <p key={index}>{`${index + 1}. ${pick}`}</p>
             ))
           ) : (

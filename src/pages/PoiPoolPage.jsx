@@ -42,6 +42,7 @@ const PoiPoolPage = () => {
   const teamIds = useSelector((state) => state.liveDraft.teamIdList);
   const numberOfMaps = liveDraftData?.draft?.number_of_maps || 0;
   const maps = liveDraftData.draft.maps || {};
+  const userPicks = useSelector((state) => state.liveDraft.usersPicks);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -68,6 +69,12 @@ const PoiPoolPage = () => {
     }
   }, [selectedFavorites]);
 
+  useEffect(() => {
+    if (userPicks && userPicks.length > 0) {
+      setDraftedPois(userPicks); // Sync with persisted picks if they exist
+    }
+  }, [userPicks]);
+
   // Toggle selection of POI
   const handleFavoriteClick = (poi) => {
     if (selectedPois.some((selectedPoi) => selectedPoi.poi_id === poi.poi_id)) {
@@ -90,13 +97,14 @@ const PoiPoolPage = () => {
 
   useEffect(() => {
     dispatch(setSelectedFavorites(selectedPois));
-    dispatch(setUsersPicks(draftedPois));
-  }, [dispatch, selectedPois, draftedPois]);
+  }, [dispatch, selectedPois]);
 
   function handleUpdateUserPick(poiId, currTurn, user, currRound, poiName) {
     setButtonDisabled(true);
 
-    setDraftedPois((prevDraftedPois) => [...prevDraftedPois, poiName]);
+    const updatedDraftedPois = [...draftedPois, poiName];
+    setDraftedPois(updatedDraftedPois); // Update local state
+    dispatch(setUsersPicks(updatedDraftedPois)); // Persist the new state in Redux
     const now = dayjs();
     setStartClock({
       startTime: now,
