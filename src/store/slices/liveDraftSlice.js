@@ -44,12 +44,28 @@ const liveDraftSlice = createSlice({
         // If it doesn't exist, add a new entry
         state.selectedByList.push({ poiId, selectedBy: teamName });
       }
+
+      // Remove the POI from the user's selectedFavorites (queue) if it exists
+      state.selectedFavorites = state.selectedFavorites.filter(
+        (favorite) => favorite.poi_id !== poiId
+      );
     },
     // setSelectedByList: (state, action) => {
-    //   const newTeam = action.payload;
-    //   state.selectedByList = [...state.selectedByList, newTeam];
-    // },
+    //   const { poiId, teamName } = action.payload;
 
+    //   // Check if the poiId already exists in the selectedByList
+    //   const existingIndex = state.selectedByList.findIndex(
+    //     (item) => item.poiId === poiId
+    //   );
+
+    //   if (existingIndex > -1) {
+    //     // If it exists, update the selectedBy for that poiId
+    //     state.selectedByList[existingIndex].selectedBy = teamName;
+    //   } else {
+    //     // If it doesn't exist, add a new entry
+    //     state.selectedByList.push({ poiId, selectedBy: teamName });
+    //   }
+    // },
     setActiveUser: (state, action) => {
       state.activeUser = action.payload;
     },
