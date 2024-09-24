@@ -124,6 +124,9 @@ const PoiPoolPage = () => {
     setButtonDisabled(false);
   }
 
+  const isPoiPicked = (poi) =>
+    selectedByArr.some((item) => item.poiId === poi.poi_id);
+
   return (
     <TableContainer>
       <StyledTable>
@@ -150,18 +153,20 @@ const PoiPoolPage = () => {
                 onClick={() => handleRowClick(poi)}
               >
                 <DataCell>
-                  {isPoiSelected(poi) ? (
-                    <FaStar
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleFavoriteClick(poi)}
-                      color="yellow"
-                    />
-                  ) : (
-                    <FaRegStar
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleFavoriteClick(poi)}
-                    />
-                  )}
+                  {!isPoiPicked(poi) ? (
+                    isPoiSelected(poi) ? (
+                      <FaStar
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleFavoriteClick(poi)}
+                        color="yellow"
+                      />
+                    ) : (
+                      <FaRegStar
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleFavoriteClick(poi)}
+                      />
+                    )
+                  ) : null}
                 </DataCell>
                 <DataCell>{poi.poi_name}</DataCell>
                 <DataCell>{map.map_name}</DataCell>

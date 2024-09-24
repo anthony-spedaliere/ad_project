@@ -215,8 +215,6 @@ function JoinDraftPage() {
           .flatMap((group) => Object.values(group.teams))
           .find((team) => team.team_id === teamId)?.team_name;
 
-        console.log("POI ID:", updatedPoi.id, "Team Name:", teamName);
-
         // dispatch(setSelectedByList(teamName));
         dispatch(setSelectedByList({ poiId: updatedPoi.id, teamName }));
       }
