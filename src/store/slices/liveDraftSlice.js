@@ -8,7 +8,7 @@ const initialState = {
   teamsHaveJoined: [], // used to populate the Updates section of draft page right sidebar
   selectedFavorites: [], // used to populate the Queue section of draft page right sidebar
   teamTurnList: [], // holds the uuid for the teams in draft, in order of turn
-  currentTurn: 0, // integer representing current turn draft is on. 0 is for predraft countdown and -1 is for end of draft countdown. All positive integers represent the turn based on number of maps * number of teams.
+  currentTurn: null, // integer representing current turn draft is on. 0 is for predraft countdown. All integers represent the turn based on number of maps * number of teams. Anything greater than that is end of draft timer.
   pickStartTime: null,
   teamNameList: [], // an array of all team names in order of their pick for all rounds
   teamIdList: [], // an array of all the team id's in order of their picks for all rounds

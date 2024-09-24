@@ -38,6 +38,7 @@ import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import {
   setAdmin,
+  setCurrentTurn,
   setLiveDraftData,
   setParticipant,
   setPickStartTime,
@@ -46,6 +47,7 @@ import { useUpdateDraftHasStarted } from "../authentication/useUpdateDraftHasSta
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
 import dayjs from "dayjs";
 import supabase from "../services/supabase";
+import { useGetCurrentTurn } from "../authentication/useGetCurrentTurn";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -79,6 +81,8 @@ function MyDrafts() {
     useUpdateDraftHasStarted();
 
   const { setStartClock } = useUpdateStartClock();
+
+  const { data: currentDraftTurn } = useGetCurrentTurn(selectedDraftId);
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
 
@@ -161,6 +165,10 @@ function MyDrafts() {
 
     handleStartDraftCancel();
     setStartClock({ startTime: now, draftId: selectedDraftId });
+
+    if (currentDraftTurn) {
+      dispatch(setCurrentTurn(currentDraftTurn.turn));
+    }
 
     setUpdateDraftHasStarted(
       {

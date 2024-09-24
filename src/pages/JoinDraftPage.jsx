@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
 import TeamCard from "../components/TeamCard";
 import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
