@@ -150,6 +150,7 @@ const PoiPoolPage = () => {
               <DataRow
                 key={poi.poi_id}
                 $isSelected={highlightedRow === poi.poi_id}
+                $isPicked={isPoiPicked(poi)}
                 onClick={() => handleRowClick(poi)}
               >
                 <DataCell>

@@ -32,11 +32,18 @@ export const TableBody = styled.tbody`
 `;
 
 export const DataRow = styled.tr`
-  color: ${({ $isSelected }) =>
-    $isSelected ? "var(--brand-color)" : "var(--background-color)"};
-  background-color: ${({ $isSelected }) =>
-    $isSelected ? "var(--background-color-light)" : "transparent"};
-  cursor: pointer;
+  color: ${({ $isSelected, $isPicked }) =>
+    $isSelected
+      ? "var(--brand-color)"
+      : $isPicked
+      ? "var(--background-color)"
+      : "var(--background-color)"};
+  background-color: ${({ $isSelected, $isPicked }) =>
+    $isSelected
+      ? "var(--background-color-light)"
+      : $isPicked
+      ? "var(--brand-color-light)"
+      : "transparent"};
 `;
 
 export const DataCell = styled.td`
