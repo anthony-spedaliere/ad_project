@@ -44,6 +44,7 @@ export const groupData = (sampleData) => {
         draft_time: item.draft_time,
         start_time: item.start_clock,
         send_email: item.send_email,
+        turn: item.turn,
         number_of_groups: item.number_of_groups,
         number_of_teams: item.number_of_teams,
         number_of_maps: item.number_of_maps,

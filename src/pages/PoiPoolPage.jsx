@@ -12,8 +12,16 @@ import {
 } from "../styles/PoiPoolPageStyles";
 import StyledButton from "../ui/StyledButton";
 import { FaStar, FaRegStar } from "react-icons/fa6";
-import { setSelectedFavorites } from "../store/slices/liveDraftSlice";
+import {
+  setSelectedFavorites,
+  setUsersPicks,
+} from "../store/slices/liveDraftSlice";
 import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
+import { useUpdateRoundDrafted } from "../authentication/useUpdateRoundDrafted";
+import { useUpdateDraftedBy } from "../authentication/useUpdateDraftedBy";
+import { useUpdateNumberPicked } from "../authentication/useUpdateNumberPicked";
+import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
+import dayjs from "dayjs";
 
 const PoiPoolPage = () => {
   const dispatch = useDispatch();
@@ -23,16 +31,37 @@ const PoiPoolPage = () => {
   );
 
   const [selectedPois, setSelectedPois] = useState(selectedFavorites || []); // Local state to track selected POIs
+  const [draftedPois, setDraftedPois] = useState([]);
   const [highlightedRow, setHighlightedRow] = useState(null);
   const liveDraftData = useSelector((state) => state.liveDraft.liveDraftData);
   const participant = useSelector((state) => state.liveDraft.participant);
   const admin = useSelector((state) => state.liveDraft.admin);
   const activeUser = useSelector((state) => state.liveDraft.activeUser);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
+  const teamIds = useSelector((state) => state.liveDraft.teamIdList);
+  const numberOfMaps = liveDraftData?.draft?.number_of_maps || 0;
   const maps = liveDraftData.draft.maps || {};
+  const userPicks = useSelector((state) => state.liveDraft.usersPicks);
+  const selectedByArr = useSelector((state) => state.liveDraft.selectedByList);
+
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   // test variable
   const { setDraftTurn } = useUpdateDraftTurn();
+  const { setRoundDrafted } = useUpdateRoundDrafted();
+  const { setDraftedBy } = useUpdateDraftedBy();
+  const { setNumberPicked } = useUpdateNumberPicked();
+  const { setStartClock } = useUpdateStartClock();
+
+  // -------- Calculate the round ---------
+  const totalPicks = teamOwnersArray.length;
+  // Calculate picks per round
+  const picksPerRound = totalPicks / numberOfMaps;
+  // Calculate round based on the currentTurn and picksPerRound
+  const currentRound =
+    currentTurn > 0 ? Math.floor((currentTurn - 1) / picksPerRound) + 1 : 1; //
+  // ----------------------------------------------------------------------------
 
   // Sync local state with Redux state on mount
   useEffect(() => {
@@ -40,6 +69,12 @@ const PoiPoolPage = () => {
       setSelectedPois(selectedFavorites);
     }
   }, [selectedFavorites]);
+
+  useEffect(() => {
+    if (userPicks && userPicks.length > 0) {
+      setDraftedPois(userPicks); // Sync with persisted picks if they exist
+    }
+  }, [userPicks]);
 
   // Toggle selection of POI
   const handleFavoriteClick = (poi) => {
@@ -65,9 +100,32 @@ const PoiPoolPage = () => {
     dispatch(setSelectedFavorites(selectedPois));
   }, [dispatch, selectedPois]);
 
-  function handleClickTest() {
-    setDraftTurn({ newTurn: 0, draftId: 93 });
+  function handleUpdateUserPick(poiId, currTurn, user, currRound, poiName) {
+    setButtonDisabled(true);
+
+    const updatedDraftedPois = [...draftedPois, poiName];
+    setDraftedPois(updatedDraftedPois); // Update local state
+    dispatch(setUsersPicks(updatedDraftedPois)); // Persist the new state in Redux
+    const now = dayjs();
+    setStartClock({
+      startTime: now,
+      draftId: liveDraftData?.draft?.draft_id,
+    });
+
+    setDraftTurn({
+      newTurn: currentTurn + 1,
+      draftId: liveDraftData?.draft?.draft_id,
+    });
+
+    setRoundDrafted({ poiId: poiId, roundDrafted: currRound });
+    setDraftedBy({ poiId: poiId, userUuid: user });
+    setNumberPicked({ poiId: poiId, numberPicked: currTurn });
+
+    setButtonDisabled(false);
   }
+
+  const isPoiPicked = (poi) =>
+    selectedByArr.some((item) => item.poiId === poi.poi_id);
 
   return (
     <TableContainer>
@@ -92,28 +150,52 @@ const PoiPoolPage = () => {
               <DataRow
                 key={poi.poi_id}
                 $isSelected={highlightedRow === poi.poi_id}
+                $isPicked={isPoiPicked(poi)}
                 onClick={() => handleRowClick(poi)}
               >
                 <DataCell>
-                  {isPoiSelected(poi) ? (
-                    <FaStar
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleFavoriteClick(poi)}
-                      color="yellow"
-                    />
-                  ) : (
-                    <FaRegStar
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleFavoriteClick(poi)}
-                    />
-                  )}
+                  {!isPoiPicked(poi) ? (
+                    isPoiSelected(poi) ? (
+                      <FaStar
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleFavoriteClick(poi)}
+                        color="yellow"
+                      />
+                    ) : (
+                      <FaRegStar
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleFavoriteClick(poi)}
+                      />
+                    )
+                  ) : null}
                 </DataCell>
                 <DataCell>{poi.poi_name}</DataCell>
                 <DataCell>{map.map_name}</DataCell>
                 <DataCell>{poi.poi_number}</DataCell>
                 <DataCell>
-                  {participant === activeUser || participant === admin
-                    ? highlightedRow === poi.poi_id && (
+                  {(() => {
+                    // Check if the poiId exists in selectedByArr
+                    const selectedEntry = selectedByArr.find(
+                      (item) => item.poiId === poi.poi_id
+                    );
+
+                    if (selectedEntry) {
+                      // If it exists, render the selectedBy string
+                      return <span>{selectedEntry.selectedBy}</span>;
+                    }
+
+                    // If it doesn't exist, check if the participant is the admin
+                    if (participant === admin) {
+                      // Admin can see the team names only, no draft button
+                      return null;
+                    }
+
+                    // For other participants, show the Draft button only if it's their turn and the row is highlighted
+                    if (
+                      participant === activeUser &&
+                      highlightedRow === poi.poi_id
+                    ) {
+                      return (
                         <div
                           style={{ display: "flex", justifyContent: "center" }}
                         >
@@ -124,13 +206,26 @@ const PoiPoolPage = () => {
                             height="2.5rem"
                             $hoverBgColor="var(--blue-color)"
                             width="10rem"
-                            onClick={handleClickTest}
+                            onClick={() =>
+                              handleUpdateUserPick(
+                                poi.poi_id,
+                                currentTurn,
+                                teamIds[currentTurn - 1],
+                                currentRound,
+                                poi.poi_name
+                              )
+                            }
+                            disabled={buttonDisabled}
                           >
                             Draft
                           </StyledButton>
                         </div>
-                      )
-                    : null}
+                      );
+                    }
+
+                    // Default case for participants who are not active users or admins
+                    return null;
+                  })()}
                 </DataCell>
               </DataRow>
             ));

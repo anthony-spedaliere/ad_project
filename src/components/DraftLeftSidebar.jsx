@@ -122,15 +122,18 @@ function DraftLeftSidebar() {
                     draftId: liveDraftInfo?.draft?.draft_id,
                   });
 
-                  handleTurnChange(
-                    currentTurn + 1,
-                    liveDraftInfo?.draft?.draft_id
-                  );
+                  // Delay the state update to prevent the warning
+                  setTimeout(() => {
+                    handleTurnChange(
+                      currentTurn + 1,
+                      liveDraftInfo?.draft?.draft_id
+                    );
+                  }, 0); // Delay by 0ms to ensure it's in the next event loop
                 }}
               />
             ) : currentTurn > 0 && currentTurn <= teamOwnersArray.length ? (
               <CustomCountdownBox
-                duration={6}
+                duration={11}
                 onComplete={() => {
                   const now = dayjs();
                   setStartClock({
@@ -138,10 +141,13 @@ function DraftLeftSidebar() {
                     draftId: liveDraftInfo?.draft?.draft_id,
                   });
 
-                  handleTurnChange(
-                    currentTurn + 1,
-                    liveDraftInfo?.draft?.draft_id
-                  );
+                  // Delay the state update to prevent the warning
+                  setTimeout(() => {
+                    handleTurnChange(
+                      currentTurn + 1,
+                      liveDraftInfo?.draft?.draft_id
+                    );
+                  }, 0); // Delay by 0ms to ensure it's in the next event loop
                 }}
               />
             ) : currentTurn === teamOwnersArray.length + 1 ? (
@@ -154,10 +160,13 @@ function DraftLeftSidebar() {
                     draftId: liveDraftInfo?.draft?.draft_id,
                   });
 
-                  handleTurnChange(
-                    currentTurn + 1,
-                    liveDraftInfo?.draft?.draft_id
-                  );
+                  // Delay the state update to prevent the warning
+                  setTimeout(() => {
+                    handleTurnChange(
+                      currentTurn + 1,
+                      liveDraftInfo?.draft?.draft_id
+                    );
+                  }, 0); // Delay by 0ms to ensure it's in the next event loop
                 }}
               />
             ) : (

@@ -4,6 +4,7 @@ const GlobalStyles = createGlobalStyle`
 
 :root {
 
+    --brand-color-light: #EAE8F9;
     --brand-color: #E0DFF8;
     --brand-color-dark: #B5B3DA;
     --background-color: #3C3B48;

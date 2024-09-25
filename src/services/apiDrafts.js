@@ -205,3 +205,18 @@ export async function updateDraftTurn(newTurn, draftId) {
 
   return data;
 }
+
+export async function getCurrentTurn(draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .select("turn")
+    .eq("id", draftId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching current draft turn:", error);
+    return;
+  }
+
+  return data;
+}

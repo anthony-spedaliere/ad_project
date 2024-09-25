@@ -26,11 +26,13 @@ import { useNavigate } from "react-router-dom";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import {
   setAdmin,
+  setCurrentTurn,
   setLiveDraftData,
   setParticipant,
   setPickStartTime,
 } from "../store/slices/liveDraftSlice";
 import { useGetStartClock } from "../authentication/useGetStartClock";
+import { useGetCurrentTurn } from "../authentication/useGetCurrentTurn";
 
 function JoinedDraftsData() {
   // Get current draft ID and user ID from Redux state
@@ -63,6 +65,8 @@ function JoinedDraftsData() {
 
   const { liveDraftDetails } = useGetLiveDraft(selectedDraftId);
   const { data: startClockData } = useGetStartClock(selectedDraftId);
+
+  const { data: currentDraftTurn } = useGetCurrentTurn(selectedDraftId);
 
   useEffect(() => {
     if (liveDraftDetails) {
@@ -125,6 +129,9 @@ function JoinedDraftsData() {
 
   const handleStartDraftConfirm = () => {
     dispatch(setPickStartTime(startClockData.start_clock));
+    if (currentDraftTurn) {
+      dispatch(setCurrentTurn(currentDraftTurn.turn));
+    }
 
     handleStartDraftCancel();
     navigate(`/join-draft`);
