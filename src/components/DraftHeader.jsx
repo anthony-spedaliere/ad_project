@@ -4,6 +4,7 @@ import StyledInput from "../ui/StyledInput";
 import StyledCheckbox from "../ui/StyledCheckbox";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setSearchQuery,
   setSelectedMap,
   toggleIsHideDraftedChecked,
 } from "../store/slices/liveDraftSlice";
@@ -45,12 +46,9 @@ function DraftHeader() {
     (state) => state.liveDraft.isHideDraftedChecked
   );
   const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
+  const searchQuery = useSelector((state) => state.liveDraft.searchQuery);
 
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
-  console.log(liveDraftInfo.draft.maps);
-  if (liveDraftInfo) {
-    console.log(Object.values(liveDraftInfo.draft.maps));
-  }
 
   const handleCheckboxChange = () => {
     dispatch(toggleIsHideDraftedChecked());
@@ -58,6 +56,10 @@ function DraftHeader() {
 
   const handleMapChange = (e) => {
     dispatch(setSelectedMap(e.target.value));
+  };
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearchQuery(e.target.value)); // Dispatch the search query to Redux store
   };
 
   return (
@@ -83,6 +85,8 @@ function DraftHeader() {
           height="4rem"
           $bgColor="var(--brand-color)"
           placeholder="Search Poi's"
+          value={searchQuery}
+          onChange={handleSearchChange} // Update search query in Redux
         />
 
         <StyledCheckbox

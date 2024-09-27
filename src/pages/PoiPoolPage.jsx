@@ -49,7 +49,7 @@ const PoiPoolPage = () => {
   const userPicks = useSelector((state) => state.liveDraft.usersPicks);
   const selectedByArr = useSelector((state) => state.liveDraft.selectedByList);
   const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
-  console.log(selectedMap);
+  const searchQuery = useSelector((state) => state.liveDraft.searchQuery);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -133,6 +133,14 @@ const PoiPoolPage = () => {
   const isPoiPicked = (poi) =>
     selectedByArr.some((item) => item.poiId === poi.poi_id);
 
+  // Filter POIs based on the search query
+  const filteredPois = (pois) => {
+    return pois.filter((poi) =>
+      // Check if poi_name exists and starts with the search query
+      poi.poi_name?.toLowerCase().startsWith(searchQuery.toLowerCase())
+    );
+  };
+
   return (
     <TableContainer>
       <StyledTable>
@@ -151,9 +159,14 @@ const PoiPoolPage = () => {
               return null; // Skip maps that don't match the selected map
             }
 
-            const sortedPois = Object.values(map.pois).sort(
-              (a, b) => a.poi_number - b.poi_number
+            const sortedPois = filteredPois(
+              Object.values(map.pois).sort(
+                (a, b) => a.poi_number - b.poi_number
+              )
             );
+            // const sortedPois = Object.values(map.pois).sort(
+            //   (a, b) => a.poi_number - b.poi_number
+            // );
 
             return sortedPois
               .filter((poi) => {
