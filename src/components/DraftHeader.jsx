@@ -2,9 +2,12 @@ import styled from "styled-components";
 import StyledSelect from "./StyledSelect";
 import StyledInput from "../ui/StyledInput";
 import StyledCheckbox from "../ui/StyledCheckbox";
-import StyledButton from "../ui/StyledButton";
-import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSearchQuery,
+  setSelectedMap,
+  toggleIsHideDraftedChecked,
+} from "../store/slices/liveDraftSlice";
 
 const StyledHeader = styled.header`
   background-color: var(--background-color-dark);
@@ -38,13 +41,26 @@ const HeaderTitle = styled.h1`
 `;
 
 function DraftHeader() {
-  const { setDraftTurn } = useUpdateDraftTurn();
-  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
-  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const dispatch = useDispatch();
+  const isHideDrafted = useSelector(
+    (state) => state.liveDraft.isHideDraftedChecked
+  );
+  const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
+  const searchQuery = useSelector((state) => state.liveDraft.searchQuery);
 
-  function handleResetTurn(currTurn, draftId) {
-    setDraftTurn({ newTurn: 0, draftId: draftId });
-  }
+  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+
+  const handleCheckboxChange = () => {
+    dispatch(toggleIsHideDraftedChecked());
+  };
+
+  const handleMapChange = (e) => {
+    dispatch(setSelectedMap(e.target.value));
+  };
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearchQuery(e.target.value)); // Dispatch the search query to Redux store
+  };
 
   return (
     <StyledHeader>
@@ -52,29 +68,35 @@ function DraftHeader() {
         <HeaderTitle>POI Pool</HeaderTitle>
       </HeaderTop>
       <HeaderBottom>
-        <StyledSelect $width="auto">
-          <option value="option1">Map Name 1</option>
+        <StyledSelect
+          $width="auto"
+          onChange={handleMapChange}
+          value={selectedMap}
+        >
+          <option value="all-maps">All maps</option>
+          {liveDraftInfo?.draft?.maps &&
+            Object.values(liveDraftInfo.draft.maps).map((map) => (
+              <option key={map.map_id} value={map.map_name}>
+                {map.map_name}
+              </option>
+            ))}
         </StyledSelect>
         <StyledInput
           height="4rem"
           $bgColor="var(--brand-color)"
           placeholder="Search Poi's"
+          value={searchQuery}
+          onChange={handleSearchChange} // Update search query in Redux
         />
 
-        <StyledCheckbox textColor="var(--brand-color)" marginBottom="0rem">
+        <StyledCheckbox
+          textColor="var(--brand-color)"
+          marginBottom="0rem"
+          onChange={handleCheckboxChange}
+          checked={isHideDrafted}
+        >
           Hide Drafted
         </StyledCheckbox>
-        <StyledButton
-          $bgColor="var(--brand-color)"
-          $textColor="var(--background-color)"
-          $hoverBgColor="#B5B3DE"
-          $padding="1rem 3rem"
-          onClick={() =>
-            handleResetTurn(currentTurn, liveDraftInfo?.draft?.draft_id)
-          }
-        >
-          Pick
-        </StyledButton>
       </HeaderBottom>
     </StyledHeader>
   );

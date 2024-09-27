@@ -26,6 +26,10 @@ import dayjs from "dayjs";
 const PoiPoolPage = () => {
   const dispatch = useDispatch();
 
+  const isHideDrafted = useSelector(
+    (state) => state.liveDraft.isHideDraftedChecked
+  );
+
   const selectedFavorites = useSelector(
     (state) => state.liveDraft.selectedFavorites
   );
@@ -44,6 +48,8 @@ const PoiPoolPage = () => {
   const maps = liveDraftData.draft.maps || {};
   const userPicks = useSelector((state) => state.liveDraft.usersPicks);
   const selectedByArr = useSelector((state) => state.liveDraft.selectedByList);
+  const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
+  const searchQuery = useSelector((state) => state.liveDraft.searchQuery);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -127,6 +133,14 @@ const PoiPoolPage = () => {
   const isPoiPicked = (poi) =>
     selectedByArr.some((item) => item.poiId === poi.poi_id);
 
+  // Filter POIs based on the search query
+  const filteredPois = (pois) => {
+    return pois.filter((poi) =>
+      // Check if poi_name exists and starts with the search query
+      poi.poi_name?.toLowerCase().startsWith(searchQuery.toLowerCase())
+    );
+  };
+
   return (
     <TableContainer>
       <StyledTable>
@@ -141,94 +155,108 @@ const PoiPoolPage = () => {
         </TableHeader>
         <TableBody>
           {Object.values(maps).map((map) => {
-            // Sort the POIs by poi_number in ascending order
-            const sortedPois = Object.values(map.pois).sort(
-              (a, b) => a.poi_number - b.poi_number
+            if (selectedMap !== "all-maps" && map.map_name !== selectedMap) {
+              return null; // Skip maps that don't match the selected map
+            }
+
+            const sortedPois = filteredPois(
+              Object.values(map.pois).sort(
+                (a, b) => a.poi_number - b.poi_number
+              )
             );
+            // const sortedPois = Object.values(map.pois).sort(
+            //   (a, b) => a.poi_number - b.poi_number
+            // );
 
-            return sortedPois.map((poi) => (
-              <DataRow
-                key={poi.poi_id}
-                $isSelected={highlightedRow === poi.poi_id}
-                $isPicked={isPoiPicked(poi)}
-                onClick={() => handleRowClick(poi)}
-              >
-                <DataCell>
-                  {!isPoiPicked(poi) ? (
-                    isPoiSelected(poi) ? (
-                      <FaStar
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleFavoriteClick(poi)}
-                        color="yellow"
-                      />
-                    ) : (
-                      <FaRegStar
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleFavoriteClick(poi)}
-                      />
-                    )
-                  ) : null}
-                </DataCell>
-                <DataCell>{poi.poi_name}</DataCell>
-                <DataCell>{map.map_name}</DataCell>
-                <DataCell>{poi.poi_number}</DataCell>
-                <DataCell>
-                  {(() => {
-                    // Check if the poiId exists in selectedByArr
-                    const selectedEntry = selectedByArr.find(
-                      (item) => item.poiId === poi.poi_id
-                    );
-
-                    if (selectedEntry) {
-                      // If it exists, render the selectedBy string
-                      return <span>{selectedEntry.selectedBy}</span>;
-                    }
-
-                    // If it doesn't exist, check if the participant is the admin
-                    if (participant === admin) {
-                      // Admin can see the team names only, no draft button
-                      return null;
-                    }
-
-                    // For other participants, show the Draft button only if it's their turn and the row is highlighted
-                    if (
-                      participant === activeUser &&
-                      highlightedRow === poi.poi_id
-                    ) {
-                      return (
-                        <div
-                          style={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <StyledButton
-                            $bgColor="var(--brand-color)"
-                            $textColor="var(--background-color)"
-                            $fontSize="1.6rem"
-                            height="2.5rem"
-                            $hoverBgColor="var(--blue-color)"
-                            width="10rem"
-                            onClick={() =>
-                              handleUpdateUserPick(
-                                poi.poi_id,
-                                currentTurn,
-                                teamIds[currentTurn - 1],
-                                currentRound,
-                                poi.poi_name
-                              )
-                            }
-                            disabled={buttonDisabled}
-                          >
-                            Draft
-                          </StyledButton>
-                        </div>
+            return sortedPois
+              .filter((poi) => {
+                // Filter POIs based on isHideDrafted state
+                if (isHideDrafted) {
+                  // Show only POIs that are NOT picked
+                  return !isPoiPicked(poi);
+                }
+                return true; // Show all POIs if isHideDrafted is false
+              })
+              .map((poi) => (
+                <DataRow
+                  key={poi.poi_id}
+                  $isSelected={highlightedRow === poi.poi_id}
+                  $isPicked={isPoiPicked(poi)}
+                  onClick={() => handleRowClick(poi)}
+                >
+                  <DataCell>
+                    {!isPoiPicked(poi) ? (
+                      isPoiSelected(poi) ? (
+                        <FaStar
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleFavoriteClick(poi)}
+                          color="yellow"
+                        />
+                      ) : (
+                        <FaRegStar
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleFavoriteClick(poi)}
+                        />
+                      )
+                    ) : null}
+                  </DataCell>
+                  <DataCell>{poi.poi_name}</DataCell>
+                  <DataCell>{map.map_name}</DataCell>
+                  <DataCell>{poi.poi_number}</DataCell>
+                  <DataCell>
+                    {(() => {
+                      const selectedEntry = selectedByArr.find(
+                        (item) => item.poiId === poi.poi_id
                       );
-                    }
 
-                    // Default case for participants who are not active users or admins
-                    return null;
-                  })()}
-                </DataCell>
-              </DataRow>
-            ));
+                      if (selectedEntry) {
+                        return <span>{selectedEntry.selectedBy}</span>;
+                      }
+
+                      if (participant === admin) {
+                        return null;
+                      }
+
+                      if (
+                        participant === activeUser &&
+                        highlightedRow === poi.poi_id
+                      ) {
+                        return (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <StyledButton
+                              $bgColor="var(--brand-color)"
+                              $textColor="var(--background-color)"
+                              $fontSize="1.6rem"
+                              height="2.5rem"
+                              $hoverBgColor="var(--blue-color)"
+                              width="10rem"
+                              onClick={() =>
+                                handleUpdateUserPick(
+                                  poi.poi_id,
+                                  currentTurn,
+                                  teamIds[currentTurn - 1],
+                                  currentRound,
+                                  poi.poi_name
+                                )
+                              }
+                              disabled={buttonDisabled}
+                            >
+                              Draft
+                            </StyledButton>
+                          </div>
+                        );
+                      }
+
+                      return null;
+                    })()}
+                  </DataCell>
+                </DataRow>
+              ));
           })}
         </TableBody>
       </StyledTable>
