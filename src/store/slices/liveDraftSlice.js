@@ -14,6 +14,7 @@ const initialState = {
   teamIdList: [], // an array of all the team id's in order of their picks for all rounds
   usersPicks: [], // the picks that show up under My Picks within DraftRightSidebar
   selectedByList: [], // array of objects with key value pair - poi_id: teamName
+  isHideDraftedChecked: false, // state to handle the hide drafted checkbox in draft header
 };
 
 const liveDraftSlice = createSlice({
@@ -28,6 +29,12 @@ const liveDraftSlice = createSlice({
     },
     setParticipant: (state, action) => {
       state.participant = action.payload;
+    },
+    setIsHideDraftedChecked: (state, action) => {
+      state.isHideDraftedChecked = action.payload;
+    },
+    toggleIsHideDraftedChecked: (state) => {
+      state.isHideDraftedChecked = !state.isHideDraftedChecked;
     },
     setSelectedByList: (state, action) => {
       const { poiId, teamName } = action.payload;
@@ -101,6 +108,8 @@ export const {
   setSelectedFavorites,
   resetSelectedFavorites,
   setTeamTurnList,
+  setIsHideDraftedChecked,
+  toggleIsHideDraftedChecked,
   setTeamNameList,
   setCurrentTurn,
   setActiveUser,

@@ -2,9 +2,8 @@ import styled from "styled-components";
 import StyledSelect from "./StyledSelect";
 import StyledInput from "../ui/StyledInput";
 import StyledCheckbox from "../ui/StyledCheckbox";
-import StyledButton from "../ui/StyledButton";
-import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleIsHideDraftedChecked } from "../store/slices/liveDraftSlice";
 
 const StyledHeader = styled.header`
   background-color: var(--background-color-dark);
@@ -38,13 +37,16 @@ const HeaderTitle = styled.h1`
 `;
 
 function DraftHeader() {
-  const { setDraftTurn } = useUpdateDraftTurn();
-  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
-  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const dispatch = useDispatch();
+  const isHideDrafted = useSelector(
+    (state) => state.liveDraft.isHideDraftedChecked
+  );
 
-  function handleResetTurn(currTurn, draftId) {
-    setDraftTurn({ newTurn: 0, draftId: draftId });
-  }
+  // const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+
+  const handleCheckboxChange = () => {
+    dispatch(toggleIsHideDraftedChecked());
+  };
 
   return (
     <StyledHeader>
@@ -61,20 +63,14 @@ function DraftHeader() {
           placeholder="Search Poi's"
         />
 
-        <StyledCheckbox textColor="var(--brand-color)" marginBottom="0rem">
+        <StyledCheckbox
+          textColor="var(--brand-color)"
+          marginBottom="0rem"
+          onChange={handleCheckboxChange}
+          checked={isHideDrafted}
+        >
           Hide Drafted
         </StyledCheckbox>
-        <StyledButton
-          $bgColor="var(--brand-color)"
-          $textColor="var(--background-color)"
-          $hoverBgColor="#B5B3DE"
-          $padding="1rem 3rem"
-          onClick={() =>
-            handleResetTurn(currentTurn, liveDraftInfo?.draft?.draft_id)
-          }
-        >
-          Pick
-        </StyledButton>
       </HeaderBottom>
     </StyledHeader>
   );
