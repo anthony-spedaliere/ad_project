@@ -3,7 +3,10 @@ import StyledSelect from "./StyledSelect";
 import StyledInput from "../ui/StyledInput";
 import StyledCheckbox from "../ui/StyledCheckbox";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleIsHideDraftedChecked } from "../store/slices/liveDraftSlice";
+import {
+  setSelectedMap,
+  toggleIsHideDraftedChecked,
+} from "../store/slices/liveDraftSlice";
 
 const StyledHeader = styled.header`
   background-color: var(--background-color-dark);
@@ -41,11 +44,20 @@ function DraftHeader() {
   const isHideDrafted = useSelector(
     (state) => state.liveDraft.isHideDraftedChecked
   );
+  const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
 
-  // const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+  const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
+  console.log(liveDraftInfo.draft.maps);
+  if (liveDraftInfo) {
+    console.log(Object.values(liveDraftInfo.draft.maps));
+  }
 
   const handleCheckboxChange = () => {
     dispatch(toggleIsHideDraftedChecked());
+  };
+
+  const handleMapChange = (e) => {
+    dispatch(setSelectedMap(e.target.value));
   };
 
   return (
@@ -54,8 +66,18 @@ function DraftHeader() {
         <HeaderTitle>POI Pool</HeaderTitle>
       </HeaderTop>
       <HeaderBottom>
-        <StyledSelect $width="auto">
-          <option value="option1">Map Name 1</option>
+        <StyledSelect
+          $width="auto"
+          onChange={handleMapChange}
+          value={selectedMap}
+        >
+          <option value="all-maps">All maps</option>
+          {liveDraftInfo?.draft?.maps &&
+            Object.values(liveDraftInfo.draft.maps).map((map) => (
+              <option key={map.map_id} value={map.map_name}>
+                {map.map_name}
+              </option>
+            ))}
         </StyledSelect>
         <StyledInput
           height="4rem"

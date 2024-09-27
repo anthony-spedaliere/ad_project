@@ -48,6 +48,8 @@ const PoiPoolPage = () => {
   const maps = liveDraftData.draft.maps || {};
   const userPicks = useSelector((state) => state.liveDraft.usersPicks);
   const selectedByArr = useSelector((state) => state.liveDraft.selectedByList);
+  const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
+  console.log(selectedMap);
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -145,6 +147,10 @@ const PoiPoolPage = () => {
         </TableHeader>
         <TableBody>
           {Object.values(maps).map((map) => {
+            if (selectedMap !== "all-maps" && map.map_name !== selectedMap) {
+              return null; // Skip maps that don't match the selected map
+            }
+
             const sortedPois = Object.values(map.pois).sort(
               (a, b) => a.poi_number - b.poi_number
             );
