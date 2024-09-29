@@ -107,8 +107,6 @@ const PoiPoolPage = () => {
   }, [dispatch, selectedPois]);
 
   function handleUpdateUserPick(poiId, currTurn, user, currRound, poiName) {
-    console.log("inside draft button");
-
     setButtonDisabled(true);
 
     const updatedDraftedPois = [...draftedPois, poiName];

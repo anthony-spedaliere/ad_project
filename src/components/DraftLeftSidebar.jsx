@@ -135,8 +135,6 @@ function DraftLeftSidebar() {
               <CustomCountdownBox
                 duration={11}
                 onComplete={() => {
-                  console.log("inside onComplete");
-
                   const now = dayjs();
                   setStartClock({
                     startTime: now,
