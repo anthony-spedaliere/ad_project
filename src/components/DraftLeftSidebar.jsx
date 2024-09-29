@@ -135,6 +135,8 @@ function DraftLeftSidebar() {
               <CustomCountdownBox
                 duration={11}
                 onComplete={() => {
+                  console.log("inside onComplete");
+
                   const now = dayjs();
                   setStartClock({
                     startTime: now,
@@ -189,7 +191,7 @@ function DraftLeftSidebar() {
             {currentTurn === 0
               ? "-"
               : admin === participant
-              ? "-" // Admin should only see "-"
+              ? "Draft Admin." // Admin should only see "-"
               : currentTurn > teamOwnersArray.length
               ? "Draft Finished!"
               : currentTeamOwner === participant

@@ -31,7 +31,7 @@ const PoiPoolPage = () => {
   );
 
   const selectedFavorites = useSelector(
-    (state) => state.liveDraft.selectedFavorites
+    (state) => state.liveDraft.selectedFavorites || []
   );
 
   const [selectedPois, setSelectedPois] = useState(selectedFavorites || []); // Local state to track selected POIs
@@ -49,7 +49,7 @@ const PoiPoolPage = () => {
   const userPicks = useSelector((state) => state.liveDraft.usersPicks);
   const selectedByArr = useSelector((state) => state.liveDraft.selectedByList);
   const selectedMap = useSelector((state) => state.liveDraft.selectedMaps);
-  const searchQuery = useSelector((state) => state.liveDraft.searchQuery);
+  const searchQuery = useSelector((state) => state.liveDraft.searchQuery || "");
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -107,6 +107,8 @@ const PoiPoolPage = () => {
   }, [dispatch, selectedPois]);
 
   function handleUpdateUserPick(poiId, currTurn, user, currRound, poiName) {
+    console.log("inside draft button");
+
     setButtonDisabled(true);
 
     const updatedDraftedPois = [...draftedPois, poiName];
@@ -136,8 +138,9 @@ const PoiPoolPage = () => {
   // Filter POIs based on the search query
   const filteredPois = (pois) => {
     return pois.filter((poi) =>
-      // Check if poi_name exists and starts with the search query
-      poi.poi_name?.toLowerCase().startsWith(searchQuery.toLowerCase())
+      poi.poi_name && searchQuery
+        ? poi.poi_name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        : true
     );
   };
 
