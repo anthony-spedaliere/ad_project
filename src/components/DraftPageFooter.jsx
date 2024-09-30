@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import supabase from "../services/supabase";
 
 const StyledFooter = styled.footer`
   grid-area: footer;

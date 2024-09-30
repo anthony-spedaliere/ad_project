@@ -165,9 +165,6 @@ const PoiPoolPage = () => {
                 (a, b) => a.poi_number - b.poi_number
               )
             );
-            // const sortedPois = Object.values(map.pois).sort(
-            //   (a, b) => a.poi_number - b.poi_number
-            // );
 
             return sortedPois
               .filter((poi) => {
