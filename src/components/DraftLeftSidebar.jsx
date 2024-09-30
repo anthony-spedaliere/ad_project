@@ -24,6 +24,8 @@ function DraftLeftSidebar() {
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
   const participant = useSelector((state) => state.liveDraft.participant);
+  const activeUser = useSelector((state) => state.liveDraft.activeUser);
+  const teamIds = useSelector((state) => state.liveDraft.teamIdList);
   const admin = useSelector((state) => state.liveDraft.admin);
   const { setDraftTurn } = useUpdateDraftTurn();
 
@@ -134,6 +136,10 @@ function DraftLeftSidebar() {
             ) : currentTurn > 0 && currentTurn <= teamOwnersArray.length ? (
               <CustomCountdownBox
                 duration={11}
+                currRound={currentRound}
+                userId={teamIds[currentTurn - 1]}
+                currTurn={currentTurn}
+                activeUser={activeUser}
                 onComplete={() => {
                   const now = dayjs();
                   setStartClock({
@@ -189,7 +195,7 @@ function DraftLeftSidebar() {
             {currentTurn === 0
               ? "-"
               : admin === participant
-              ? "-" // Admin should only see "-"
+              ? "Draft Admin." // Admin should only see "-"
               : currentTurn > teamOwnersArray.length
               ? "Draft Finished!"
               : currentTeamOwner === participant

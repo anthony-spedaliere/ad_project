@@ -13,7 +13,7 @@ const initialState = {
   teamNameList: [], // an array of all team names in order of their pick for all rounds
   teamIdList: [], // an array of all the team id's in order of their picks for all rounds
   usersPicks: [], // the picks that show up under My Picks within DraftRightSidebar
-  selectedByList: [], // array of objects with key value pair - poi_id: teamName
+  selectedByList: [], // array of objects containing drafted poid - [{poiId: int, selectedBy: string}]
   isHideDraftedChecked: false, // state to handle the hide drafted checkbox in draft header
   selectedMaps: "all-maps", // state to handle the drop down styled select filter in draft header
   searchQuery: "", // The value of the query used in Search Poi's input from dreaft header
