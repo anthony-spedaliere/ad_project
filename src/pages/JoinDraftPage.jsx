@@ -7,6 +7,7 @@ import {
   setCurrentTurn,
   setPickStartTime,
   setSelectedByList,
+  setSelectedByListUpdate,
   setTeamIdList,
   setTeamNameList,
   setTeamsHaveJoined,
@@ -25,6 +26,8 @@ import {
 } from "../styles/JoinDraftPageStyles";
 import CustomCountdownBox from "../components/CustomCountdownBox";
 import { useEffect, useMemo } from "react";
+import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
+import { groupData } from "../utils/helperFunctions";
 
 function JoinDraftPage() {
   const navigate = useNavigate();
@@ -35,11 +38,14 @@ function JoinDraftPage() {
   const participant = useSelector((state) => state.liveDraft.participant);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
 
+  const { liveDraftDetails } = useGetLiveDraft(liveDraftInfo.draft.draft_id);
+
   const groups = useMemo(
     () => liveDraftInfo?.draft?.groups || {},
     [liveDraftInfo]
   );
 
+  const groupedData = groupData(liveDraftDetails);
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
 
   useEffect(() => {
@@ -72,7 +78,37 @@ function JoinDraftPage() {
     .flatMap((group) => Object.values(group.teams))
     .sort((a, b) => a.draft_priority - b.draft_priority);
 
+  const teams2 =
+    Object.values(groupedData?.draft?.groups || {}).flatMap((group) =>
+      Object.values(group.teams)
+    ) || [];
+
+  const pois = Object.values(groupedData?.draft?.maps || {}).flatMap((map) =>
+    Object.values(map.pois)
+  );
+
+  const selectedByListUpdate = [];
+
+  const teamMap = teams2.reduce((map, team) => {
+    map[team.team_id] = team.team_name;
+    return map;
+  }, {});
+
+  pois.forEach((poi) => {
+    if (poi.drafted_by !== null) {
+      selectedByListUpdate.push({
+        poiId: poi.poi_id,
+        selectedBy: teamMap[poi.drafted_by],
+      });
+    }
+  });
+
+  console.log(selectedByListUpdate);
+
   function handleJoinDraft() {
+    if (selectedByListUpdate) {
+      dispatch(setSelectedByListUpdate(selectedByListUpdate));
+    }
     navigate("/draft/poi-pool");
   }
 
@@ -169,6 +205,7 @@ function JoinDraftPage() {
               teamName={team.team_name}
               participant={participant}
               teamOwner={team.team_owner}
+              selectedByListUpdate={selectedByListUpdate}
             />
           ))}
           {admin === participant ? (

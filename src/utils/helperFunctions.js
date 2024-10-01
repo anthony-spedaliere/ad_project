@@ -28,6 +28,11 @@ export const capitalizeFirstLetter = (string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
 export const groupData = (sampleData) => {
+  if (!Array.isArray(sampleData)) {
+    console.error("groupData: Invalid input, expected an array");
+    return {}; // Return an empty object if sampleData is not an array
+  }
+
   return sampleData.reduce((acc, item) => {
     // Create a unique key for each draft
     const draftKey = "draft";

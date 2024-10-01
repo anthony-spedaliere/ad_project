@@ -65,6 +65,9 @@ const liveDraftSlice = createSlice({
         (favorite) => favorite.poi_id !== poiId
       );
     },
+    setSelectedByListUpdate: (state, action) => {
+      state.selectedByList = action.payload;
+    },
     setActiveUser: (state, action) => {
       state.activeUser = action.payload;
     },
@@ -123,6 +126,7 @@ export const {
   setCurrentTurn,
   setActiveUser,
   setUsersPicks,
+  setSelectedByListUpdate,
   setSearchQuery,
   setSelectedByList,
   setTeamIdList,
