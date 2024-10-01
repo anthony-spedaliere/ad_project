@@ -84,6 +84,9 @@ export const groupData = (sampleData) => {
       poi_created_at: item.poi_created_at,
       poi_name: item.poi_name,
       poi_number: item.poi_number,
+      drafted_by: item.drafted_by,
+      round_drafted: item.round_drafted,
+      number_picked: item.number_picked,
     };
 
     // Handle teams
