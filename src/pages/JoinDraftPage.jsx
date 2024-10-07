@@ -103,8 +103,6 @@ function JoinDraftPage() {
     }
   });
 
-  console.log(selectedByListUpdate);
-
   function handleJoinDraft() {
     if (selectedByListUpdate) {
       dispatch(setSelectedByListUpdate(selectedByListUpdate));
