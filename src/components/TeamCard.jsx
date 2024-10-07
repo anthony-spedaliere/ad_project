@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
+import { useDispatch } from "react-redux";
+import { setSelectedByListUpdate } from "../store/slices/liveDraftSlice";
 
 const Card = styled.div`
   height: 15rem;
@@ -41,11 +43,21 @@ export const JoinButton = styled.button`
   }
 `;
 
-function TeamCard({ draftPriority, teamName, participant, teamOwner }) {
+function TeamCard({
+  draftPriority,
+  teamName,
+  participant,
+  teamOwner,
+  selectedByListUpdate,
+}) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { setHasJoined, isPending } = useUpdateHasJoined();
 
   function handleJoinDraft() {
+    if (selectedByListUpdate) {
+      dispatch(setSelectedByListUpdate(selectedByListUpdate));
+    }
     setHasJoined({ hasJoined: true, teamOwner: participant });
     navigate("/draft/poi-pool");
   }

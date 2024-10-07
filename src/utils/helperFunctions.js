@@ -28,6 +28,11 @@ export const capitalizeFirstLetter = (string) =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
 export const groupData = (sampleData) => {
+  if (!Array.isArray(sampleData)) {
+    console.error("groupData: Invalid input, expected an array");
+    return {}; // Return an empty object if sampleData is not an array
+  }
+
   return sampleData.reduce((acc, item) => {
     // Create a unique key for each draft
     const draftKey = "draft";
@@ -84,6 +89,9 @@ export const groupData = (sampleData) => {
       poi_created_at: item.poi_created_at,
       poi_name: item.poi_name,
       poi_number: item.poi_number,
+      drafted_by: item.drafted_by,
+      round_drafted: item.round_drafted,
+      number_picked: item.number_picked,
     };
 
     // Handle teams
