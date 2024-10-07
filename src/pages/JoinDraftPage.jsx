@@ -12,6 +12,7 @@ import {
   setTeamNameList,
   setTeamsHaveJoined,
   setTeamTurnList,
+  setUsersPicks,
 } from "../store/slices/liveDraftSlice";
 import {
   HeaderContent,
@@ -37,6 +38,7 @@ function JoinDraftPage() {
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
+  const userId = useSelector((state) => state.user.id);
 
   const { liveDraftDetails } = useGetLiveDraft(liveDraftInfo.draft.draft_id);
 
@@ -78,7 +80,7 @@ function JoinDraftPage() {
     .flatMap((group) => Object.values(group.teams))
     .sort((a, b) => a.draft_priority - b.draft_priority);
 
-  const teams2 =
+  const allTeamsFromGroupedData =
     Object.values(groupedData?.draft?.groups || {}).flatMap((group) =>
       Object.values(group.teams)
     ) || [];
@@ -88,8 +90,9 @@ function JoinDraftPage() {
   );
 
   const selectedByListUpdate = [];
+  const myPicksListUpdate = [];
 
-  const teamMap = teams2.reduce((map, team) => {
+  const teamMap = allTeamsFromGroupedData.reduce((map, team) => {
     map[team.team_id] = team.team_name;
     return map;
   }, {});
@@ -100,6 +103,13 @@ function JoinDraftPage() {
         poiId: poi.poi_id,
         selectedBy: teamMap[poi.drafted_by],
       });
+      const draftingTeam = allTeamsFromGroupedData.find(
+        (team) => team.team_id === poi.drafted_by
+      );
+
+      if (draftingTeam && draftingTeam.team_owner === userId) {
+        myPicksListUpdate.push(poi.poi_name);
+      }
     }
   });
 
@@ -107,6 +117,7 @@ function JoinDraftPage() {
     if (selectedByListUpdate) {
       dispatch(setSelectedByListUpdate(selectedByListUpdate));
     }
+
     navigate("/draft/poi-pool");
   }
 
@@ -204,6 +215,7 @@ function JoinDraftPage() {
               participant={participant}
               teamOwner={team.team_owner}
               selectedByListUpdate={selectedByListUpdate}
+              myPicksListUpdate={myPicksListUpdate}
             />
           ))}
           {admin === participant ? (

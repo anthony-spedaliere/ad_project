@@ -2,7 +2,10 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
 import { useDispatch } from "react-redux";
-import { setSelectedByListUpdate } from "../store/slices/liveDraftSlice";
+import {
+  setSelectedByListUpdate,
+  setUsersPicks,
+} from "../store/slices/liveDraftSlice";
 
 const Card = styled.div`
   height: 15rem;
@@ -49,6 +52,7 @@ function TeamCard({
   participant,
   teamOwner,
   selectedByListUpdate,
+  myPicksListUpdate,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -57,6 +61,9 @@ function TeamCard({
   function handleJoinDraft() {
     if (selectedByListUpdate) {
       dispatch(setSelectedByListUpdate(selectedByListUpdate));
+    }
+    if (myPicksListUpdate) {
+      dispatch(setUsersPicks(myPicksListUpdate));
     }
     setHasJoined({ hasJoined: true, teamOwner: participant });
     navigate("/draft/poi-pool");
