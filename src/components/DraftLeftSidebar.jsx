@@ -42,15 +42,9 @@ function DraftLeftSidebar() {
   const { setStartClock } = useUpdateStartClock();
   const { setIsDraftComplete } = useUpdateIsDraftComplete();
 
-  const [currentTeamOwner, setCurrentTeamOwner] = useState(
-    teamOwnersArray[0] || null
-  );
-
   // Function to update the current team owner based on the turn number
   const handleTurnChange = (turn, dId) => {
     if (teamOwnersArray.length > 0) {
-      setCurrentTeamOwner(teamOwnersArray[turn - 1]);
-
       setDraftTurn({
         newTurn: turn,
         draftId: dId,
