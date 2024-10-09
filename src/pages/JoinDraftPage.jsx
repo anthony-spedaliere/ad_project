@@ -12,7 +12,6 @@ import {
   setTeamNameList,
   setTeamsHaveJoined,
   setTeamTurnList,
-  setUsersPicks,
 } from "../store/slices/liveDraftSlice";
 import {
   HeaderContent,

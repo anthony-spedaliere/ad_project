@@ -25,7 +25,7 @@ import {
 } from "../utils/helperFunctions";
 
 import { DeleteDraftModal, RedraftDraftModal } from "../ui/CustomModals";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDeleteDraft } from "../authentication/useDeleteDraft";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -44,11 +44,19 @@ function DraftHistory() {
 
   const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
 
-  const { data: drafts, isPending, error } = useCompletedDrafts(userId);
+  const {
+    data: completedDrafts,
+    isPending,
+    error,
+  } = useCompletedDrafts(userId);
 
   // delete modal state
   const [isDeleteDraftModalVisible, setIsDeleteDraftSaveModalVisible] =
     useState(false);
+
+  const joinedDraftsData = useSelector(
+    (state) => state.joinedDrafts.joinedDrafts
+  );
 
   // redraft modal state
   const [isRedraftDraftModalVisible, setIsRedraftDraftSaveModalVisible] =
@@ -59,6 +67,13 @@ function DraftHistory() {
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
+
+  const allDrafts = useMemo(() => {
+    const completedJoinedDrafts = joinedDraftsData.filter(
+      (draft) => draft.is_draft_complete
+    );
+    return [...(completedDrafts || []), ...completedJoinedDrafts];
+  }, [completedDrafts, joinedDraftsData]);
 
   //=====================================================================
 
@@ -134,7 +149,7 @@ function DraftHistory() {
     );
   }
 
-  if (drafts.length === 0) {
+  if (allDrafts.length === 0) {
     return (
       <DashboardContentContainer>
         <CenteredMessage>No draft history</CenteredMessage>
@@ -156,7 +171,7 @@ function DraftHistory() {
             </TableRow>
           </thead>
           <tbody>
-            {drafts.map((draft) => (
+            {allDrafts.map((draft) => (
               <TableRow key={draft.id}>
                 <TableCell>
                   {draft.name} <br />
@@ -177,9 +192,6 @@ function DraftHistory() {
                     <ActionButton onClick={() => handleOnViewResults(draft.id)}>
                       View Results
                     </ActionButton>
-                    {/* <ActionButton onClick={() => handleClickEdit(draft.id)}>
-                      Redraft
-                    </ActionButton> */}
                     <ActionButton
                       onClick={() => showRedraftDraftModal(draft.id)}
                     >

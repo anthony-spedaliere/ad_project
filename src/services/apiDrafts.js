@@ -220,3 +220,18 @@ export async function getCurrentTurn(draftId) {
 
   return data;
 }
+
+export async function updateIsDraftComplete(isDraftComplete, draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .update({ is_draft_complete: isDraftComplete })
+    .eq("id", draftId)
+    .select();
+
+  if (error) {
+    console.error("Error updating is draft complete:", error);
+    return;
+  }
+
+  return data;
+}
