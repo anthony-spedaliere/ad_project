@@ -176,43 +176,45 @@ function JoinedDraftsData() {
               </TableRow>
             </thead>
             <tbody>
-              {joinedDraftsData.map((draft, index) => (
-                <TableRow key={`${draft.id}-${index}`}>
-                  <TableCell>
-                    {draft.name} <br />
-                    {formatDate(draft.draft_date)}
-                    <br />
-                    {formatTime(draft.draft_time)}
-                    <br />
-                    {capitalizeFirstLetter(draft.draft_type)} Draft
-                    <br />
-                    {`${formatMinutes(
-                      draft.draft_time_per_pick
-                    )} minute(s) per pick`}
-                    <br />
-                    {`${draft.number_of_teams} teams`}
-                  </TableCell>
-                  <TableCell>
-                    <ActionsContainer>
-                      {draft.draft_has_started ? (
+              {joinedDraftsData
+                .filter((draft) => !draft.is_draft_complete)
+                .map((draft, index) => (
+                  <TableRow key={`${draft.id}-${index}`}>
+                    <TableCell>
+                      {draft.name} <br />
+                      {formatDate(draft.draft_date)}
+                      <br />
+                      {formatTime(draft.draft_time)}
+                      <br />
+                      {capitalizeFirstLetter(draft.draft_type)} Draft
+                      <br />
+                      {`${formatMinutes(
+                        draft.draft_time_per_pick
+                      )} minute(s) per pick`}
+                      <br />
+                      {`${draft.number_of_teams} teams`}
+                    </TableCell>
+                    <TableCell>
+                      <ActionsContainer>
+                        {draft.draft_has_started ? (
+                          <ActionButton
+                            onClick={() => showStartDraftModal(draft.id)}
+                          >
+                            Join Draft - Live!
+                          </ActionButton>
+                        ) : (
+                          <></>
+                        )}
                         <ActionButton
-                          onClick={() => showStartDraftModal(draft.id)}
+                          $customColor="var(--red-color)"
+                          onClick={() => handleLeaveDraftClick(draft.id)}
                         >
-                          Join Draft - Live!
+                          Leave Draft
                         </ActionButton>
-                      ) : (
-                        <></>
-                      )}
-                      <ActionButton
-                        $customColor="var(--red-color)"
-                        onClick={() => handleLeaveDraftClick(draft.id)}
-                      >
-                        Leave Draft
-                      </ActionButton>
-                    </ActionsContainer>
-                  </TableCell>
-                </TableRow>
-              ))}
+                      </ActionsContainer>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </tbody>
           </Table>
         )}

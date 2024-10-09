@@ -17,9 +17,15 @@ import dayjs from "dayjs";
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
 import StyledHeader from "../ui/StyledHeader";
 import { setActiveUser } from "../store/slices/liveDraftSlice";
+import { useUpdateIsDraftComplete } from "../authentication/useUpdateIsDraftComplete";
+import { useNavigate } from "react-router-dom";
 
 function DraftLeftSidebar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [draftComplete, setDraftComplete] = useState(false);
+
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const teamOwnersArray = useSelector((state) => state.liveDraft.teamTurnList);
@@ -34,6 +40,7 @@ function DraftLeftSidebar() {
   const groups = liveDraftInfo?.draft?.groups || {};
 
   const { setStartClock } = useUpdateStartClock();
+  const { setIsDraftComplete } = useUpdateIsDraftComplete();
 
   const [currentTeamOwner, setCurrentTeamOwner] = useState(
     teamOwnersArray[0] || null
@@ -54,6 +61,12 @@ function DraftLeftSidebar() {
   useEffect(() => {
     dispatch(setActiveUser(teamOwnersArray[currentTurn - 1]));
   }, [currentTurn, dispatch, teamOwnersArray]);
+
+  useEffect(() => {
+    if (draftComplete) {
+      navigate("/dashboard/my-drafts", { replace: true });
+    }
+  }, [draftComplete, navigate]);
 
   const renderRounds = () => {
     let rounds = [];
@@ -172,6 +185,11 @@ function DraftLeftSidebar() {
                       currentTurn + 1,
                       liveDraftInfo?.draft?.draft_id
                     );
+                    setDraftComplete(true);
+                    setIsDraftComplete({
+                      isDraftComplete: true,
+                      draftId: liveDraftInfo?.draft?.draft_id,
+                    });
                   }, 0); // Delay by 0ms to ensure it's in the next event loop
                 }}
               />
