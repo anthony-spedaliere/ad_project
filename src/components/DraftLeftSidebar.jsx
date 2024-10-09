@@ -142,7 +142,7 @@ function DraftLeftSidebar() {
               />
             ) : currentTurn > 0 && currentTurn <= teamOwnersArray.length ? (
               <CustomCountdownBox
-                duration={11}
+                duration={liveDraftInfo?.draft?.draft_time_per_pick + 1 || 30}
                 currRound={currentRound}
                 userId={teamIds[currentTurn - 1]}
                 currTurn={currentTurn}
