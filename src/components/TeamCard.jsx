@@ -3,9 +3,13 @@ import styled from "styled-components";
 import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
 import { useDispatch } from "react-redux";
 import {
+  setCurrentTurn,
+  setPickStartTime,
   setSelectedByListUpdate,
   setUsersPicks,
 } from "../store/slices/liveDraftSlice";
+import { fetchLatestDraftTurnAndStartTime } from "../services/apiDrafts";
+import { useCallback } from "react";
 
 const Card = styled.div`
   height: 15rem;
@@ -53,21 +57,54 @@ function TeamCard({
   teamOwner,
   selectedByListUpdate,
   myPicksListUpdate,
+  draftId,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { setHasJoined, isPending } = useUpdateHasJoined();
 
-  function handleJoinDraft() {
+  const handleJoinDraft = useCallback(async () => {
+    // Fetch the latest turn and start time
+    const latestData = await fetchLatestDraftTurnAndStartTime(draftId);
+
+    if (latestData) {
+      dispatch(setCurrentTurn(latestData.turn));
+      dispatch(setPickStartTime(latestData.start_clock));
+    }
+
     if (selectedByListUpdate) {
       dispatch(setSelectedByListUpdate(selectedByListUpdate));
     }
     if (myPicksListUpdate) {
       dispatch(setUsersPicks(myPicksListUpdate));
     }
+
     setHasJoined({ hasJoined: true, teamOwner: participant });
     navigate("/draft/poi-pool");
-  }
+  }, [
+    draftId,
+    selectedByListUpdate,
+    myPicksListUpdate,
+    setHasJoined,
+    participant,
+    navigate,
+    dispatch,
+  ]);
+
+  // function handleJoinDraft() {
+  //   if (selectedByListUpdate) {
+  //     dispatch(setSelectedByListUpdate(selectedByListUpdate));
+  //   }
+  //   if (myPicksListUpdate) {
+  //     dispatch(setUsersPicks(myPicksListUpdate));
+  //   }
+  //   if (latestDraftTurnAndStartTime) {
+  //     dispatch(setCurrentTurn(latestDraftTurnAndStartTime.turn));
+  //     dispatch(setPickStartTime(latestDraftTurnAndStartTime.start_clock));
+  //   }
+  //   setHasJoined({ hasJoined: true, teamOwner: participant });
+  //   navigate("/draft/poi-pool");
+  // }
 
   return (
     <Card>

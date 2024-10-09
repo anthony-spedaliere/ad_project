@@ -235,3 +235,17 @@ export async function updateIsDraftComplete(isDraftComplete, draftId) {
 
   return data;
 }
+
+export async function fetchLatestDraftTurnAndStartTime(draftId) {
+  const { data, error } = await supabase
+    .from("draft")
+    .select("turn, start_clock")
+    .eq("id", draftId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching latest draft info:", error);
+  }
+
+  return data;
+}
