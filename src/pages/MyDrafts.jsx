@@ -37,6 +37,7 @@ import JoinedDraftsData from "../components/JoinedDraftsData";
 import { setdraftIdTeamInviteLink } from "../store/slices/inviteTeamLinkSlice";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import {
+  resetTeamsHaveJoined,
   setAdmin,
   setCurrentTurn,
   setLiveDraftData,
@@ -100,6 +101,7 @@ function MyDrafts() {
       dispatch(setAdmin(groupedData.draft.admin));
       dispatch(setParticipant(userId));
     }
+    dispatch(resetTeamsHaveJoined());
   }, [dispatch, liveDraftDetails, userId]);
 
   //=====================================================================
