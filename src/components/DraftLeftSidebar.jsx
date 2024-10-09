@@ -216,7 +216,7 @@ function DraftLeftSidebar() {
               ? "Draft Admin." // Admin should only see "-"
               : currentTurn > teamOwnersArray.length
               ? "Draft Finished!"
-              : currentTeamOwner === participant
+              : teamOwnersArray[currentTurn - 1] === participant
               ? "It's your turn to draft!"
               : (() => {
                   // Get all indices where the participant is in teamOwnersArray
