@@ -25,9 +25,10 @@ import {
   CountdownBoxStyle,
 } from "../styles/JoinDraftPageStyles";
 import CustomCountdownBox from "../components/CustomCountdownBox";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { useGetLiveDraft } from "../authentication/useGetLiveDraft";
 import { groupData } from "../utils/helperFunctions";
+import { fetchLatestDraftTurnAndStartTime } from "../services/apiDrafts";
 
 function JoinDraftPage() {
   const navigate = useNavigate();
@@ -88,8 +89,7 @@ function JoinDraftPage() {
     Object.values(map.pois)
   );
 
-  const selectedByListUpdate = [];
-  const myPicksListUpdate = [];
+  const [selectedByListUpdate, myPicksListUpdate] = useMemo(() => [[], []], []);
 
   const teamMap = allTeamsFromGroupedData.reduce((map, team) => {
     map[team.team_id] = team.team_name;
@@ -112,13 +112,22 @@ function JoinDraftPage() {
     }
   });
 
-  function handleJoinDraft() {
+  const handleJoinDraft = useCallback(async () => {
+    // Fetch the latest turn and start time
+    const latestData = await fetchLatestDraftTurnAndStartTime(
+      liveDraftInfo.draft.draft_id
+    );
+
     if (selectedByListUpdate) {
       dispatch(setSelectedByListUpdate(selectedByListUpdate));
     }
+    if (latestData) {
+      dispatch(setCurrentTurn(latestData.turn));
+      dispatch(setPickStartTime(latestData.start_clock));
+    }
 
     navigate("/draft/poi-pool");
-  }
+  }, [dispatch, liveDraftInfo.draft.draft_id, navigate, selectedByListUpdate]);
 
   function handleBack() {
     navigate("/dashboard/my-drafts");
@@ -176,7 +185,6 @@ function JoinDraftPage() {
           .flatMap((group) => Object.values(group.teams))
           .find((team) => team.team_id === teamId)?.team_name;
 
-        // dispatch(setSelectedByList(teamName));
         dispatch(setSelectedByList({ poiId: updatedPoi.id, teamName }));
       }
     )
@@ -215,6 +223,7 @@ function JoinDraftPage() {
               teamOwner={team.team_owner}
               selectedByListUpdate={selectedByListUpdate}
               myPicksListUpdate={myPicksListUpdate}
+              draftId={liveDraftInfo?.draft?.draft_id}
             />
           ))}
           {admin === participant ? (
