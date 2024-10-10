@@ -72,7 +72,6 @@ function MyDrafts() {
   const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
 
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
-  console.log(drafts);
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 

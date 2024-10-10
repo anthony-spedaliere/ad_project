@@ -41,6 +41,7 @@ function DraftHistory() {
   const navigate = useNavigate();
 
   const userId = useSelector((state) => state.user.id);
+  const draftsLength = useSelector((state) => state.draft.draftsLength);
 
   const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
 
@@ -103,6 +104,10 @@ function DraftHistory() {
 
   // Redraft Modal functions
   const showRedraftDraftModal = (draftId) => {
+    if (draftsLength > 5) {
+      toast.error("You can't create more than 5 drafts at a time.");
+      return;
+    }
     setSelectedDraftId(draftId);
     setIsRedraftDraftSaveModalVisible(true);
   };
