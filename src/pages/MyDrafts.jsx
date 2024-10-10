@@ -1,4 +1,4 @@
-// style importsimport { FaPlus } from "react-icons/fa";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useUncompletedDrafts } from "../authentication/useUncompletedDrafts";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
@@ -125,12 +125,16 @@ function MyDrafts() {
 
   const handleDeleteDraftConfirm = () => {
     handleDeleteDraftCancel();
+    if (selectedDraftId) {
     deleteDraft(selectedDraftId, {
       onSuccess: () => {
         navigate("/dashboard/my-drafts", { replace: true });
         toast.success("Draft successfully deleted.");
       },
     });
+    } else {
+      toast.error("Error: No draft selected for deletion.");
+    }
   };
 
   //=====================================================================
@@ -243,7 +247,18 @@ function MyDrafts() {
               </TableRow>
             </thead>
             <tbody>
-              {drafts.map((draft) => (
+              {drafts.map((draft) => {
+                const draftDateTime = dayjs(
+                  `${draft.draft_date} ${draft.draft_time}`
+                );
+                const now = dayjs();
+                const isWithin20Minutes =
+                  draftDateTime.diff(now, "minute") <= 20 &&
+                  draftDateTime.diff(now, "minute") > 0;
+                const isPastDraftTime = now.isAfter(draftDateTime);
+                const showStartNowButton = isWithin20Minutes || isPastDraftTime;
+
+                return (
                 <TableRow key={draft.id}>
                   <TableCell>
                     {draft.name} <br />
@@ -281,14 +296,14 @@ function MyDrafts() {
                         >
                           Join Draft - Live!
                         </ActionButton>
-                      ) : (
+                        ) : showStartNowButton ? (
                         <ActionButton
                           onClick={() => showStartDraftModal(draft.id)}
                           disabled={isPendingDraftHasStarted}
                         >
                           Start Now
                         </ActionButton>
-                      )}
+                        ) : null}
                       <ActionButton
                         onClick={() => showEditDraftModal(draft.id)}
                       >
@@ -303,7 +318,8 @@ function MyDrafts() {
                     </ActionsContainer>
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </tbody>
           </Table>
         )}
