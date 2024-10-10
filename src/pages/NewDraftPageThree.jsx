@@ -292,10 +292,10 @@ function NewDraftPageThree() {
       if (value >= 0 && value <= 30) {
         dispatch(updatePOI({ mapIndex, poiIndex, key, value }));
       }
-      return;
     } else {
       dispatch(updatePOI({ mapIndex, poiIndex, key, value }));
     }
+    validateInputs();
   };
 
   // track new draft creation page number
@@ -412,73 +412,70 @@ function NewDraftPageThree() {
                   ) : (
                     <></>
                   )}
-                  {[...map.pois]
-                    .sort((a, b) => a.points - b.points)
-                    .map((poi, poiIndex) => (
-                      <div
-                        key={poiIndex}
-                        style={{
-                          display: "flex",
-                          columnGap: "1rem",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        <PoiRowPoiNameContainer $flex="1">
-                          <StyledInput
-                            $bgColor="var(--brand-color)"
-                            height="4rem"
-                            id={`poiName-${index}-${poiIndex}`}
-                            type="text"
-                            placeholder={`POI ${poiIndex + 1} Name`}
-                            // maxLength="30"
-                            value={poi.name}
-                            onChange={(e) =>
-                              handlePOIChange(
-                                index,
-                                poiIndex,
-                                "name",
-                                e.target.value
-                              )
-                            }
-                          />
-                          {buttonClicked &&
-                            errors.mapErrors[index]?.poiErrors[poiIndex] && (
-                              <PoiRowError>
-                                {
-                                  errors.mapErrors[index].poiErrors[poiIndex]
-                                    .poiNameError
-                                }
-                              </PoiRowError>
-                            )}
-                        </PoiRowPoiNameContainer>
-                        <PoiRowPoiNameContainer $flex="1">
-                          <StyledInput
-                            $bgColor="var(--brand-color)"
-                            height="4rem"
-                            type="number"
-                            id={`poiNumber-${index}-${poiIndex}`}
-                            value={poi.points || ""}
-                            onChange={(e) =>
-                              handlePOIChange(
-                                index,
-                                poiIndex,
-                                "points",
-                                e.target.value
-                              )
-                            }
-                          />
-                          {buttonClicked &&
-                            errors.mapErrors[index]?.poiErrors[poiIndex] && (
-                              <PoiRowError>
-                                {
-                                  errors.mapErrors[index].poiErrors[poiIndex]
-                                    .poiPointsError
-                                }
-                              </PoiRowError>
-                            )}
-                        </PoiRowPoiNameContainer>
-                      </div>
-                    ))}
+                  {map.pois.map((poi, poiIndex) => (
+                    <div
+                      key={poiIndex}
+                      style={{
+                        display: "flex",
+                        columnGap: "1rem",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <PoiRowPoiNameContainer $flex="1">
+                        <StyledInput
+                          $bgColor="var(--brand-color)"
+                          height="4rem"
+                          id={`poiName-${index}-${poiIndex}`}
+                          type="text"
+                          placeholder={`POI ${poiIndex + 1} Name`}
+                          value={poi.name}
+                          onChange={(e) =>
+                            handlePOIChange(
+                              index,
+                              poiIndex,
+                              "name",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {buttonClicked &&
+                          errors.mapErrors[index]?.poiErrors[poiIndex] && (
+                            <PoiRowError>
+                              {
+                                errors.mapErrors[index].poiErrors[poiIndex]
+                                  .poiNameError
+                              }
+                            </PoiRowError>
+                          )}
+                      </PoiRowPoiNameContainer>
+                      <PoiRowPoiNameContainer $flex="1">
+                        <StyledInput
+                          $bgColor="var(--brand-color)"
+                          height="4rem"
+                          type="number"
+                          id={`poiNumber-${index}-${poiIndex}`}
+                          value={poi.points || ""}
+                          onChange={(e) =>
+                            handlePOIChange(
+                              index,
+                              poiIndex,
+                              "points",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {buttonClicked &&
+                          errors.mapErrors[index]?.poiErrors[poiIndex] && (
+                            <PoiRowError>
+                              {
+                                errors.mapErrors[index].poiErrors[poiIndex]
+                                  .poiPointsError
+                              }
+                            </PoiRowError>
+                          )}
+                      </PoiRowPoiNameContainer>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
