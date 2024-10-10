@@ -49,6 +49,7 @@ import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
 import dayjs from "dayjs";
 import supabase from "../services/supabase";
 import { useGetCurrentTurn } from "../authentication/useGetCurrentTurn";
+import { setDraftsLength } from "../store/slices/draftSlice";
 
 function MyDrafts() {
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ function MyDrafts() {
   const [shouldUseDraftDetails, setShouldUseDraftDetails] = useState(false);
 
   const { data: drafts, isPending, error } = useUncompletedDrafts(userId);
+  console.log(drafts);
 
   const [selectedDraftId, setSelectedDraftId] = useState(null);
 
@@ -103,6 +105,12 @@ function MyDrafts() {
     }
     dispatch(resetTeamsHaveJoined());
   }, [dispatch, liveDraftDetails, userId]);
+
+  useEffect(() => {
+    if (drafts) {
+      dispatch(setDraftsLength(drafts.length));
+    }
+  }, [drafts, dispatch]);
 
   //=====================================================================
 

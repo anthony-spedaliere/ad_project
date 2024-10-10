@@ -4,12 +4,23 @@ import {
   MyDraftContainer,
   MyDraftCustomLink,
 } from "../styles/MyDraftStyles";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { resetDraftForm, setIsEditing } from "../store/slices/newDraftSlice";
 import StyledHeader from "../ui/StyledHeader";
+import { toast } from "react-hot-toast";
 
 function MyDraftsHeader({ isMyDrafts, headerTitle, marginTop }) {
   const dispatch = useDispatch();
+  const draftsLength = useSelector((state) => state.draft.draftsLength);
+
+  const handleCreateNewDraft = () => {
+    if (draftsLength > 5) {
+      toast.error("Only 5 drafts allowed at a time");
+    } else {
+      dispatch(resetDraftForm());
+      dispatch(setIsEditing(false));
+    }
+  };
 
   return (
     <MyDraftContainer>
@@ -18,11 +29,8 @@ function MyDraftsHeader({ isMyDrafts, headerTitle, marginTop }) {
       </StyledHeader>
       {isMyDrafts ? (
         <MyDraftCustomLink
-          onClick={() => {
-            dispatch(resetDraftForm());
-            dispatch(setIsEditing(false));
-          }}
-          to="/new-draft-one"
+          onClick={handleCreateNewDraft}
+          to={draftsLength <= 5 ? "/new-draft-one" : "#"}
           $customColor="var(--color-grey-300)"
         >
           <CustomSpan>

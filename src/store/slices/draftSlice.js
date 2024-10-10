@@ -5,6 +5,7 @@ const draftSlice = createSlice({
   initialState: {
     draftId: null,
     currDraftInEditing: null,
+    draftsLength: null,
   },
   reducers: {
     setDraftId: (state, action) => {
@@ -13,8 +14,12 @@ const draftSlice = createSlice({
     setCurrDraftInEditing: (state, action) => {
       state.currDraftInEditing = action.payload;
     },
+    setDraftsLength: (state, action) => {
+      state.draftsLength = action.payload;
+    },
   },
 });
 
-export const { setDraftId, setCurrDraftInEditing } = draftSlice.actions;
+export const { setDraftId, setCurrDraftInEditing, setDraftsLength } =
+  draftSlice.actions;
 export default draftSlice.reducer;
