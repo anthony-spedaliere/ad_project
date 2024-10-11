@@ -17,6 +17,7 @@ const initialState = {
   isHideDraftedChecked: false, // state to handle the hide drafted checkbox in draft header
   selectedMaps: "all-maps", // state to handle the drop down styled select filter in draft header
   searchQuery: "", // The value of the query used in Search Poi's input from dreaft header
+  liveDraftId: null, // the id of the draft
 };
 
 const liveDraftSlice = createSlice({
@@ -28,6 +29,9 @@ const liveDraftSlice = createSlice({
     },
     setAdmin: (state, action) => {
       state.admin = action.payload;
+    },
+    setLiveDraftId: (state, action) => {
+      state.liveDraftId = action.payload;
     },
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
@@ -116,6 +120,7 @@ export const {
   setTeamsHaveJoined,
   resetLiveDraftState,
   setSelectedMap,
+  setLiveDraftId,
   resetTeamsHaveJoined,
   setSelectedFavorites,
   resetSelectedFavorites,

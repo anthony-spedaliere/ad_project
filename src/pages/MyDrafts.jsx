@@ -29,7 +29,6 @@ import {
   EditDraftModal,
   StartDraftSaveModal,
 } from "../ui/CustomModals";
-import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 import JoinedDraftsData from "../components/JoinedDraftsData";
@@ -40,6 +39,7 @@ import {
   setAdmin,
   setCurrentTurn,
   setLiveDraftData,
+  setLiveDraftId,
   setParticipant,
   setPickStartTime,
 } from "../store/slices/liveDraftSlice";
@@ -83,9 +83,19 @@ function MyDrafts() {
 
   const { setStartClock } = useUpdateStartClock();
 
-  const { data: currentDraftTurn } = useGetCurrentTurn(selectedDraftId);
+  const { currentTurn } = useGetCurrentTurn(selectedDraftId);
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
+
+  const handleDeleteDraft = async (draftId) => {
+    try {
+      await deleteDraft(draftId);
+      // After successful deletion, set selectedDraftId to null
+      setSelectedDraftId(null);
+    } catch (error) {
+      console.error("Error deleting draft:", error);
+    }
+  };
 
   // unsubscribe from all channels
   async function unsubscribe() {
@@ -127,7 +137,7 @@ function MyDrafts() {
   const handleDeleteDraftConfirm = () => {
     handleDeleteDraftCancel();
     if (selectedDraftId) {
-      deleteDraft(selectedDraftId);
+      handleDeleteDraft(selectedDraftId);
     }
   };
 
@@ -169,13 +179,12 @@ function MyDrafts() {
   const handleStartDraftConfirm = () => {
     const now = dayjs();
     dispatch(setPickStartTime(now.toISOString()));
+    dispatch(setLiveDraftId(selectedDraftId));
 
     handleStartDraftCancel();
     setStartClock({ startTime: now, draftId: selectedDraftId });
 
-    if (currentDraftTurn) {
-      dispatch(setCurrentTurn(currentDraftTurn.turn));
-    }
+    dispatch(setCurrentTurn(currentTurn));
 
     setUpdateDraftHasStarted(
       {

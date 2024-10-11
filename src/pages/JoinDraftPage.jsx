@@ -37,7 +37,6 @@ function JoinDraftPage() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
-  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const userId = useSelector((state) => state.user.id);
 
   const { liveDraftDetails } = useGetLiveDraft(liveDraftInfo.draft.draft_id);
@@ -46,6 +45,7 @@ function JoinDraftPage() {
     () => liveDraftInfo?.draft?.groups || {},
     [liveDraftInfo]
   );
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
 
   const groupedData = groupData(liveDraftDetails);
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
