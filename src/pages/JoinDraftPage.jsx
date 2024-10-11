@@ -105,9 +105,10 @@ function JoinDraftPage() {
       const draftingTeam = allTeamsFromGroupedData.find(
         (team) => team.team_id === poi.drafted_by
       );
-
       if (draftingTeam && draftingTeam.team_owner === userId) {
-        myPicksListUpdate.push(poi.poi_name);
+        if (!myPicksListUpdate.includes(poi.poi_name)) {
+          myPicksListUpdate.push(poi.poi_name);
+        }
       }
     }
   });
