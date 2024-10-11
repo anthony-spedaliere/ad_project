@@ -91,21 +91,6 @@ function TeamCard({
     dispatch,
   ]);
 
-  // function handleJoinDraft() {
-  //   if (selectedByListUpdate) {
-  //     dispatch(setSelectedByListUpdate(selectedByListUpdate));
-  //   }
-  //   if (myPicksListUpdate) {
-  //     dispatch(setUsersPicks(myPicksListUpdate));
-  //   }
-  //   if (latestDraftTurnAndStartTime) {
-  //     dispatch(setCurrentTurn(latestDraftTurnAndStartTime.turn));
-  //     dispatch(setPickStartTime(latestDraftTurnAndStartTime.start_clock));
-  //   }
-  //   setHasJoined({ hasJoined: true, teamOwner: participant });
-  //   navigate("/draft/poi-pool");
-  // }
-
   return (
     <Card>
       <DraftPriority>Spot {draftPriority}</DraftPriority>

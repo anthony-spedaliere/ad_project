@@ -37,7 +37,6 @@ function JoinDraftPage() {
   const liveDraftInfo = useSelector((state) => state.liveDraft.liveDraftData);
   const admin = useSelector((state) => state.liveDraft.admin);
   const participant = useSelector((state) => state.liveDraft.participant);
-  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
   const userId = useSelector((state) => state.user.id);
 
   const { liveDraftDetails } = useGetLiveDraft(liveDraftInfo.draft.draft_id);
@@ -46,6 +45,7 @@ function JoinDraftPage() {
     () => liveDraftInfo?.draft?.groups || {},
     [liveDraftInfo]
   );
+  const currentTurn = useSelector((state) => state.liveDraft.currentTurn);
 
   const groupedData = groupData(liveDraftDetails);
   const numberOfMaps = liveDraftInfo?.draft?.number_of_maps || 0;
@@ -105,9 +105,10 @@ function JoinDraftPage() {
       const draftingTeam = allTeamsFromGroupedData.find(
         (team) => team.team_id === poi.drafted_by
       );
-
       if (draftingTeam && draftingTeam.team_owner === userId) {
-        myPicksListUpdate.push(poi.poi_name);
+        if (!myPicksListUpdate.includes(poi.poi_name)) {
+          myPicksListUpdate.push(poi.poi_name);
+        }
       }
     }
   });

@@ -1,4 +1,3 @@
-// style importsimport { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useUncompletedDrafts } from "../authentication/useUncompletedDrafts";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
@@ -30,7 +29,6 @@ import {
   EditDraftModal,
   StartDraftSaveModal,
 } from "../ui/CustomModals";
-import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useDraftDetails } from "../hooks/useDraftDetails";
 import JoinedDraftsData from "../components/JoinedDraftsData";
@@ -41,6 +39,7 @@ import {
   setAdmin,
   setCurrentTurn,
   setLiveDraftData,
+  setLiveDraftId,
   setParticipant,
   setPickStartTime,
 } from "../store/slices/liveDraftSlice";
@@ -84,9 +83,19 @@ function MyDrafts() {
 
   const { setStartClock } = useUpdateStartClock();
 
-  const { data: currentDraftTurn } = useGetCurrentTurn(selectedDraftId);
+  const { currentTurn } = useGetCurrentTurn(selectedDraftId);
 
   useDraftDetails(selectedDraftId, shouldUseDraftDetails);
+
+  const handleDeleteDraft = async (draftId) => {
+    try {
+      await deleteDraft(draftId);
+      // After successful deletion, set selectedDraftId to null
+      setSelectedDraftId(null);
+    } catch (error) {
+      console.error("Error deleting draft:", error);
+    }
+  };
 
   // unsubscribe from all channels
   async function unsubscribe() {
@@ -99,7 +108,9 @@ function MyDrafts() {
     if (liveDraftDetails) {
       const groupedData = groupData(liveDraftDetails);
       dispatch(setLiveDraftData(groupedData));
-      dispatch(setAdmin(groupedData.draft.admin));
+      if (groupedData.draft && groupedData.draft.admin) {
+        dispatch(setAdmin(groupedData.draft.admin));
+      }
       dispatch(setParticipant(userId));
     }
     dispatch(resetTeamsHaveJoined());
@@ -125,12 +136,9 @@ function MyDrafts() {
 
   const handleDeleteDraftConfirm = () => {
     handleDeleteDraftCancel();
-    deleteDraft(selectedDraftId, {
-      onSuccess: () => {
-        navigate("/dashboard/my-drafts", { replace: true });
-        toast.success("Draft successfully deleted.");
-      },
-    });
+    if (selectedDraftId) {
+      handleDeleteDraft(selectedDraftId);
+    }
   };
 
   //=====================================================================
@@ -171,13 +179,12 @@ function MyDrafts() {
   const handleStartDraftConfirm = () => {
     const now = dayjs();
     dispatch(setPickStartTime(now.toISOString()));
+    dispatch(setLiveDraftId(selectedDraftId));
 
     handleStartDraftCancel();
     setStartClock({ startTime: now, draftId: selectedDraftId });
 
-    if (currentDraftTurn) {
-      dispatch(setCurrentTurn(currentDraftTurn.turn));
-    }
+    dispatch(setCurrentTurn(currentTurn));
 
     setUpdateDraftHasStarted(
       {
@@ -243,67 +250,79 @@ function MyDrafts() {
               </TableRow>
             </thead>
             <tbody>
-              {drafts.map((draft) => (
-                <TableRow key={draft.id}>
-                  <TableCell>
-                    {draft.name} <br />
-                    {formatDate(draft.draft_date)}
-                    <br />
-                    {formatTime(draft.draft_time)}
-                    <br />
-                    {capitalizeFirstLetter(draft.draft_type)} Draft
-                    <br />
-                    {`${formatMinutes(
-                      draft.draft_time_per_pick
-                    )} minute(s) per pick`}
-                    <br />
-                    {`${draft.number_of_teams} teams`}
-                  </TableCell>
-                  <TableCell>
-                    <ActionsContainer>
-                      <ActionButton
-                        onClick={() =>
-                          handleClickTeamInvites(
-                            draft.unique_draft_url,
-                            draft.id
-                          )
-                        }
-                      >
-                        Team Invite Links
-                      </ActionButton>
-                    </ActionsContainer>
-                  </TableCell>
-                  <TableCell>
-                    <ActionsContainer>
-                      {draft.draft_has_started ? (
+              {drafts.map((draft) => {
+                const draftDateTime = dayjs(
+                  `${draft.draft_date} ${draft.draft_time}`
+                );
+                const now = dayjs();
+                const isWithin20Minutes =
+                  draftDateTime.diff(now, "minute") <= 20 &&
+                  draftDateTime.diff(now, "minute") > 0;
+                const isPastDraftTime = now.isAfter(draftDateTime);
+                const showStartNowButton = isWithin20Minutes || isPastDraftTime;
+
+                return (
+                  <TableRow key={draft.id}>
+                    <TableCell>
+                      {draft.name} <br />
+                      {formatDate(draft.draft_date)}
+                      <br />
+                      {formatTime(draft.draft_time)}
+                      <br />
+                      {capitalizeFirstLetter(draft.draft_type)} Draft
+                      <br />
+                      {`${formatMinutes(
+                        draft.draft_time_per_pick
+                      )} minute(s) per pick`}
+                      <br />
+                      {`${draft.number_of_teams} teams`}
+                    </TableCell>
+                    <TableCell>
+                      <ActionsContainer>
                         <ActionButton
-                          onClick={() => handleEnterLiveDraft(draft.admin)}
+                          onClick={() =>
+                            handleClickTeamInvites(
+                              draft.unique_draft_url,
+                              draft.id
+                            )
+                          }
                         >
-                          Join Draft - Live!
+                          Team Invite Links
                         </ActionButton>
-                      ) : (
+                      </ActionsContainer>
+                    </TableCell>
+                    <TableCell>
+                      <ActionsContainer>
+                        {draft.draft_has_started ? (
+                          <ActionButton
+                            onClick={() => handleEnterLiveDraft(draft.admin)}
+                          >
+                            Join Draft - Live!
+                          </ActionButton>
+                        ) : showStartNowButton ? (
+                          <ActionButton
+                            onClick={() => showStartDraftModal(draft.id)}
+                            disabled={isPendingDraftHasStarted}
+                          >
+                            Start Now
+                          </ActionButton>
+                        ) : null}
                         <ActionButton
-                          onClick={() => showStartDraftModal(draft.id)}
-                          disabled={isPendingDraftHasStarted}
+                          onClick={() => showEditDraftModal(draft.id)}
                         >
-                          Start Now
+                          Edit
                         </ActionButton>
-                      )}
-                      <ActionButton
-                        onClick={() => showEditDraftModal(draft.id)}
-                      >
-                        Edit
-                      </ActionButton>
-                      <ActionButton
-                        onClick={() => showDeleteDraftModal(draft.id)}
-                        $customColor="var(--red-color)"
-                      >
-                        Delete
-                      </ActionButton>
-                    </ActionsContainer>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        <ActionButton
+                          onClick={() => showDeleteDraftModal(draft.id)}
+                          $customColor="var(--red-color)"
+                        >
+                          Delete
+                        </ActionButton>
+                      </ActionsContainer>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </tbody>
           </Table>
         )}

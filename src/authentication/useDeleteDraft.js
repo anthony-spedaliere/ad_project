@@ -11,6 +11,7 @@ export function useDeleteDraft() {
     mutationFn: (draftId) => deleteDraftApi(draftId),
     onSuccess: () => {
       queryClient.invalidateQueries(["uncompletedDrafts", userId]);
+      toast.success("Draft successfully deleted.");
     },
     onError: (error) => {
       toast.error(`There was an error deleting the draft: ${error.message}`);

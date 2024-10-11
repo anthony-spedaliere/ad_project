@@ -214,8 +214,12 @@ export async function getCurrentTurn(draftId) {
     .single();
 
   if (error) {
-    console.error("Error fetching current draft turn:", error);
-    return;
+    if (error.code === "PGRST116") {
+      // No rows returned, which means the draft doesn't exist
+      console.log("Error fetching current draft turn:", error);
+      return null;
+    }
+    throw error;
   }
 
   return data;
