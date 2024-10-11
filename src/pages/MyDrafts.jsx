@@ -1,4 +1,3 @@
-
 import { useDispatch, useSelector } from "react-redux";
 import { useUncompletedDrafts } from "../authentication/useUncompletedDrafts";
 import { DashboardContentContainer } from "../styles/DashboardStyles";
@@ -99,7 +98,9 @@ function MyDrafts() {
     if (liveDraftDetails) {
       const groupedData = groupData(liveDraftDetails);
       dispatch(setLiveDraftData(groupedData));
-      dispatch(setAdmin(groupedData.draft.admin));
+      if (groupedData.draft && groupedData.draft.admin) {
+        dispatch(setAdmin(groupedData.draft.admin));
+      }
       dispatch(setParticipant(userId));
     }
     dispatch(resetTeamsHaveJoined());
@@ -126,14 +127,7 @@ function MyDrafts() {
   const handleDeleteDraftConfirm = () => {
     handleDeleteDraftCancel();
     if (selectedDraftId) {
-    deleteDraft(selectedDraftId, {
-      onSuccess: () => {
-        navigate("/dashboard/my-drafts", { replace: true });
-        toast.success("Draft successfully deleted.");
-      },
-    });
-    } else {
-      toast.error("Error: No draft selected for deletion.");
+      deleteDraft(selectedDraftId);
     }
   };
 
@@ -259,65 +253,65 @@ function MyDrafts() {
                 const showStartNowButton = isWithin20Minutes || isPastDraftTime;
 
                 return (
-                <TableRow key={draft.id}>
-                  <TableCell>
-                    {draft.name} <br />
-                    {formatDate(draft.draft_date)}
-                    <br />
-                    {formatTime(draft.draft_time)}
-                    <br />
-                    {capitalizeFirstLetter(draft.draft_type)} Draft
-                    <br />
-                    {`${formatMinutes(
-                      draft.draft_time_per_pick
-                    )} minute(s) per pick`}
-                    <br />
-                    {`${draft.number_of_teams} teams`}
-                  </TableCell>
-                  <TableCell>
-                    <ActionsContainer>
-                      <ActionButton
-                        onClick={() =>
-                          handleClickTeamInvites(
-                            draft.unique_draft_url,
-                            draft.id
-                          )
-                        }
-                      >
-                        Team Invite Links
-                      </ActionButton>
-                    </ActionsContainer>
-                  </TableCell>
-                  <TableCell>
-                    <ActionsContainer>
-                      {draft.draft_has_started ? (
+                  <TableRow key={draft.id}>
+                    <TableCell>
+                      {draft.name} <br />
+                      {formatDate(draft.draft_date)}
+                      <br />
+                      {formatTime(draft.draft_time)}
+                      <br />
+                      {capitalizeFirstLetter(draft.draft_type)} Draft
+                      <br />
+                      {`${formatMinutes(
+                        draft.draft_time_per_pick
+                      )} minute(s) per pick`}
+                      <br />
+                      {`${draft.number_of_teams} teams`}
+                    </TableCell>
+                    <TableCell>
+                      <ActionsContainer>
                         <ActionButton
-                          onClick={() => handleEnterLiveDraft(draft.admin)}
+                          onClick={() =>
+                            handleClickTeamInvites(
+                              draft.unique_draft_url,
+                              draft.id
+                            )
+                          }
                         >
-                          Join Draft - Live!
+                          Team Invite Links
                         </ActionButton>
+                      </ActionsContainer>
+                    </TableCell>
+                    <TableCell>
+                      <ActionsContainer>
+                        {draft.draft_has_started ? (
+                          <ActionButton
+                            onClick={() => handleEnterLiveDraft(draft.admin)}
+                          >
+                            Join Draft - Live!
+                          </ActionButton>
                         ) : showStartNowButton ? (
-                        <ActionButton
-                          onClick={() => showStartDraftModal(draft.id)}
-                          disabled={isPendingDraftHasStarted}
-                        >
-                          Start Now
-                        </ActionButton>
+                          <ActionButton
+                            onClick={() => showStartDraftModal(draft.id)}
+                            disabled={isPendingDraftHasStarted}
+                          >
+                            Start Now
+                          </ActionButton>
                         ) : null}
-                      <ActionButton
-                        onClick={() => showEditDraftModal(draft.id)}
-                      >
-                        Edit
-                      </ActionButton>
-                      <ActionButton
-                        onClick={() => showDeleteDraftModal(draft.id)}
-                        $customColor="var(--red-color)"
-                      >
-                        Delete
-                      </ActionButton>
-                    </ActionsContainer>
-                  </TableCell>
-                </TableRow>
+                        <ActionButton
+                          onClick={() => showEditDraftModal(draft.id)}
+                        >
+                          Edit
+                        </ActionButton>
+                        <ActionButton
+                          onClick={() => showDeleteDraftModal(draft.id)}
+                          $customColor="var(--red-color)"
+                        >
+                          Delete
+                        </ActionButton>
+                      </ActionsContainer>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
             </tbody>

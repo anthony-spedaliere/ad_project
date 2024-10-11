@@ -6,10 +6,15 @@ export function useGetCurrentTurn(draftId) {
     queryKey: ["currentDraftTurn", draftId],
     queryFn: () => getCurrentTurn(draftId),
     enabled: !!draftId,
+    retry: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    onError: (error) => {
+      console.error("Error fetching current draft turn:", error);
+    },
   });
 
   return {
-    data,
+    currentTurn: data?.turn,
     isPending,
     error,
     isFetching,
