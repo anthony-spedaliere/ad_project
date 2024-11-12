@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
 import supabase from "../services/supabase";
 import {
+  resetSelectedFavorites,
   setCurrentTurn,
   setPickStartTime,
   setSelectedByList,
@@ -126,6 +127,7 @@ function JoinDraftPage() {
       dispatch(setCurrentTurn(latestData.turn));
       dispatch(setPickStartTime(latestData.start_clock));
     }
+    dispatch(resetSelectedFavorites());
 
     navigate("/draft/poi-pool");
   }, [dispatch, liveDraftInfo.draft.draft_id, navigate, selectedByListUpdate]);

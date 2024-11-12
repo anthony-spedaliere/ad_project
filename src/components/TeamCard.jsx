@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useUpdateHasJoined } from "../authentication/useUpdateHasJoined";
 import { useDispatch } from "react-redux";
 import {
+  resetSelectedFavorites,
   setCurrentTurn,
   setPickStartTime,
   setSelectedByListUpdate,
@@ -78,6 +79,8 @@ function TeamCard({
     if (myPicksListUpdate) {
       dispatch(setUsersPicks(myPicksListUpdate));
     }
+
+    dispatch(resetSelectedFavorites());
 
     setHasJoined({ hasJoined: true, teamOwner: participant });
     navigate("/draft/poi-pool");

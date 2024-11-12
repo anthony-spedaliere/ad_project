@@ -16,7 +16,10 @@ import { useUpdateDraftTurn } from "../authentication/useUpdateDraftTurn";
 import dayjs from "dayjs";
 import { useUpdateStartClock } from "../authentication/useUpdateStartClock";
 import StyledHeader from "../ui/StyledHeader";
-import { setActiveUser } from "../store/slices/liveDraftSlice";
+import {
+  resetSelectedFavorites,
+  setActiveUser,
+} from "../store/slices/liveDraftSlice";
 import { useUpdateIsDraftComplete } from "../authentication/useUpdateIsDraftComplete";
 import { useNavigate } from "react-router-dom";
 
@@ -179,6 +182,7 @@ function DraftLeftSidebar() {
                       currentTurn + 1,
                       liveDraftInfo?.draft?.draft_id
                     );
+
                     setDraftComplete(true);
                     setIsDraftComplete({
                       isDraftComplete: true,
